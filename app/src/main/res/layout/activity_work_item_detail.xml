@@ -152,6 +152,7 @@
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
                     android:text="@string/workTitle"
+                    android:gravity="center"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/worktitlett_tex_tex"
@@ -159,9 +160,11 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="事务一"
+                    android:gravity="center"
                     android:textSize="18sp">
                 </TextView>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -172,6 +175,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
+                    android:gravity="center"
                     android:text="@string/workTarget"
                     android:textSize="18sp"></TextView>
                 <TextView
@@ -179,6 +183,7 @@
                     android:layout_width="0sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:text="***"
                     android:textSize="18sp">
                 </TextView>
@@ -194,6 +199,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
+                    android:gravity="center"
                     android:text="@string/workAssign"
                     android:textSize="18sp"></TextView>
                 <TextView
@@ -201,10 +207,12 @@
                     android:layout_width="0sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:text="张三"
                     android:textSize="18sp">
                 </TextView>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -216,6 +224,7 @@
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
                     android:text="@string/workChecker"
+                    android:gravity="center"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/workChecker_tex"
@@ -223,6 +232,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="王五"
+                    android:gravity="center"
                     android:textSize="18sp">
                 </TextView>
             </LinearLayout>
@@ -236,15 +246,66 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
+                    android:gravity="center"
                     android:text="@string/workCreater"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/workCreater_tex"
                     android:layout_width="0sp"
+                    android:gravity="center"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="李四"
                     android:textSize="18sp">
+                </TextView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum ="2" >
+                <TextView
+                    android:layout_width="0sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorAccent"
+                    android:gravity="center"
+                    android:text="@string/createTime"
+                    android:textSize="18sp"></TextView>
+                <TextView
+                    android:id="@+id/workCrateTime_tex"
+                    android:layout_width="0sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="2016/12/12"
+                    android:textSize="18sp">
+                </TextView>
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum ="2" >
+                <TextView
+                    android:layout_width="0sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorAccent"
+                    android:text="@string/modyfier"
+                    android:gravity="center"
+                    android:textSize="18sp"></TextView>
+                <TextView
+                    android:id="@+id/workModifyer_tex"
+                    android:layout_width="0sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="李四"
+                    android:gravity="center"
+                    android:textSize="18sp">
+
                 </TextView>
             </LinearLayout>
             <LinearLayout
@@ -258,6 +319,7 @@
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
                     android:text="@string/modyfiTime"
+                    android:gravity="center"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/workModifyTime_tex"
@@ -265,50 +327,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="2016/12/12"
+                    android:gravity="center"
                     android:textSize="18sp">
                 </TextView>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum ="2" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:text="@string/modyfier"
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/workModifyer_tex"
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="李四"
-                    android:textSize="18sp">
-                </TextView>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum ="2" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:text="@string/createTime"
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/workCrateTime_tex"
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="2016/12/12"
-                    android:textSize="18sp">
-                </TextView>
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -321,12 +343,14 @@
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
                     android:text="@string/workState"
+                    android:gravity="center"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/workState_tex"
                     android:layout_width="0sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:text="待做"
                     android:textSize="18sp">
                 </TextView>
@@ -342,13 +366,15 @@
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
                     android:text="@string/endingTime"
+                    android:gravity="center"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/workEndingTime_tex"
                     android:layout_width="0sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="20107/01/01"
+                    android:gravity="center"
+                    android:text="2017/01/01"
                     android:textSize="18sp">
                 </TextView>
             </LinearLayout>
@@ -363,12 +389,14 @@
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
                     android:text="@string/description"
+                    android:gravity="center"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/workDescription_tex"
                     android:layout_width="0sp"
                     android:layout_height="match_parent"
                     android:layout_weight="5"
+                    android:gravity="center"
                     android:text="#########################"
                     android:textSize="18sp">
                 </TextView>
@@ -379,16 +407,18 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="50sp"
+        android:gravity="center_vertical"
         android:background="@color/tabColor" >
         <ImageButton
             android:id="@+id/add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/i1"/>
+            android:background="@drawable/add_no"/>
         <ImageButton
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/i3"
+            android:background="@drawable/remove_no"
             android:layout_toRightOf="@+id/add" />
     </RelativeLayout>
 </LinearLayout>
