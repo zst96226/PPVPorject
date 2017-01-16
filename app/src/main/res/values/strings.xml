@@ -44,4 +44,5 @@
     <string name="add_lab_6">截止时间：</string>
     <string name="add_lab_7">估\n算\n价\n值</string>
     <string name="add_lab_8">描\n述</string>
+    <string name="DBname">/com.example.beyondsys.pvv/ppvdata.db</string>
 </resources>
