@@ -1,6 +1,7 @@
 package com.example.beyondsys.ppv.tools;
 
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 
@@ -9,11 +10,12 @@ import java.io.File;
  */
 public class Tools {
 
-//    获取SD卡根目录
+//  获取SD卡根目录
     public static String getSDPath(){
         File sdDir = null;
         boolean sdCardExist = Environment.getExternalStorageState()
                 .equals(android.os.Environment.MEDIA_MOUNTED);//判断sd卡是否存在
+        Log.e("SD卡是否存在"+sdCardExist,"123");
         if(sdCardExist)
         {
             sdDir = Environment.getExternalStorageDirectory();//获取跟目录

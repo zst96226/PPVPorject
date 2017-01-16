@@ -1,6 +1,7 @@
 package com.example.beyondsys.ppv.activity;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Environment;
@@ -123,12 +124,26 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
 
     private void checkDb() {
         //获取数据库完整路径
-        String Path= Tools.getSDPath()+R.string.DBname;
+        String Path= Tools.getSDPath()+"/com.example.beyondsys.pvv/ppvdata.db";
         //判断数据库是否存在
         if (!Tools.fileIsExists(Path)){
             //创建数据库
             DataBaseService dbService=new DataBaseService(this,Path,null,1);
+            SQLiteDatabase sd=null;
+            try{
+                sd = dbService.getWritableDatabase();
+                sd.close();
+            }
+            catch (Exception ignored){
+                sd.close();
+            }
         }
+//        else
+//        {
+//            File file = new File(Path);
+//            file.delete();
+//            checkDb();
+//        }
     }
 
     @Override

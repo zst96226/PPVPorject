@@ -3,6 +3,7 @@ package com.example.beyondsys.ppv.dataaccess;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by zhsht on 2017/1/13.数据库支持服务
@@ -10,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseService extends SQLiteOpenHelper{
 
     public DataBaseService(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+        super(context, name, null, version);
     }
 
     @Override
@@ -37,7 +38,6 @@ public class DataBaseService extends SQLiteOpenHelper{
         sqlstr.append(" state nvarchar(50) NOT NULL DEFAULT '', ");
         sqlstr.append(" constraint PK_T_User primary key (ID, BID, TheTimeStamp) ");
         sqlstr.append(" ) GO ");
-
         db.execSQL(sqlstr.toString());
     }
 
