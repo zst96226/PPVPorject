@@ -46,7 +46,7 @@
                 android:id="@+id/title_btn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/title_add"
+                android:src="@drawable/add_btn"
                 android:layout_margin="10sp"/>
 
         </LinearLayout>

@@ -163,58 +163,62 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
         switch (id) {
             case R.id.btn_workitem:
                 viewPager.setCurrentItem(0);
-                txt_workitem.setTextColor(this.getResources().getColor(R.color.Yellow));
-                txt_workvalue.setTextColor(this.getResources().getColor(R.color.White));
-                txt_worknone.setTextColor(this.getResources().getColor(R.color.White));
-                txt_oneself.setTextColor(this.getResources().getColor(R.color.White));
+                SetDefault();
+                txt_workitem.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                img_workitem.setImageResource(R.drawable.workitem_yes);
             case 0:
                 workitem.setSelected(true);
-                txt_workitem.setTextColor(this.getResources().getColor(R.color.Yellow));
-                txt_workvalue.setTextColor(this.getResources().getColor(R.color.White));
-                txt_worknone.setTextColor(this.getResources().getColor(R.color.White));
-                txt_oneself.setTextColor(this.getResources().getColor(R.color.White));
+                SetDefault();
+                txt_workitem.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                img_workitem.setImageResource(R.drawable.workitem_yes);
                 break;
             case R.id.btn_workvalue:
                 viewPager.setCurrentItem(1);
-                txt_workitem.setTextColor(this.getResources().getColor(R.color.White));
-                txt_workvalue.setTextColor(this.getResources().getColor(R.color.Yellow));
-                txt_worknone.setTextColor(this.getResources().getColor(R.color.White));
-                txt_oneself.setTextColor(this.getResources().getColor(R.color.White));
+                SetDefault();
+                txt_workvalue.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                img_workvalue.setImageResource(R.drawable.workvalue_yes);
             case 1:
                 workvalue.setSelected(true);
-                txt_workitem.setTextColor(this.getResources().getColor(R.color.White));
-                txt_workvalue.setTextColor(this.getResources().getColor(R.color.Yellow));
-                txt_worknone.setTextColor(this.getResources().getColor(R.color.White));
-                txt_oneself.setTextColor(this.getResources().getColor(R.color.White));
+                SetDefault();
+                txt_workvalue.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                img_workvalue.setImageResource(R.drawable.workvalue_yes);
                 break;
             case R.id.btn_worknone:
                 viewPager.setCurrentItem(2);
-                txt_workitem.setTextColor(this.getResources().getColor(R.color.White));
-                txt_workvalue.setTextColor(this.getResources().getColor(R.color.White));
-                txt_worknone.setTextColor(this.getResources().getColor(R.color.Yellow));
-                txt_oneself.setTextColor(this.getResources().getColor(R.color.White));
+                SetDefault();
+                txt_worknone.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                img_worknone.setImageResource(R.drawable.none_yes);
             case 2:
                 worknone.setSelected(true);
-                txt_workitem.setTextColor(this.getResources().getColor(R.color.White));
-                txt_workvalue.setTextColor(this.getResources().getColor(R.color.White));
-                txt_worknone.setTextColor(this.getResources().getColor(R.color.Yellow));
-                txt_oneself.setTextColor(this.getResources().getColor(R.color.White));
+                SetDefault();
+                txt_worknone.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                img_worknone.setImageResource(R.drawable.none_yes);
                 break;
             case R.id.btn_oneself:
                 viewPager.setCurrentItem(3);
-                txt_workitem.setTextColor(this.getResources().getColor(R.color.White));
-                txt_workvalue.setTextColor(this.getResources().getColor(R.color.White));
-                txt_worknone.setTextColor(this.getResources().getColor(R.color.White));
-                txt_oneself.setTextColor(this.getResources().getColor(R.color.Yellow));
+                SetDefault();
+                txt_oneself.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                img_oneself.setImageResource(R.drawable.oneself_yes);
             case 3:
                 oneself.setSelected(true);
-                txt_workitem.setTextColor(this.getResources().getColor(R.color.White));
-                txt_workvalue.setTextColor(this.getResources().getColor(R.color.White));
-                txt_worknone.setTextColor(this.getResources().getColor(R.color.White));
-                txt_oneself.setTextColor(this.getResources().getColor(R.color.Yellow));
+                SetDefault();
+                txt_oneself.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                img_oneself.setImageResource(R.drawable.oneself_yes);
                 break;
             default:
                 break;
         }
+    }
+
+    private void SetDefault(){
+        txt_workitem.setTextColor(this.getResources().getColor(R.color.Gray));
+        txt_workvalue.setTextColor(this.getResources().getColor(R.color.Gray));
+        txt_worknone.setTextColor(this.getResources().getColor(R.color.Gray));
+        txt_oneself.setTextColor(this.getResources().getColor(R.color.Gray));
+
+        img_workitem.setImageResource(R.drawable.workitem_no);
+        img_workvalue.setImageResource(R.drawable.workvalue_no);
+        img_worknone.setImageResource(R.drawable.none_no);
+        img_oneself.setImageResource(R.drawable.oneself_no);
     }
 }
