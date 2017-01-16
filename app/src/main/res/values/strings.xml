@@ -17,12 +17,6 @@
     <string name="WorkValue">&#160;&#160;工作分值&#160;</string>
     <string name="EndingTime">&#160;&#160;结束时间&#160;</string>
     <string name="WorkState">&#160;&#160;工作状态&#160;</string>
-    <string name="WorkTitle">标题</string>
-    <string name="WorkTarget">指标</string>
-    <string name="WorkAssign">指派给</string>
-    <string name="WorkCreater">创建人</string>
-    <string name="WorkCreatTime">创建时间</string>
-    <string name="WorkDescription">描述</string>
     <string-array name="valuesort_arr">
         <item>升序</item>
         <item>降序</item>
@@ -44,5 +38,18 @@
     <string name="add_lab_6">截止时间：</string>
     <string name="add_lab_7">估\n算\n价\n值</string>
     <string name="add_lab_8">描\n述</string>
+    <string name="workTitle">标题：</string>
+    <string name="workTarget">指标：</string>
+    <string name="workAssign">指派给：</string>
+    <string name="workChecker">检查人：</string>
+    <string name="modyfiTime">修改时间：</string>
+    <string name="workState">状态：</string>
+    <string name="endingTime">截止时间：</string>
+    <string name="description">描述：</string>
+    <string name="workCreater">创建人：</string>
+    <string name="modyfier">修改人：</string>
+    <string name="createTime">创建时间：</string>
+    <string name="planValue">&#160;理想价值：</string>
+    <string name="trueValue">&#160;实际价值：</string>
     <string name="DBname">/com.example.beyondsys.pvv/ppvdata.db</string>
 </resources>

@@ -26,6 +26,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activity.WorkItemDetail" >
         </activity>
+        <activity android:name=".activity.PersonValueDetail"></activity>
     </application>
 
 </manifest>

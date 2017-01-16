@@ -22,6 +22,7 @@
                 android:layout_margin="10sp"
                 android:src="@drawable/title_back"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0sp"
             android:layout_height="match_parent"
@@ -150,7 +151,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
-                    android:text="标题："
+                    android:text="@string/workTitle"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/worktitlett_tex_tex"
@@ -171,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
-                    android:text="指标："
+                    android:text="@string/workTarget"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/workTarget_tex"
@@ -182,6 +183,7 @@
                     android:textSize="18sp">
                 </TextView>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -192,28 +194,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
-                    android:text="创建人："
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/workCreater_tex"
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="李四"
-                    android:textSize="18sp">
-                </TextView>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum ="2" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:text="指派给："
+                    android:text="@string/workAssign"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/workAssign_tex"
@@ -234,7 +215,91 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
-                    android:text="创建时间："
+                    android:text="@string/workChecker"
+                    android:textSize="18sp"></TextView>
+                <TextView
+                    android:id="@+id/workChecker_tex"
+                    android:layout_width="0sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="王五"
+                    android:textSize="18sp">
+                </TextView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum ="2" >
+                <TextView
+                    android:layout_width="0sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorAccent"
+                    android:text="@string/workCreater"
+                    android:textSize="18sp"></TextView>
+                <TextView
+                    android:id="@+id/workCreater_tex"
+                    android:layout_width="0sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="李四"
+                    android:textSize="18sp">
+                </TextView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum ="2" >
+                <TextView
+                    android:layout_width="0sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorAccent"
+                    android:text="@string/modyfiTime"
+                    android:textSize="18sp"></TextView>
+                <TextView
+                    android:id="@+id/workModifyTime_tex"
+                    android:layout_width="0sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="2016/12/12"
+                    android:textSize="18sp">
+                </TextView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum ="2" >
+                <TextView
+                    android:layout_width="0sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorAccent"
+                    android:text="@string/modyfier"
+                    android:textSize="18sp"></TextView>
+                <TextView
+                    android:id="@+id/workModifyer_tex"
+                    android:layout_width="0sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="李四"
+                    android:textSize="18sp">
+                </TextView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum ="2" >
+                <TextView
+                    android:layout_width="0sp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorAccent"
+                    android:text="@string/createTime"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/workCrateTime_tex"
@@ -255,7 +320,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
-                    android:text="状态："
+                    android:text="@string/workState"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/workState_tex"
@@ -276,7 +341,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
-                    android:text="截止时间："
+                    android:text="@string/endingTime"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/workEndingTime_tex"
@@ -297,7 +362,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@color/colorAccent"
-                    android:text="描述："
+                    android:text="@string/description"
                     android:textSize="18sp"></TextView>
                 <TextView
                     android:id="@+id/workDescription_tex"
@@ -312,7 +377,7 @@
 
     </LinearLayout>
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="50sp"
         android:background="@color/tabColor" >
         <ImageButton

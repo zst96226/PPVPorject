@@ -1,10 +1,12 @@
 package com.example.beyondsys.ppv.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -20,17 +22,25 @@ import java.util.Map;
  */
 public class WorkValueView extends Fragment {
     //、、
+    private  ListView listView ;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.workvalue_view, container, false);
 
-        ListView listView=(ListView)rootView.findViewById(R.id.value_list );
+         listView=(ListView)rootView.findViewById(R.id.value_list );
         SimpleAdapter adapter =new SimpleAdapter(this.getActivity(),getData() ,R.layout.valueliststyle ,  new String[]{"personImg","personName","valueSum","monthSum"},
                 new int[]{R.id.person_img  ,R.id.personname_tex  ,R.id.valuesum_tex ,R.id .monthsum_tex  }) ;
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                Intent intent = new Intent(getActivity(), PersonValueDetail.class);
+                startActivity(intent);
+            }
+        });
         return rootView;
     }
 
@@ -65,4 +75,6 @@ public class WorkValueView extends Fragment {
 
         return list;
     }
+
+
 }

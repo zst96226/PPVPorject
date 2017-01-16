@@ -74,6 +74,52 @@ public class WorkItemView extends Fragment {
         map.put("endingTime", "2017/01/22");
         map.put("workValue", "50分");
         list.add(map);
+        map = new HashMap<String, Object>();
+        map.put("workImg",  R.drawable.i1);
+        map.put("workName", "事务2");
+        map.put("workState", "Done");
+        map.put("endingTime", "2017/11/22");
+        map.put("workValue", "100分");
+        list.add(map);
+
+        map = new HashMap<String, Object>();
+        map.put("workImg", R.drawable.i1);
+        map.put("workName", "事务3");
+        map.put("workState", "ToDo");
+        map.put("endingTime", "2017/01/22");
+        map.put("workValue", "20分");
+        list.add(map);
+
+        map = new HashMap<String, Object>();
+        map.put("workImg", R.drawable.i1);
+        map.put("workName", "事务4");
+        map.put("workState", "Commit");
+        map.put("endingTime", "2017/01/22");
+        map.put("workValue", "50分");
+        list.add(map);
+        map = new HashMap<String, Object>();
+        map.put("workImg",  R.drawable.i1);
+        map.put("workName", "事务2");
+        map.put("workState", "Done");
+        map.put("endingTime", "2017/11/22");
+        map.put("workValue", "100分");
+        list.add(map);
+
+        map = new HashMap<String, Object>();
+        map.put("workImg", R.drawable.i1);
+        map.put("workName", "事务3");
+        map.put("workState", "ToDo");
+        map.put("endingTime", "2017/01/22");
+        map.put("workValue", "20分");
+        list.add(map);
+
+        map = new HashMap<String, Object>();
+        map.put("workImg", R.drawable.i1);
+        map.put("workName", "事务4");
+        map.put("workState", "Commit");
+        map.put("endingTime", "2017/01/22");
+        map.put("workValue", "50分");
+        list.add(map);
 
         return list;
     }
