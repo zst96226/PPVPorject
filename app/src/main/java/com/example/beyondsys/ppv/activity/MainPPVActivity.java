@@ -164,45 +164,45 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
             case R.id.btn_workitem:
                 viewPager.setCurrentItem(0);
                 SetDefault();
-                txt_workitem.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                txt_workitem.setTextColor(this.getResources().getColor(R.color.text));
                 img_workitem.setImageResource(R.drawable.workitem_yes);
             case 0:
                 workitem.setSelected(true);
                 SetDefault();
-                txt_workitem.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                txt_workitem.setTextColor(this.getResources().getColor(R.color.text));
                 img_workitem.setImageResource(R.drawable.workitem_yes);
                 break;
             case R.id.btn_workvalue:
                 viewPager.setCurrentItem(1);
                 SetDefault();
-                txt_workvalue.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                txt_workvalue.setTextColor(this.getResources().getColor(R.color.text));
                 img_workvalue.setImageResource(R.drawable.workvalue_yes);
             case 1:
                 workvalue.setSelected(true);
                 SetDefault();
-                txt_workvalue.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                txt_workvalue.setTextColor(this.getResources().getColor(R.color.text));
                 img_workvalue.setImageResource(R.drawable.workvalue_yes);
                 break;
             case R.id.btn_worknone:
                 viewPager.setCurrentItem(2);
                 SetDefault();
-                txt_worknone.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                txt_worknone.setTextColor(this.getResources().getColor(R.color.text));
                 img_worknone.setImageResource(R.drawable.none_yes);
             case 2:
                 worknone.setSelected(true);
                 SetDefault();
-                txt_worknone.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                txt_worknone.setTextColor(this.getResources().getColor(R.color.text));
                 img_worknone.setImageResource(R.drawable.none_yes);
                 break;
             case R.id.btn_oneself:
                 viewPager.setCurrentItem(3);
                 SetDefault();
-                txt_oneself.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                txt_oneself.setTextColor(this.getResources().getColor(R.color.text));
                 img_oneself.setImageResource(R.drawable.oneself_yes);
             case 3:
                 oneself.setSelected(true);
                 SetDefault();
-                txt_oneself.setTextColor(this.getResources().getColor(R.color.colorPrimary));
+                txt_oneself.setTextColor(this.getResources().getColor(R.color.text));
                 img_oneself.setImageResource(R.drawable.oneself_yes);
                 break;
             default:

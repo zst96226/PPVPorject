@@ -9,4 +9,5 @@
     <color name="mainFont" >#000000</color>
     <color name="infoFont" >#000055</color>
     <color name="Gray">#CDC5BF</color>
+    <color name="text">#38ADFF</color>
 </resources>
