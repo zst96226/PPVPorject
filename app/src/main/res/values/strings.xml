@@ -52,4 +52,7 @@
     <string name="planValue">&#160;理想价值：</string>
     <string name="trueValue">&#160;实际价值：</string>
     <string name="DBname">/com.example.beyondsys.pvv/ppvdata.db</string>
+    <string name="passwordChange">修改密码</string>
+    <string name="personInfo">个人资料</string>
+    <string name="setting">设 置</string>
 </resources>
