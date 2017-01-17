@@ -1,9 +1,12 @@
 package com.example.beyondsys.ppv.activity;
 
+import android.content.Intent;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +24,8 @@ public class WorkItemDetail extends AppCompatActivity {
 
     ImageView back;
     ImageView wid_show_chid;
+    ImageView returen;
+    ImageView Add_child;
     LinearLayout main_workitem;
     ListView child_list;
 
@@ -33,13 +38,17 @@ public class WorkItemDetail extends AppCompatActivity {
         initView();
 
         Listener();
+
+        SetData();
     }
 
     private void initView(){
         back=(ImageView)this.findViewById(R.id.wid_back);
         wid_show_chid=(ImageView)findViewById(R.id.wid_show_chid);
+        Add_child=(ImageView)findViewById(R.id.title_btn_wid);
         main_workitem=(LinearLayout)findViewById(R.id.main_workitem);
         child_list=(ListView)findViewById(R.id.wid_list);
+        returen=(ImageView)findViewById(R.id.wid_return);
     }
 
     private void Listener(){
@@ -52,18 +61,37 @@ public class WorkItemDetail extends AppCompatActivity {
         main_workitem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (child_list.getVisibility()==View.GONE){
+                if (child_list.getVisibility() == View.GONE) {
                     child_list.setVisibility(View.VISIBLE);
                     SetList();
                     wid_show_chid.setImageResource(R.drawable.arrow_up_float);
-                }
-                else{
+                } else {
                     child_list.setVisibility(View.GONE);
                     wid_show_chid.setImageResource(R.drawable.arrow_down_float);
                 }
             }
         });
-
+        child_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //有子项则
+                SetData();
+            }
+        });
+        returen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //有父项则
+                SetData();
+            }
+        });
+        Add_child.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(WorkItemDetail.this,AddNewWorkItem.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void SetList(){
@@ -100,5 +128,9 @@ public class WorkItemDetail extends AppCompatActivity {
         list.add(map);
 
         return list;
+    }
+
+    private void SetData(){
+
     }
 }

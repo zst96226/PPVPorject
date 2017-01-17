@@ -13,27 +13,55 @@
             android:layout_width="match_parent"
             android:background="@color/White"
             android:layout_height="45sp"
-            android:weightSum="3"
             android:layout_marginBottom="10sp">
 
-            <ImageView
+            <LinearLayout
+                android:id="@+id/wv_sort"
                 android:layout_width="0sp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:src="@drawable/sort_up"/>
-
-
-            <ImageView
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="22sp"
+                    android:layout_height="22sp"
+                    android:src="@drawable/sort_up"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4sp"/>
+                <TextView
+                    android:id="@+id/wv_sort_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wv_lab_1"
+                    android:textSize="11sp"
+                    android:layout_marginTop="2sp"
+                    android:layout_gravity="center_horizontal"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/wv_screen"
                 android:layout_width="0sp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:src="@drawable/filter"/>
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="22sp"
+                    android:layout_height="22sp"
+                    android:src="@drawable/filter"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4sp"/>
+                <TextView
+                    android:id="@+id/wv_screen_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wv_lab_1"
+                    android:textSize="11sp"
+                    android:layout_marginTop="2sp"
+                    android:layout_gravity="center_horizontal"/>
+            </LinearLayout>
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0sp"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:gravity="center">
                 <CheckBox
                     android:id="@+id/topme_che"
                     android:layout_toLeftOf="@+id/topme_tex"
