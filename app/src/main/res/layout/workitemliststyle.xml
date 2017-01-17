@@ -2,74 +2,118 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
 
-    <ImageView android:id="@+id/work_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5sp"/>
-
-    <LinearLayout android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80sp"
+        android:orientation="horizontal"
+        android:background="@color/White"
+        android:layout_marginBottom="1sp">
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-        <TextView android:id="@+id/workname_tex"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/mainFont"
-            android:textSize="26sp" />
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/infoFont"
-                    android:text="@string/EndingTime"
-                    android:layout_toLeftOf="@+id/endingtime_tex"
-                    android:textSize="18sp" />
-                <TextView android:id="@+id/endingtime_tex"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/infoFont"
-                    android:layout_alignParentRight="true"
-                    android:textSize="18sp" />
-            </RelativeLayout>
-
+            android:layout_width="80sp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/work_img"
+                android:layout_width="45sp"
+                android:layout_height="45sp"
+                android:src="@drawable/work_item"/>
         </LinearLayout>
+        <RelativeLayout
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_weight="3">
+
+            <TextView
+                android:id="@+id/workname_tex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="30"
+                android:textColor="@color/mainFont"
+                android:text="事务1"
+                android:textSize="15sp"
+                android:layout_marginTop="17.5sp"/>
+
+            <ImageView
+                android:id="@+id/work_value_img"
+                android:layout_width="18sp"
+                android:layout_height="18sp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10sp"
+                android:src="@drawable/work_value"/>
+            <TextView
+                android:id="@+id/workvalue_tex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100"
+                android:layout_toRightOf="@+id/work_value_img"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10sp"
+                android:layout_marginLeft="5sp"
+                android:maxLines="10"/>
+            <TextView
+                android:id="@+id/work_state_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wi_list_item_text_1"
+                android:layout_toRightOf="@+id/workvalue_tex"
+                android:layout_marginBottom="10sp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="10sp"/>
+            <ImageView
+                android:id="@+id/work_state_img"
+                android:layout_width="18sp"
+                android:layout_height="18sp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10sp"
+                android:src="@drawable/img_pro"
+                android:layout_toRightOf="@+id/work_state_txt"
+                android:layout_marginLeft="5sp"/>
+        </RelativeLayout>
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/infoFont"
-                android:text="@string/WorkValue"
-                android:textSize="18sp" />
-            <TextView android:id="@+id/workvalue_tex"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/infoFont"
-                android:textSize="18sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/infoFont"
-                android:text="@string/WorkState"
-                android:textSize="18sp" />
-            <TextView android:id="@+id/workstate_tex"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/infoFont"
-                android:textSize="18sp" />
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0sp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="22sp"
+                    android:layout_height="22sp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/img_starttime"/>
+                <TextView
+                    android:id="@+id/strarttime_tex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5sp"
+                    android:text="2017-1-16"/>
             </LinearLayout>
-
-
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0sp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="22sp"
+                    android:layout_height="22sp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/img_endtime"/>
+                <TextView
+                    android:id="@+id/endtime_tex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5sp"
+                    android:text="2017-1-17"/>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

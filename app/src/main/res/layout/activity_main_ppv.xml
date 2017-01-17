@@ -24,32 +24,25 @@
     <!--</android.support.design.widget.AppBarLayout>-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0sp"
-        android:layout_weight="1"
-        android:background="@color/White"
+        android:layout_height="40sp"
+        android:background="@color/backcol"
         android:orientation="horizontal">
         <LinearLayout
             android:layout_width="0sp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_weight="6"
+            android:orientation="horizontal">
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
                 android:src="@drawable/logo"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0sp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:orientation="vertical">
             <TextView
                 android:id="@+id/title_txt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/app_name"
-                android:textSize="37sp"
-                android:gravity="center"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
                 android:textColor="@color/text"/>
         </LinearLayout>
         <LinearLayout
@@ -63,32 +56,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/add_btn"
-                android:layout_margin="10sp"/>
+                android:layout_margin="7sp"/>
 
         </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="1sp"
-        android:background="@color/text"/>
     <!-- ViewPage-->
     <android.support.v4.view.ViewPager
         android:id="@+id/view_page"
         android:layout_width="match_parent"
         android:layout_height="0sp"
-        android:layout_weight="8"/>
+        android:layout_weight="1"/>
     <!--<include layout="@layout/content_main_ppv" />-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="1sp"
-        android:background="@color/text"/>
     <!-- 底部导航栏-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0sp"
-        android:layout_weight="1"
+        android:layout_height="45sp"
         android:orientation="horizontal"
-        android:background="@color/White">
+        android:background="@color/backcol">
 
         <LinearLayout
             android:id="@+id/btn_workitem"
@@ -99,17 +83,18 @@
 
             <ImageView
                 android:id="@+id/img_workitem"
-                android:layout_width="30sp"
-                android:layout_height="30sp"
+                android:layout_width="22sp"
+                android:layout_height="22sp"
                 android:layout_gravity="center"
-                android:layout_marginTop="6sp"
+                android:layout_marginTop="4sp"
                 android:src="@drawable/workitem_no"/>
             <TextView
                 android:id="@+id/txt_workitem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2sp"
+                android:layout_marginTop="4sp"
                 android:text="@string/workitem_txt"
+                android:textSize="11sp"
                 android:textColor="@color/Gray"
                 android:layout_gravity="center"/>
         </LinearLayout>
@@ -123,17 +108,18 @@
 
             <ImageView
                 android:id="@+id/img_workvalue"
-                android:layout_width="30sp"
-                android:layout_height="30sp"
+                android:layout_width="22sp"
+                android:layout_height="22sp"
                 android:layout_gravity="center"
-                android:layout_marginTop="6sp"
+                android:layout_marginTop="4sp"
                 android:src="@drawable/workvalue_no"/>
             <TextView
                 android:id="@+id/txt_workvalue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/workvalue_txt"
-                android:layout_marginTop="1sp"
+                android:textSize="11sp"
+                android:layout_marginTop="4sp"
                 android:textColor="@color/Gray"
                 android:layout_gravity="center"/>
 
@@ -148,17 +134,18 @@
 
             <ImageView
                 android:id="@+id/img_worknone"
-                android:layout_width="30sp"
-                android:layout_height="30sp"
+                android:layout_width="22sp"
+                android:layout_height="22sp"
                 android:layout_gravity="center"
-                android:layout_marginTop="8sp"
+                android:layout_marginTop="4sp"
                 android:src="@drawable/none_no"/>
             <TextView
                 android:id="@+id/txt_worknone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/worknone_txt"
-                android:layout_marginTop="1sp"
+                android:layout_marginTop="4sp"
+                android:textSize="11sp"
                 android:textColor="@color/Gray"
                 android:layout_gravity="center"/>
 
@@ -171,17 +158,18 @@
             android:orientation="vertical">
             <ImageView
                 android:id="@+id/img_oneself"
-                android:layout_width="30sp"
-                android:layout_height="30sp"
+                android:layout_width="22sp"
+                android:layout_height="22sp"
                 android:layout_gravity="center"
-                android:layout_marginTop="8sp"
+                android:layout_marginTop="4sp"
                 android:src="@drawable/oneself_no"/>
             <TextView
                 android:id="@+id/txt_oneself"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/oneself_txt"
-                android:layout_marginTop="1sp"
+                android:layout_marginTop="4sp"
+                android:textSize="11sp"
                 android:textColor="@color/Gray"
                 android:layout_gravity="center"/>
 

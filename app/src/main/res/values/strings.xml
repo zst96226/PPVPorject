@@ -55,4 +55,11 @@
     <string name="passwordChange">修改密码</string>
     <string name="personInfo">个人资料</string>
     <string name="setting">设 置</string>
+    <string name="wi_s_one_txt">指派给我</string>
+    <string name="wi_s_one_txt_2">与我相关</string>
+    <string name="wi_s_pro_txt">待处理</string>
+    <string name="wi_s_proing_txt">处理中</string>
+    <string name="wi_s_complete_txt">已完成</string>
+    <string name="wi_s_invalid_txt">已作废</string>
+    <string name="wi_list_item_text_1">状态</string>
 </resources>
