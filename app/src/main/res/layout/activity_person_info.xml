@@ -35,8 +35,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/personInfo"
-                android:textSize="37sp"
-                android:gravity="center"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
                 android:textColor="@color/White"/>
         </LinearLayout>
 
