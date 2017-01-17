@@ -26,7 +26,7 @@
             android:name=".activity.AddNewWorkItem"
             android:label="@string/title_activity_add_new_work_item"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.WorkItemDetail"></activity>
+        <activity android:name=".activity.WorkItemDetail" />
         <activity android:name=".activity.PersonValueDetail" />
         <!--
              ATTENTION: This was auto-generated to add Google Play services to your project for
@@ -36,7 +36,8 @@
             <!--android:name="com.google.android.gms.version"-->
             <!--android:value="@integer/google_play_services_version" />-->
 
-        <activity android:name=".activity.PersonInfo"></activity>
+        <activity android:name=".activity.PersonInfo" />
+        <activity android:name=".activity.PasswordChange"></activity>
     </application>
 
 </manifest>

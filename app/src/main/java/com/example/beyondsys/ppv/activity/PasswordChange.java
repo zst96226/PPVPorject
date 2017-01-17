@@ -7,26 +7,18 @@ import android.widget.ImageView;
 
 import com.example.beyondsys.ppv.R;
 
-public class PersonInfo extends AppCompatActivity {
-private  ImageView back;
-    private  ImageView modify;
+public class PasswordChange extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_password_change);
         getSupportActionBar().hide();
-        setContentView(R.layout.activity_person_info);
-        back = (ImageView) this.findViewById(R.id.dttail_back);
-        modify=(ImageView) this.findViewById(R.id.infoModify_img);
+        ImageView back = (ImageView) this.findViewById(R.id.dttail_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
-            }
-        });
-        modify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
             }
         });
     }
