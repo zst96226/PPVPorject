@@ -21,7 +21,7 @@ public class WorkNoneView extends Fragment {
 
         return rootView;
     }
-
+//gfhfasasa
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
