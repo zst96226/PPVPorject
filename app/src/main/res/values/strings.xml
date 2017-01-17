@@ -61,11 +61,11 @@
     <string name="wi_s_complete_txt">已完成</string>
     <string name="wi_s_invalid_txt">已作废</string>
     <string name="wi_list_item_text_1">状态</string>
-    <string name="myDescription">个人描述</string>
+    <string name="myDescription">个性签名</string>
     <string name="myAdress">我的地址</string>
     <string name="myID"><![CDATA[ID 号码]]></string>
     <string name="myPhone"><![CDATA[电  话]]></string>
     <string name="myEmail"><![CDATA[邮  箱]]></string>
-    <string name="myName"><![CDATA[昵  称]]></string>
+    <string name="myName"><![CDATA[名  称]]></string>
     <string name="myImage"><![CDATA[头  像]]></string>
 </resources>
