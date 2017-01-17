@@ -6,49 +6,51 @@
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0sp"
-        android:layout_weight="1"
-        android:background="@color/colorPrimary"
+        android:layout_height="40sp"
+        android:background="@color/backcol"
         android:orientation="horizontal">
         <LinearLayout
             android:layout_width="0sp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_weight="6"
+            android:orientation="horizontal">
             <ImageView
-                android:id="@+id/dttail_back"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10sp"
+                android:id="@+id/wid_back"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
                 android:src="@drawable/title_back"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0sp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/wid_return"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/title_back"/>
             <TextView
                 android:id="@+id/title_txt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/app_name"
-                android:textSize="37sp"
-                android:gravity="center"
-                android:textColor="@color/White"/>
+                android:text="@string/wid_titlt_lab_1"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
+                android:textColor="@color/text"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="0sp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_weight="2"
+            android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/title_btn"
-                android:layout_width="match_parent"
+                android:id="@+id/title_btn_del"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/add_btn"
-                android:layout_margin="10sp"/>
+                android:layout_margin="7sp"/>
+            <ImageView
+                android:id="@+id/title_btn_wid"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/add_btn"
+                android:layout_margin="7sp"/>
 
         </LinearLayout>
     </LinearLayout>
@@ -57,368 +59,439 @@
         android:layout_height="0sp"
         android:layout_weight="9"
         android:orientation="vertical" >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/border">
-
-            <ImageView android:id="@+id/work_img"
-                android:layout_width="wrap_content"
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/scroll"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:fillViewport="true">
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5sp"/>
-
-            <LinearLayout android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
                 <LinearLayout
+                    android:id="@+id/main_workitem"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
-                    <TextView android:id="@+id/workname_tex"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/mainFont"
-                        android:text="事务一"
-                        android:textSize="26sp" />
+                    android:layout_height="80sp"
+                    android:orientation="horizontal"
+                    android:background="@color/White"
+                    android:layout_marginBottom="1sp">
+                    <LinearLayout
+                        android:layout_width="80sp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <ImageView
+                            android:layout_width="45sp"
+                            android:layout_height="45sp"
+                            android:src="@drawable/work_item"/>
+                    </LinearLayout>
                     <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/infoFont"
-                            android:text="@string/EndingTime"
-                            android:layout_toLeftOf="@+id/endingtime_tex"
-                            android:textSize="18sp" />
-                        <TextView android:id="@+id/endingtime_tex"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/infoFont"
-                            android:layout_alignParentRight="true"
-                            android:text="2016/22/33"
-                            android:textSize="18sp" />
-                    </RelativeLayout>
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3">
 
+                        <TextView
+                            android:id="@+id/wid_workname"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="30"
+                            android:textColor="@color/mainFont"
+                            android:text="事务1"
+                            android:textSize="15sp"
+                            android:layout_marginTop="17.5sp"/>
+
+                        <ImageView
+                            android:id="@+id/work_value_img"
+                            android:layout_width="18sp"
+                            android:layout_height="18sp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginBottom="10sp"
+                            android:src="@drawable/work_value"/>
+                        <TextView
+                            android:id="@+id/wid_workvalue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100"
+                            android:layout_toRightOf="@+id/work_value_img"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginBottom="10sp"
+                            android:layout_marginLeft="5sp"
+                            android:maxLines="10"/>
+                        <TextView
+                            android:id="@+id/work_state_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/wi_list_item_text_1"
+                            android:layout_toRightOf="@+id/wid_workvalue"
+                            android:layout_marginBottom="10sp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginLeft="10sp"/>
+                        <ImageView
+                            android:id="@+id/work_state_img"
+                            android:layout_width="18sp"
+                            android:layout_height="18sp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginBottom="10sp"
+                            android:src="@drawable/img_pro"
+                            android:layout_toRightOf="@+id/work_state_txt"
+                            android:layout_marginLeft="5sp"/>
+                    </RelativeLayout>
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0sp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="22sp"
+                                android:layout_height="22sp"
+                                android:layout_gravity="center_vertical"
+                                android:src="@drawable/img_starttime"/>
+                            <TextView
+                                android:id="@+id/strarttime_tex"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="5sp"
+                                android:text="2017-1-16"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0sp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="22sp"
+                                android:layout_height="22sp"
+                                android:layout_gravity="center_vertical"
+                                android:src="@drawable/img_endtime"/>
+                            <TextView
+                                android:id="@+id/endtime_tex"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="5sp"
+                                android:text="2017-1-17"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="25sp"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+                        <ImageView
+                            android:id="@+id/wid_show_chid"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/arrow_down_float"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <com.example.beyondsys.ppv.tools.ListViewForScrollView
+                    android:id="@+id/wid_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:background="@color/White"
+                    android:layout_marginTop="5sp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/wid_lab_1"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="10sp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/wid_workname_txt"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="事务1"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/infoFont"
-                        android:text="@string/WorkValue"
-                        android:textSize="18sp" />
-                    <TextView android:id="@+id/workvalue_tex"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/infoFont"
-                        android:text="20分"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/infoFont"
-                        android:text="@string/WorkState"
-                        android:textSize="18sp" />
-                    <TextView android:id="@+id/workstate_tex"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/infoFont"
-                        android:text="@string/ToDo"
-                        android:textSize="18sp" />
+                    android:layout_height="30sp"
+                    android:background="@color/White"
+                    android:layout_marginTop="5sp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/wid_lab_2"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="10sp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/wid_Assigned2_txt"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="张三"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:background="@color/White"
+                    android:layout_marginTop="5sp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/wid_lab_3"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="10sp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/wid_Checker_txt"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="张四"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:background="@color/White"
+                    android:layout_marginTop="5sp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/wid_lab_4"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="10sp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/wid_Creater_txt"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="张五"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:background="@color/White"
+                    android:layout_marginTop="5sp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/wid_lab_5"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="10sp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/wid_CreateTime_txt"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="2017-1-16"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:background="@color/White"
+                    android:layout_marginTop="5sp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/wid_lab_6"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="10sp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/wid_Modifier_txt"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="张三"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:background="@color/White"
+                    android:layout_marginTop="5sp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/wid_lab_7"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="10sp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/wid_ModifyTime_txt"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="2017-1-16"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                </LinearLayout>
 
-            </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:background="@color/White"
+                    android:layout_marginTop="5sp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/wid_lab_9"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="10sp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/wid_Status_txt"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="待做"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                </LinearLayout>
 
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum ="2" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:text="@string/workTitle"
-                    android:gravity="center"
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/worktitlett_tex_tex"
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="事务一"
-                    android:gravity="center"
-                    android:textSize="18sp">
-                </TextView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:background="@color/White"
+                    android:layout_marginTop="5sp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/wid_lab_10"
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="10sp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/wid_ClosingTime_txt"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="2017-1-17"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="130sp"
+                    android:background="@color/White"
+                    android:orientation="vertical"
+                    android:layout_marginTop="5sp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wid_lab_11"
+                        android:layout_marginLeft="10sp"/>
+                    <TextView
+                        android:id="@+id/wid_Description_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10sp"/>
+                </LinearLayout>
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum ="2" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:gravity="center"
-                    android:text="@string/workTarget"
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/workTarget_tex"
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="***"
-                    android:textSize="18sp">
-                </TextView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum ="2" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:gravity="center"
-                    android:text="@string/workAssign"
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/workAssign_tex"
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="张三"
-                    android:textSize="18sp">
-                </TextView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum ="2" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:text="@string/workChecker"
-                    android:gravity="center"
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/workChecker_tex"
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="王五"
-                    android:gravity="center"
-                    android:textSize="18sp">
-                </TextView>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum ="2" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:gravity="center"
-                    android:text="@string/workCreater"
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/workCreater_tex"
-                    android:layout_width="0sp"
-                    android:gravity="center"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="李四"
-                    android:textSize="18sp">
-                </TextView>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum ="2" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:gravity="center"
-                    android:text="@string/createTime"
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/workCrateTime_tex"
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="2016/12/12"
-                    android:textSize="18sp">
-                </TextView>
-
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum ="2" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:text="@string/modyfier"
-                    android:gravity="center"
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/workModifyer_tex"
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="李四"
-                    android:gravity="center"
-                    android:textSize="18sp">
-
-                </TextView>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum ="2" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:text="@string/modyfiTime"
-                    android:gravity="center"
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/workModifyTime_tex"
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="2016/12/12"
-                    android:gravity="center"
-                    android:textSize="18sp">
-                </TextView>
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum ="2" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:text="@string/workState"
-                    android:gravity="center"
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/workState_tex"
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="待做"
-                    android:textSize="18sp">
-                </TextView>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum ="2" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:text="@string/endingTime"
-                    android:gravity="center"
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/workEndingTime_tex"
-                    android:layout_width="0sp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="2017/01/01"
-                    android:textSize="18sp">
-                </TextView>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="150sp"
-                android:orientation="horizontal"
-                android:weightSum ="6" >
-                <TextView
-                    android:layout_width="0sp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/colorAccent"
-                    android:text="@string/description"
-                    android:gravity="center"
-                    android:textSize="18sp"></TextView>
-                <TextView
-                    android:id="@+id/workDescription_tex"
-                    android:layout_width="0sp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="5"
-                    android:gravity="center"
-                    android:text="#########################"
-                    android:textSize="18sp">
-                </TextView>
-            </LinearLayout>
-        </LinearLayout >
-
+        </ScrollView>
     </LinearLayout>
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="50sp"
-        android:gravity="center_vertical"
-        android:background="@color/tabColor" >
-        <ImageButton
-            android:id="@+id/add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/add_no"/>
-        <ImageButton
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/remove_no"
-            android:layout_toRightOf="@+id/add" />
-    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <Button
+            android:layout_width="100sp"
+            android:layout_height="40sp"
+            android:text="确认"/>
+        <Button
+            android:layout_width="100sp"
+            android:layout_height="40sp"
+            android:text="作废" />
+    </LinearLayout>
 </LinearLayout>

@@ -68,4 +68,15 @@
     <string name="myEmail"><![CDATA[邮  箱]]></string>
     <string name="myName"><![CDATA[昵  称]]></string>
     <string name="myImage"><![CDATA[头  像]]></string>
+    <string name="wid_titlt_lab_1">工作项详细信息</string>
+    <string name="wid_lab_1">标题：</string>
+    <string name="wid_lab_2">指派给：</string>
+    <string name="wid_lab_3">检查人：</string>
+    <string name="wid_lab_4">创建人:</string>
+    <string name="wid_lab_5">创建时间：</string>
+    <string name="wid_lab_6">修改人：</string>
+    <string name="wid_lab_7">修改时间：</string>
+    <string name="wid_lab_9">状态：</string>
+    <string name="wid_lab_10">截止时间：</string>
+    <string name="wid_lab_11">描述：</string>
 </resources>
