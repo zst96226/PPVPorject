@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/White"
+    android:background="@color/backcol"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0sp"
-        android:layout_weight="9"
+        android:layout_height="match_parent"
+        android:background="@color/White"
         android:orientation="vertical">
         <LinearLayout
             android:id="@+id/personLayout"
@@ -31,38 +31,47 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/mainFont"
+                    android:gravity="center"
                     android:text="张 三"
-                    android:textSize="26sp" />
+                    android:textSize="18sp" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/infoFont"
-                        android:text="@string/valuesum"
-                        android:textSize="18sp" />
+                    android:orientation="horizontal"
+                    android:weightSum="6">
+
+                <ImageView
+                    android:layout_width="0sp"
+                    android:layout_weight="0.8"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/valuesum"/>
 
                     <TextView android:id="@+id/valuesum_tex"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="0sp"
+                        android:layout_weight="1.2"
+                        android:layout_height="match_parent"
                         android:textColor="@color/infoFont"
+                        android:gravity="center"
+                        android:layout_gravity="center_vertical"
                         android:text="1000分"
                         android:textSize="18sp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/infoFont"
-                        android:text="@string/monthsum"
-                        android:textSize="18sp" />
+                    <ImageView
+                        android:layout_width="0sp"
+                        android:layout_weight="0.8"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/img_starttime"/>
 
                     <TextView android:id="@+id/monthsum_tex"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="0sp"
+                        android:layout_weight="1.2"
+                        android:layout_height="match_parent"
                         android:textColor="@color/infoFont"
                         android:text="5个月"
-                        android:textSize="18sp" />
+                        android:gravity="center"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -73,16 +82,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10sp"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:background="@color/Gray">
+            android:background="@color/White">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/passwordchange"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:textSize="12sp"
                 android:textColor="@color/mainFont"
                 android:text="@string/passwordChange"
                 />
@@ -93,16 +104,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10sp"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:background="@color/Gray">
+            android:background="@color/White">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/personinfo"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:textSize="12sp"
                 android:textColor="@color/mainFont"
                 android:text="@string/personInfo"
                 />
@@ -112,16 +125,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10sp"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:background="@color/Gray">
+            android:background="@color/White">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/setting"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:textSize="12sp"
                 android:textColor="@color/mainFont"
                 android:text="@string/setting" />
         </LinearLayout>

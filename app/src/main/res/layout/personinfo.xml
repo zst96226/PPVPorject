@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backcol"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,73 +52,181 @@
 
         </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0sp"
-        android:layout_weight="9"
-        android:orientation="vertical">
-        <LinearLayout
-            android:id="@+id/personLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            android:orientation="horizontal">
 
-            <ImageView android:id="@+id/person_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/oneself_yes"
-                android:layout_margin="5sp"/>
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="0sp"
+       android:layout_weight="9"
+     android:weightSum="10"
+       android:orientation="vertical"
+       android:background="@color/backcol">
+     <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="0sp"
+         android:background="@color/White"
+         android:layout_weight="2">
+         <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="match_parent"
+             android:gravity="center_vertical"
+             android:text="@string/myImage"
+             android:textSize="18sp"
+             android:layout_alignParentLeft="true"/>
 
-            <LinearLayout android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+         <ImageView
+             android:layout_width="100sp"
+             android:layout_height="match_parent"
+             android:layout_alignParentRight="true"
+             android:background="@color/colorAccent"
+             android:layout_marginTop="2sp"
+             android:layout_marginBottom="2sp"
+             android:layout_marginRight="5sp"/>
+     </RelativeLayout>
 
-                <TextView android:id="@+id/personname_tex"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/mainFont"
-                    android:text="张 三"
-                    android:textSize="26sp" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/infoFont"
-                        android:text="@string/valuesum"
-                        android:textSize="18sp" />
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="0sp"
+           android:background="@color/White"
+           android:layout_weight="1">
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:gravity="center_vertical"
+               android:text="@string/myName"
+               android:textSize="18sp"
+               android:layout_alignParentLeft="true"/>
 
-                    <TextView android:id="@+id/valuesum_tex"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/infoFont"
-                        android:text="1000分"
-                        android:textSize="18sp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/infoFont"
-                        android:text="@string/monthsum"
-                        android:textSize="18sp" />
+         <EditText
+             android:layout_width="wrap_content"
+             android:layout_height="match_parent"
+             android:textSize="18sp"
+             android:layout_alignParentRight="true"
+             android:layout_marginTop="2sp"
+             android:layout_marginBottom="2sp"
+             android:layout_marginRight="5sp"
+             android:text="yuuy"
+             android:textColor="@color/mainFont"/>
+       </RelativeLayout>
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="0sp"
+           android:background="@color/White"
+           android:layout_weight="1">
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:gravity="center_vertical"
+               android:text="@string/myEmail"
+               android:textSize="18sp"
+               android:layout_alignParentLeft="true"/>
 
-                    <TextView android:id="@+id/monthsum_tex"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/infoFont"
-                        android:text="5个月"
-                        android:textSize="18sp" />
-                </LinearLayout>
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:textSize="18sp"
+               android:layout_alignParentRight="true"
+               android:layout_marginTop="2sp"
+               android:layout_marginBottom="2sp"
+               android:layout_marginRight="5sp"
+               android:text="22222@qq.com"
+               android:textColor="@color/mainFont"/>
+       </RelativeLayout>
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="0sp"
+           android:background="@color/White"
+           android:layout_weight="1">
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:gravity="center_vertical"
+               android:text="@string/myPhone"
+               android:textSize="18sp"
+               android:layout_alignParentLeft="true"/>
 
-            </LinearLayout>
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:textSize="18sp"
+               android:layout_alignParentRight="true"
+               android:layout_marginTop="2sp"
+               android:layout_marginBottom="2sp"
+               android:layout_marginRight="5sp"
+               android:text="1234456"
+               android:textColor="@color/mainFont"/>
+       </RelativeLayout>
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="0sp"
+           android:layout_marginBottom="10sp"
+           android:background="@color/White"
+           android:layout_weight="1">
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:gravity="center_vertical"
+               android:text="@string/myID"
+               android:textSize="18sp"
+               android:layout_alignParentLeft="true"/>
 
-        </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:textSize="18sp"
+               android:layout_alignParentRight="true"
+               android:layout_marginTop="2sp"
+               android:layout_marginBottom="2sp"
+               android:layout_marginRight="5sp"
+               android:text="1234456"
+               android:textColor="@color/mainFont"/>
+       </RelativeLayout>
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="0sp"
+           android:background="@color/White"
+           android:layout_weight="1">
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:gravity="center_vertical"
+               android:text="@string/myAdress"
+               android:textSize="18sp"
+               android:layout_alignParentLeft="true"/>
 
-    </LinearLayout>
+           <EditText
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:textSize="18sp"
+               android:layout_alignParentRight="true"
+               android:layout_marginTop="2sp"
+               android:layout_marginBottom="2sp"
+               android:layout_marginRight="5sp"
+               android:text="###########"
+               android:textColor="@color/mainFont"/>
+       </RelativeLayout>
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="0sp"
+           android:background="@color/White"
+           android:layout_weight="1">
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:gravity="center_vertical"
+               android:text="@string/myDescription"
+               android:textSize="18sp"
+               android:layout_alignParentLeft="true"/>
+
+           <EditText
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:textSize="18sp"
+               android:layout_alignParentRight="true"
+               android:layout_marginTop="2sp"
+               android:layout_marginBottom="2sp"
+               android:layout_marginRight="5sp"
+               android:text="。。。。。。。"
+               android:textColor="@color/mainFont"/>
+       </RelativeLayout>
+   </LinearLayout>
 </LinearLayout>

@@ -53,21 +53,21 @@ public class WorkValueView extends Fragment {
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("personImg",  R.drawable.i1);
+        map.put("personImg",  R.drawable.person );
         map.put("personName", "张三");
         map.put("valueSum", "100分");
         map.put("monthSum", "3个月");
         list.add(map);
 
         map = new HashMap<String, Object>();
-        map.put("personImg",  R.drawable.i1);
+        map.put("personImg",  R.drawable.person);
         map.put("personName", "王五");
         map.put("valueSum", "70分");
         map.put("monthSum", "4个月");
         list.add(map);
 
         map = new HashMap<String, Object>();
-        map.put("personImg",  R.drawable.i1);
+        map.put("personImg",  R.drawable.person);
         map.put("personName", "李四");
         map.put("valueSum", "30分");
         map.put("monthSum", "7个月");

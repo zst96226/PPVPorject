@@ -10,23 +10,22 @@
     <string name="Done">已处理</string>
     <string name="ToVoid">已作废</string>
     <string name="AboutMe">关于我</string>
-    <string name="sortStyle">排序方式</string>
+    <string name="sortStyle">排序</string>
     <string name="filter">筛&#160;选</string>
     <string name="valuesum">&#160;&#160;总价值&#160;</string>
     <string name="monthsum">&#160;&#160;累计月份&#160;</string>
     <string name="WorkValue">&#160;&#160;工作分值&#160;</string>
     <string name="EndingTime">&#160;&#160;结束时间&#160;</string>
     <string name="WorkState">&#160;&#160;工作状态&#160;</string>
-    <string-array name="valuesort_arr">
-        <item>升序</item>
-        <item>降序</item>
-        <item>我排名</item>
-    </string-array>
-    <string-array name="valuefilter_arr">
-        <item>同级别</item>
-        <item>领导</item>
-        <item>下属</item>
-    </string-array>
+    <!--<string-array name="valuesort_arr">-->
+    <!--<item>升序</item>-->
+    <!--<item>降序</item>-->
+    <!--</string-array>-->
+    <!--<string-array name="valuefilter_arr">-->
+    <!--<item>本月</item>-->
+    <!--<item>全部</item>-->
+    <!--<item>本季度</item>-->
+    <!--</string-array>-->
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_add_new_work_item">AddNewWorkItem</string>
@@ -62,4 +61,11 @@
     <string name="wi_s_complete_txt">已完成</string>
     <string name="wi_s_invalid_txt">已作废</string>
     <string name="wi_list_item_text_1">状态</string>
+    <string name="myDescription">个人描述</string>
+    <string name="myAdress">我的地址</string>
+    <string name="myID"><![CDATA[ID 号码]]></string>
+    <string name="myPhone"><![CDATA[电  话]]></string>
+    <string name="myEmail"><![CDATA[邮  箱]]></string>
+    <string name="myName"><![CDATA[昵  称]]></string>
+    <string name="myImage"><![CDATA[头  像]]></string>
 </resources>

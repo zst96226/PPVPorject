@@ -2,7 +2,7 @@
 <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/White">
+    android:background="@color/backcol">
 
     <LinearLayout
         android:orientation="vertical"
@@ -11,30 +11,46 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:background="@color/tabColor"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="100sp"
-                android:layout_height="50sp"
-                android:text="@string/sortStyle"
-                android:textSize="22sp"
-                android:gravity="center"/>
-            <Spinner
-                android:layout_width="100sp"
-                android:layout_height="50sp"
-                android:id="@+id/sort_spinner"
-                android:entries="@array/valuesort_arr"/>
-            <TextView
-                android:layout_width="100sp"
-                android:layout_height="50sp"
-                android:text="@string/filter"
-                android:textSize="22sp"
-                android:gravity="center"/>
-            <Spinner
-                android:layout_width="100sp"
-                android:layout_height="50sp"
-                android:id="@+id/filter_spinner"
-                android:entries="@array/valuefilter_arr"/>
+            android:background="@color/White"
+            android:layout_height="45sp"
+            android:weightSum="3"
+            android:layout_marginBottom="10sp">
+
+            <ImageView
+                android:layout_width="0sp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:src="@drawable/sort_up"/>
+
+
+            <ImageView
+                android:layout_width="0sp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:src="@drawable/filter"/>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <CheckBox
+                    android:id="@+id/topme_che"
+                    android:layout_toLeftOf="@+id/topme_tex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:checked="true"/>
+                <TextView
+                    android:id="@+id/topme_tex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:text="我置顶"
+                    android:textSize="12sp"
+                    android:gravity="center"/>
+            </RelativeLayout>
+
+
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"

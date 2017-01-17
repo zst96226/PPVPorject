@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backcol"
     tools:context="com.example.beyondsys.ppv.activity.PersonValueDetail">
     <LinearLayout
         android:id="@+id/head_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+
         android:orientation="horizontal">
         <LinearLayout
             android:layout_width="0sp"
@@ -57,97 +59,114 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/head_layout"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="10sp"
+        android:background="@color/White"
+        android:weightSum="8">
+        <ImageView
+            android:id="@+id/lastone_img"
+            android:layout_width="0sp"
+            android:layout_gravity="center_vertical"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/lastone"/>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+   android:layout_weight="6" >
+    <ImageView android:id="@+id/person_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/oneself_yes"
+        android:layout_margin="5sp"/>
 
-        <ImageView android:id="@+id/person_img"
+    <LinearLayout android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView android:id="@+id/personname_tex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/oneself_yes"
-            android:layout_margin="5sp"/>
-
-        <LinearLayout android:orientation="vertical"
+            android:textColor="@color/mainFont"
+            android:text="张 三"
+            android:layout_gravity="center"
+            android:textSize="18sp" />
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView android:id="@+id/personname_tex"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/mainFont"
-                android:text="张 三"
-                android:textSize="26sp" />
-            <LinearLayout
-                android:layout_width="match_parent"
+                android:textColor="@color/infoFont"
+                android:text="@string/valuesum"
+                android:textSize="12sp" />
+
+            <TextView android:id="@+id/valuesum_tex"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/infoFont"
-                    android:text="@string/valuesum"
-                    android:textSize="18sp" />
+                android:textColor="@color/infoFont"
+                android:text="1000分"
+                android:textSize="12sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/infoFont"
+                android:text="@string/monthsum"
+                android:textSize="12sp" />
 
-                <TextView android:id="@+id/valuesum_tex"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/infoFont"
-                    android:text="1000分"
-                    android:textSize="18sp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/infoFont"
-                    android:text="@string/monthsum"
-                    android:textSize="18sp" />
-
-                <TextView android:id="@+id/monthsum_tex"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/infoFont"
-                    android:text="5个月"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
+            <TextView android:id="@+id/monthsum_tex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/infoFont"
+                android:text="5个月"
+                android:textSize="12sp" />
         </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>
+        <ImageView
+            android:id="@+id/nextone_img"
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:src="@drawable/nextone"/>
 
     </LinearLayout>
     <RelativeLayout
         android:id="@+id/monthTitle"
         android:layout_width="match_parent"
         android:layout_height="50sp"
+        android:layout_marginBottom="10sp"
+        android:background="@color/White"
         android:layout_below="@+id/personLayout">
 
-        <ImageButton
-            android:id="@+id/lastYear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/lastparent" ></ImageButton>
-        <ImageButton
+        <ImageView
             android:id="@+id/lastMonth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/lastYear"
-            android:src="@drawable/lastone" ></ImageButton>
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/lastparent"></ImageView>
         <TextView
+            android:id="@+id/selectTime_tex"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="@color/infoFont"
-            android:textSize="18sp"
+            android:textSize="12sp"
             android:gravity="center"
             android:layout_centerInParent="true"
             android:text="2017年12月 / 300分"/>
-        <ImageButton
-            android:id="@+id/nextYear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/nextparent" ></ImageButton>
-        <ImageButton
+        <ImageView
             android:id="@+id/nextMonth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/nextYear"
-            android:src="@drawable/nextone" ></ImageButton>
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/nextparent" ></ImageView>
+
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
