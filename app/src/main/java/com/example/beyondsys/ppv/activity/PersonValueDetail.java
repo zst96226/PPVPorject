@@ -43,7 +43,6 @@ public class PersonValueDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_value_detail);
-        getSupportActionBar().hide();
         listView = (ListView) findViewById(R.id.MonthDeatil_list);
 
         SimpleAdapter adapter = new SimpleAdapter(this, getData(), R.layout.valuedetailstyle, new String[]{"itemImg", "itemName", "planValue", "trueValue"},

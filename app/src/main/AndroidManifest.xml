@@ -39,8 +39,6 @@
             <!--android:name="com.google.android.gms.version"-->
             <!--android:value="@integer/google_play_services_version" />-->
 
-        <activity android:name=".activity.PasswordChange"
-            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activity.PersonInfo"
             android:theme="@style/AppTheme.NoActionBar" />
 
