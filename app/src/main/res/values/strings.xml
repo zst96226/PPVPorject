@@ -80,4 +80,5 @@
     <string name="wid_lab_10">截止时间：</string>
     <string name="wid_lab_11">描述：</string>
     <string name="wv_lab_1">排序</string>
+    <string name="anw_lab_1">添加新工作项</string>
 </resources>

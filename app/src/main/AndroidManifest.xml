@@ -25,9 +25,12 @@
         <activity
             android:name=".activity.AddNewWorkItem"
             android:label="@string/title_activity_add_new_work_item"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.WorkItemDetail"></activity>
-        <activity android:name=".activity.PersonValueDetail" />
+        <activity android:name=".activity.WorkItemDetail"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.PersonValueDetail"
+            android:theme="@style/AppTheme.NoActionBar" />
         <!--
              ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -36,7 +39,8 @@
             <!--android:name="com.google.android.gms.version"-->
             <!--android:value="@integer/google_play_services_version" />-->
 
-        <activity android:name=".activity.PersonInfo"></activity>
+        <activity android:name=".activity.PersonInfo"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

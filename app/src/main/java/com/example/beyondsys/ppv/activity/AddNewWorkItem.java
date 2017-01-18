@@ -18,7 +18,7 @@ public class AddNewWorkItem extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_work_item);
 //        getSupportActionBar().hide();
-        ImageView back=(ImageView)this.findViewById(R.id.titlt_back);
+        ImageView back=(ImageView)this.findViewById(R.id.anwi_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
