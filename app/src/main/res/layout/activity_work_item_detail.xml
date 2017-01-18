@@ -46,10 +46,10 @@
                 android:src="@drawable/add_btn"
                 android:layout_margin="7sp"/>
             <ImageView
-                android:id="@+id/title_btn_wid"
+                android:id="@+id/anwi_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/add_btn"
+                android:src="@drawable/menu_btn"
                 android:layout_margin="7sp"/>
 
         </LinearLayout>
@@ -478,20 +478,5 @@
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50sp"
-        android:orientation="horizontal"
-        android:gravity="center">
-        <Button
-            android:layout_width="100sp"
-            android:layout_height="40sp"
-            android:text="确认"/>
-        <Button
-            android:layout_width="100sp"
-            android:layout_height="40sp"
-            android:text="作废" />
     </LinearLayout>
 </LinearLayout>

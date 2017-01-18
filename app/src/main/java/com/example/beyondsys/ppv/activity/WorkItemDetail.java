@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.tools.PopupMenuForWorkItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class WorkItemDetail extends AppCompatActivity {
     ImageView back;
     ImageView wid_show_chid;
     ImageView returen;
-    ImageView Add_child;
+    ImageView menu;
     LinearLayout main_workitem;
     ListView child_list;
 
@@ -33,7 +34,6 @@ public class WorkItemDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work_item_detail);
-        getSupportActionBar().hide();
 
         initView();
 
@@ -45,7 +45,7 @@ public class WorkItemDetail extends AppCompatActivity {
     private void initView(){
         back=(ImageView)this.findViewById(R.id.wid_back);
         wid_show_chid=(ImageView)findViewById(R.id.wid_show_chid);
-        Add_child=(ImageView)findViewById(R.id.title_btn_wid);
+        menu=(ImageView)findViewById(R.id.anwi_menu);
         main_workitem=(LinearLayout)findViewById(R.id.main_workitem);
         child_list=(ListView)findViewById(R.id.wid_list);
         returen=(ImageView)findViewById(R.id.wid_return);
@@ -85,11 +85,11 @@ public class WorkItemDetail extends AppCompatActivity {
                 SetData();
             }
         });
-        Add_child.setOnClickListener(new View.OnClickListener() {
+        menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent =new Intent(WorkItemDetail.this,AddNewWorkItem.class);
-                startActivity(intent);
+                PopupMenuForWorkItem popWindow = new PopupMenuForWorkItem(WorkItemDetail.this);
+                popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
             }
         });
     }

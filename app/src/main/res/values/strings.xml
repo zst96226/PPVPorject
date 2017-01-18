@@ -84,4 +84,10 @@
     <string name="wid_lab_11">描述：</string>
     <string name="wv_lab_1">排序</string>
     <string name="anw_lab_1">添加新工作项</string>
+    <string name="popup_lab_1">添加子工作项</string>
+    <string name="popup_lab_2">删除该工作项</string>
+    <string name="popup_lab_3">废除该工作项</string>
+    <string name="popup_lab_4">指定委派人员</string>
+    <string name="popup_lab_5">确认当前状态</string>
+    <string name="popup_lab_6">提交修改结果</string>
 </resources>
