@@ -2,6 +2,7 @@ package com.example.beyondsys.ppv.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.tools.SelectPicPopup;
 
 public class PersonInfo extends AppCompatActivity {
 private  ImageView back;
@@ -95,6 +97,11 @@ private  ImageView back;
     }
     public  void selectImg(View v)
     {
+        if(!editFlag)
+        {
+            return;
+        }
         //弹出相册选择框
+        startActivity(new Intent(PersonInfo.this,SelectPicPopup.class));
     }
 }

@@ -13,7 +13,6 @@ public class PasswordChange extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_change);
-        getSupportActionBar().hide();
         ImageView back = (ImageView) this.findViewById(R.id.dttail_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override

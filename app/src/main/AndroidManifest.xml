@@ -43,6 +43,8 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activity.PersonInfo"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".tools.SelectPicPopup" android:theme="@style/MyDialogStyleBottom" />
     </application>
 
 </manifest>
