@@ -8,50 +8,41 @@
     tools:context="com.example.beyondsys.ppv.activity.PersonInfo">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0sp"
-        android:layout_weight="1"
-        android:background="@color/colorPrimary"
+        android:layout_height="40sp"
+        android:background="@color/backcol"
         android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/dttail_back"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/title_back"/>
+            <TextView
+                android:id="@+id/title_txt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/personInfo"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
+                android:textColor="@color/text"/>
+        </LinearLayout>
         <LinearLayout
             android:layout_width="0sp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
-            <ImageView
-                android:id="@+id/dttail_back"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10sp"
-                android:src="@drawable/title_back"/>
-        </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="0sp"
-            android:layout_height="match_parent"
-            android:layout_weight="4">
-            <TextView
-                android:id="@+id/title_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/personInfo"
-                android:textSize="22sp"
-                android:gravity="center_vertical"
-                android:textColor="@color/White"/>
-
-        </RelativeLayout>
-        <LinearLayout
-            android:id="@+id/infoModify_layout"
-            android:onClick="isModify"
-            android:layout_width="0sp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true">
             <ImageView
                 android:id="@+id/infoModify_img"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:src="@drawable/passwordchange" />
+                android:src="@drawable/passwordchange"
+                android:layout_margin="7sp"/>
+
         </LinearLayout>
     </LinearLayout>
 

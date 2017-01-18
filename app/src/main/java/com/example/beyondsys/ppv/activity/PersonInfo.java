@@ -16,7 +16,6 @@ import com.example.beyondsys.ppv.R;
 public class PersonInfo extends AppCompatActivity {
 private  ImageView back;
     private ImageView modifyImg,myImg;
-    private LinearLayout modifyLayout;
     private RelativeLayout myImgLayout,myNameLayout,myPhoneLayout,myEmailLayout,myIDlayout,myAdressLayout,myDesLayout;
     private EditText myNameEdt,myPhoneEdt,myEmailEdt,myIDEdt,myAdressEdt,myDesEdt;
     private boolean editFlag=false;
@@ -36,7 +35,6 @@ private  ImageView back;
     private void initData()
     {
         back = (ImageView) this.findViewById(R.id.dttail_back);
-        modifyLayout=(LinearLayout) this.findViewById(R.id.infoModify_layout);
         myImgLayout=(RelativeLayout)findViewById(R.id.myImg_layout);
         myNameLayout=(RelativeLayout)findViewById(R.id.myName_layout);
         myPhoneLayout=(RelativeLayout)findViewById(R.id.myPhone_layout);
