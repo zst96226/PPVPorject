@@ -41,6 +41,7 @@
         </RelativeLayout>
         <LinearLayout
             android:id="@+id/infoModify_layout"
+            android:onClick="isModify"
             android:layout_width="0sp"
             android:layout_weight="1"
             android:layout_height="match_parent"
@@ -49,8 +50,7 @@
                 android:id="@+id/infoModify_img"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-
+                android:gravity="center_horizontal"
                 android:src="@drawable/passwordchange" />
         </LinearLayout>
     </LinearLayout>
@@ -63,7 +63,9 @@
         android:orientation="vertical"
         android:background="@color/backcol">
         <RelativeLayout
+            android:id="@+id/myImg_layout"
             android:layout_width="match_parent"
+            android:onClick="selectImg"
             android:layout_height="0sp"
             android:background="@color/White"
             android:layout_weight="2">
@@ -87,6 +89,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/myName_layout"
             android:layout_width="match_parent"
             android:layout_height="0sp"
             android:background="@color/White"
@@ -108,11 +111,12 @@
                 android:layout_marginTop="2sp"
                 android:layout_marginBottom="2sp"
                 android:layout_marginRight="5sp"
-                android:editable="false"
+                android:enabled="false"
                 android:text="yuuy"
                 android:textColor="@color/mainFont"/>
         </RelativeLayout>
         <RelativeLayout
+            android:id="@+id/myEmail_layout"
             android:layout_width="match_parent"
             android:layout_height="0sp"
             android:background="@color/White"
@@ -132,13 +136,14 @@
                 android:textSize="18sp"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="2sp"
-                android:editable="false"
+                android:enabled="false"
                 android:layout_marginBottom="2sp"
                 android:layout_marginRight="5sp"
                 android:text="22222@qq.com"
                 android:textColor="@color/mainFont"/>
         </RelativeLayout>
         <RelativeLayout
+            android:id="@+id/myPhone_layout"
             android:layout_width="match_parent"
             android:layout_height="0sp"
             android:background="@color/White"
@@ -160,11 +165,12 @@
                 android:layout_marginTop="2sp"
                 android:layout_marginBottom="2sp"
                 android:layout_marginRight="5sp"
-                android:editable="false"
+                android:enabled="false"
                 android:text="1234456"
                 android:textColor="@color/mainFont"/>
         </RelativeLayout>
         <RelativeLayout
+            android:id="@+id/myID_layout"
             android:layout_width="match_parent"
             android:layout_height="0sp"
             android:layout_marginBottom="10sp"
@@ -187,11 +193,12 @@
                 android:layout_marginTop="2sp"
                 android:layout_marginBottom="2sp"
                 android:layout_marginRight="5sp"
-                android:editable="false"
+                android:enabled="false"
                 android:text="1234456"
                 android:textColor="@color/mainFont"/>
         </RelativeLayout>
         <RelativeLayout
+            android:id="@+id/myAddress_layout"
             android:layout_width="match_parent"
             android:layout_height="0sp"
             android:background="@color/White"
@@ -213,12 +220,12 @@
                 android:layout_marginTop="2sp"
                 android:layout_marginBottom="2sp"
                 android:layout_marginRight="5sp"
-                android:editable="false"
+                android:enabled="false"
                 android:text="###########"
                 android:textColor="@color/mainFont"/>
         </RelativeLayout>
         <RelativeLayout
-            android:id="@+id/mySign_"
+            android:id="@+id/myDes_layout"
             android:layout_width="match_parent"
             android:layout_height="0sp"
             android:background="@color/White"
@@ -232,7 +239,7 @@
                 android:layout_alignParentLeft="true"/>
 
             <EditText
-                android:id="@+id/mySign_edt"
+                android:id="@+id/myDes_edt"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="18sp"
@@ -240,7 +247,7 @@
                 android:layout_marginTop="2sp"
                 android:layout_marginBottom="2sp"
                 android:layout_marginRight="5sp"
-                android:editable="false"
+                android:enabled="false"
                 android:text="。。。。。。。"
                 android:textColor="@color/mainFont"/>
         </RelativeLayout>
