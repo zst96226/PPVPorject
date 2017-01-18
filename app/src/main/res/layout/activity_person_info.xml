@@ -25,21 +25,34 @@
                 android:src="@drawable/title_back"/>
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="0sp"
             android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:orientation="vertical">
+            android:layout_weight="4">
             <TextView
                 android:id="@+id/title_txt"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="@string/personInfo"
                 android:textSize="22sp"
                 android:gravity="center_vertical"
                 android:textColor="@color/White"/>
-        </LinearLayout>
 
+        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/infoModify_layout"
+            android:layout_width="0sp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true">
+            <ImageView
+                android:id="@+id/infoModify_img"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+
+                android:src="@drawable/passwordchange" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -63,6 +76,7 @@
                 android:layout_alignParentLeft="true"/>
 
             <ImageView
+                android:id="@+id/myImg_img"
                 android:layout_width="100sp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
@@ -86,6 +100,7 @@
                 android:layout_alignParentLeft="true"/>
 
             <EditText
+                android:id="@+id/myName_edt"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="18sp"
@@ -93,6 +108,7 @@
                 android:layout_marginTop="2sp"
                 android:layout_marginBottom="2sp"
                 android:layout_marginRight="5sp"
+                android:editable="false"
                 android:text="yuuy"
                 android:textColor="@color/mainFont"/>
         </RelativeLayout>
@@ -109,12 +125,14 @@
                 android:textSize="18sp"
                 android:layout_alignParentLeft="true"/>
 
-            <TextView
+            <EditText
+                android:id="@+id/myEmail_edt"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="18sp"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="2sp"
+                android:editable="false"
                 android:layout_marginBottom="2sp"
                 android:layout_marginRight="5sp"
                 android:text="22222@qq.com"
@@ -133,7 +151,8 @@
                 android:textSize="18sp"
                 android:layout_alignParentLeft="true"/>
 
-            <TextView
+            <EditText
+                android:id="@+id/myPhone_edt"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="18sp"
@@ -141,6 +160,7 @@
                 android:layout_marginTop="2sp"
                 android:layout_marginBottom="2sp"
                 android:layout_marginRight="5sp"
+                android:editable="false"
                 android:text="1234456"
                 android:textColor="@color/mainFont"/>
         </RelativeLayout>
@@ -158,7 +178,8 @@
                 android:textSize="18sp"
                 android:layout_alignParentLeft="true"/>
 
-            <TextView
+            <EditText
+                android:id="@+id/myID_edt"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="18sp"
@@ -166,6 +187,7 @@
                 android:layout_marginTop="2sp"
                 android:layout_marginBottom="2sp"
                 android:layout_marginRight="5sp"
+                android:editable="false"
                 android:text="1234456"
                 android:textColor="@color/mainFont"/>
         </RelativeLayout>
@@ -183,6 +205,7 @@
                 android:layout_alignParentLeft="true"/>
 
             <EditText
+                android:id="@+id/myAddress_edt"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="18sp"
@@ -190,10 +213,12 @@
                 android:layout_marginTop="2sp"
                 android:layout_marginBottom="2sp"
                 android:layout_marginRight="5sp"
+                android:editable="false"
                 android:text="###########"
                 android:textColor="@color/mainFont"/>
         </RelativeLayout>
         <RelativeLayout
+            android:id="@+id/mySign_"
             android:layout_width="match_parent"
             android:layout_height="0sp"
             android:background="@color/White"
@@ -207,6 +232,7 @@
                 android:layout_alignParentLeft="true"/>
 
             <EditText
+                android:id="@+id/mySign_edt"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textSize="18sp"
@@ -214,6 +240,7 @@
                 android:layout_marginTop="2sp"
                 android:layout_marginBottom="2sp"
                 android:layout_marginRight="5sp"
+                android:editable="false"
                 android:text="。。。。。。。"
                 android:textColor="@color/mainFont"/>
         </RelativeLayout>

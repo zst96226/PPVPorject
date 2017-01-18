@@ -78,6 +78,7 @@
 
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/passwordChange_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10sp"

@@ -68,6 +68,9 @@
     <string name="myEmail"><![CDATA[邮  箱]]></string>
     <string name="myName"><![CDATA[名  称]]></string>
     <string name="myImage"><![CDATA[头  像]]></string>
+    <string name="oldPassword">原始密码：</string>
+    <string name="newPassword">新密码：</string>
+    <string name="checkPassword">确认密码：</string>
     <string name="wid_titlt_lab_1">工作项详细信息</string>
     <string name="wid_lab_1">标题：</string>
     <string name="wid_lab_2">指派给：</string>
