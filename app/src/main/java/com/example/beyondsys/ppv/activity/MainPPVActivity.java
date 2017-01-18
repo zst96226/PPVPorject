@@ -1,28 +1,20 @@
 package com.example.beyondsys.ppv.activity;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.beyondsys.ppv.R;
-import com.example.beyondsys.ppv.dataaccess.DataBaseService;
 import com.example.beyondsys.ppv.tools.PageAdapter;
-import com.example.beyondsys.ppv.tools.Tools;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class MainPPVActivity extends FragmentActivity implements View.OnClickListener {
@@ -52,8 +44,6 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
         setContentView(R.layout.activity_main_ppv);
 
         initView();
-
-        checkDb();
 
         initData();
     }
@@ -122,29 +112,6 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
         viewPager.setAdapter(new PageAdapter(getSupportFragmentManager(), views));
     }
 
-    private void checkDb() {
-        //获取数据库完整路径
-//        String Path= Tools.getSDPath()+"/com.example.beyondsys.pvv/ppvdata.db";
-//        //判断数据库是否存在
-//        if (!Tools.fileIsExists(Path)){
-//            //创建数据库
-//            DataBaseService dbService=new DataBaseService(this,Path,null,1);
-//            SQLiteDatabase sd=null;
-//            try{
-//                sd = dbService.getWritableDatabase();
-//                sd.close();
-//            }
-//            catch (Exception ignored){
-//                sd.close();
-//            }
-//        }
-//        else
-//        {
-//            File file = new File(Path);
-//            file.delete();
-//            checkDb();
-//        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

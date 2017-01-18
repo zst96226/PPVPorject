@@ -90,4 +90,5 @@
     <string name="popup_lab_4">指定委派人员</string>
     <string name="popup_lab_5">确认当前状态</string>
     <string name="popup_lab_6">提交修改结果</string>
+    <string name="pvd_lab_1">价值详细信息</string>
 </resources>
