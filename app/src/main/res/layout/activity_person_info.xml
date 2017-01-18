@@ -31,6 +31,7 @@
                 android:textColor="@color/text"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/infoModify"
             android:layout_width="0sp"
             android:layout_height="match_parent"
             android:layout_weight="1"

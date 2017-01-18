@@ -38,8 +38,6 @@ private LinearLayout personInfoLayout;
         passwordChangeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(getActivity(),PasswordChange.class);
-//                startActivity(intent);
                 dialog();
             }
         });

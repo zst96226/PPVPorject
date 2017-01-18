@@ -16,7 +16,8 @@ import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.tools.SelectPicPopup;
 
 public class PersonInfo extends AppCompatActivity {
-private  ImageView back;
+    private LinearLayout infoModify;
+    private  ImageView back;
     private ImageView modifyImg,myImg;
     private RelativeLayout myImgLayout,myNameLayout,myPhoneLayout,myEmailLayout,myIDlayout,myAdressLayout,myDesLayout;
     private EditText myNameEdt,myPhoneEdt,myEmailEdt,myIDEdt,myAdressEdt,myDesEdt;
@@ -33,9 +34,17 @@ private  ImageView back;
             }
         });
 
+        infoModify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isModify(v);
+            }
+        });
+
     }
     private void initData()
     {
+        infoModify=(LinearLayout)findViewById(R.id.infoModify);
         back = (ImageView) this.findViewById(R.id.dttail_back);
         myImgLayout=(RelativeLayout)findViewById(R.id.myImg_layout);
         myNameLayout=(RelativeLayout)findViewById(R.id.myName_layout);
