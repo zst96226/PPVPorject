@@ -21,20 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Welcome extends AppCompatActivity {
-    // 首次使用程序的显示的欢迎图片
-    private int[] ids = { R.drawable.webcom_frist_image,
-            R.drawable.webcom_two_image, R.drawable.webcom_three_image,
-            R.drawable.niwodai_welcom };
-
-    SharedPreferences share;
-    private List<View> guides = new ArrayList<View>();
-    private ViewPager pager;
-    private ImageView curDot;
-    // 位移量
-    private int offset;
-    // 记录当前的位置
-    private int curPos = 0;
-
     SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
