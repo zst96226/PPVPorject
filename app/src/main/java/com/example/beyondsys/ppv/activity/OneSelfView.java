@@ -57,6 +57,7 @@ private LinearLayout personInfoLayout;
             @Override
             public void onClick(View v) {
                 //dosomething youself
+                //验证输入。更新数据库
                 dialog.dismiss();
             }
         });
