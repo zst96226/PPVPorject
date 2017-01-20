@@ -33,6 +33,7 @@ import java.util.Map;
 public class PersonValueDetail extends AppCompatActivity {
     private ListView listView;
     private TextView textView;
+    private ImageView back;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -48,7 +49,7 @@ public class PersonValueDetail extends AppCompatActivity {
         SimpleAdapter adapter = new SimpleAdapter(this, getData(), R.layout.valuedetailstyle, new String[]{"itemImg", "itemName", "planValue", "trueValue"},
                 new int[]{R.id.Item_img, R.id.ItemName_tex, R.id.planValue, R.id.trueValue});
         listView.setAdapter(adapter);
-        ImageView back = (ImageView) this.findViewById(R.id.dttail_back);
+         back = (ImageView) this.findViewById(R.id.dttail_back);
         textView = (TextView) findViewById(R.id.selectTime_tex);
         textView.setOnTouchListener(new View.OnTouchListener() {
             @Override

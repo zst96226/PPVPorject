@@ -12,4 +12,6 @@
     <color name="text">#27A3FA</color>
     <color name="backcol">#F7F7F7</color>
 <color name="blueBut">#ff336699</color>
+    <color name="forget">#d76cebff</color>
+    <color name="forgetbac">#FFFFE0</color>
 </resources>

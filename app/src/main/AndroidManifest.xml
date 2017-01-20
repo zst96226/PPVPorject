@@ -69,7 +69,8 @@
         </activity>
         <activity android:name=".activity.Login" />
         <activity android:name=".activity.Register" />
-        <activity android:name=".activity.ForgetPass"></activity>
+        <activity android:name=".activity.ForgetPass"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

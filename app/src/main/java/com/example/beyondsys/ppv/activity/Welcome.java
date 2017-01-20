@@ -28,7 +28,7 @@ public class Welcome extends AppCompatActivity {
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题栏
         setContentView(R.layout.activity_welcome);
 
-        skipActivity(5);
+        skipActivity(2);
 
     }
 
