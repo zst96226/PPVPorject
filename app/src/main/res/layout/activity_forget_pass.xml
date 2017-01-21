@@ -106,13 +106,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="3">
+            android:orientation="horizontal">
             <TextView
-                android:layout_width="0sp"
-                android:layout_weight="1"
+                android:layout_width="100sp"
                 android:layout_height="wrap_content"
                 android:text="@string/username"
+                android:gravity="center"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="5sp"
                 android:layout_marginBottom="5sp"
@@ -122,22 +121,22 @@
                 android:textColor="@color/colorAccent" />
             <EditText
                 android:id="@+id/username_tex"
-                android:layout_width="0sp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_width="200sp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+                android:layout_marginBottom="5sp"
                 android:layout_marginRight="5sp"
                 android:layout_gravity="center_vertical"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="3">
+            android:orientation="horizontal">
             <TextView
-                android:layout_width="0sp"
-                android:layout_weight="1"
+                android:layout_width="100sp"
                 android:layout_height="wrap_content"
                 android:text="@string/userid"
+                android:gravity="center"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="5sp"
                 android:layout_marginBottom="5sp"
@@ -147,9 +146,10 @@
                 android:textColor="@color/colorAccent" />
             <EditText
                 android:id="@+id/userid_tex"
-                android:layout_width="0sp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_width="200sp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+                android:layout_marginBottom="5sp"
                 android:layout_marginRight="5sp"
                 android:layout_gravity="center_vertical"/>
         </LinearLayout>

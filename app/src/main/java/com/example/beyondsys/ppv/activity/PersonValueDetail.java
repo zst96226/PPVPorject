@@ -24,8 +24,11 @@ import com.example.beyondsys.ppv.tools.MonPickerDialog;
 //import com.google.android.gms.appindexing.AppIndex;
 //import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,24 +36,31 @@ import java.util.Map;
 public class PersonValueDetail extends AppCompatActivity {
     private ListView listView;
     private TextView textView;
-    private ImageView back;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-//    private GoogleApiClient clientnt;
+    private ImageView back,lastone,nextone,lastmonth,nextmonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_value_detail);
-        listView = (ListView) findViewById(R.id.MonthDeatil_list);
+        init();
+        setListener();
+    }
 
+    private void  init()
+    {
+        listView = (ListView) findViewById(R.id.MonthDeatil_list);
+        back = (ImageView) this.findViewById(R.id.dttail_back);
+        textView = (TextView) findViewById(R.id.selectTime_tex);
+        lastone=(ImageView)findViewById(R.id.lastone_img);
+        nextone=(ImageView)findViewById(R.id.nextone_img);
+        lastmonth=(ImageView)findViewById(R.id.lastMonth);
+        nextmonth=(ImageView)findViewById(R.id.nextMonth);
+    }
+    private void setListener()
+    {
         SimpleAdapter adapter = new SimpleAdapter(this, getData(), R.layout.valuedetailstyle, new String[]{"itemImg", "itemName", "planValue", "trueValue"},
                 new int[]{R.id.Item_img, R.id.ItemName_tex, R.id.planValue, R.id.trueValue});
         listView.setAdapter(adapter);
-         back = (ImageView) this.findViewById(R.id.dttail_back);
-        textView = (TextView) findViewById(R.id.selectTime_tex);
         textView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -75,11 +85,35 @@ public class PersonValueDetail extends AppCompatActivity {
                 finish();
             }
         });
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-//        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+     lastmonth.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+             String  oldTime=textView.getText().toString();
+             String newTime=dateFormat(oldTime,-1);
+             textView.setText(newTime);
+         }
+     });
+        lastone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //上一个人
+            }
+        });
+        nextmonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String  oldTime=textView.getText().toString();
+                String newTime=dateFormat(oldTime, +1);
+                textView.setText(newTime);
+            }
+        });
+        nextone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            //下一个人
+            }
+        });
     }
-
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         Map<String, Object> map = new HashMap<String, Object>();
@@ -145,20 +179,6 @@ public class PersonValueDetail extends AppCompatActivity {
         return list;
     }
 
-//    protected void showDatePickDlg() {
-////        Calendar calendar = Calendar.getInstance();
-////        final DatePickerDialog datePickerDialog = new MonPickerDialog(this, AlertDialog.THEME_HOLO_LIGHT, new DatePickerDialog.OnDateSetListener() {
-////            @Override
-////            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-////
-////                calendar.set(Calendar.YEAR, year);
-////                calendar.set(Calendar.MONTH, monthOfYear);
-////                textView.setText(DateUtil.clanderTodatetime(calendar, "yyyy-MM"));
-////
-////            }
-////        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE)).show();
-//
-//    }
 
     private void selectMonthTime() {
        final Calendar calendar = Calendar.getInstance();
@@ -173,6 +193,33 @@ public class PersonValueDetail extends AppCompatActivity {
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE)).show();
 
+    }
+    public static String getDateStr(String day,int dayAddNum) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date nowDate = null;
+        try {
+            nowDate = df.parse(day);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Date newDate2 = new Date(nowDate.getTime() + dayAddNum * 24 * 60 * 60 * 1000);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dateOk = simpleDateFormat.format(newDate2);
+        return dateOk;
+    }
+    public static String dateFormat(String datetime,int change) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+        Date date = null;
+        try {
+            date = sdf.parse(datetime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar cl = Calendar.getInstance();
+        cl.setTime(date);
+        cl.add(Calendar.MONTH, change);
+        date = cl.getTime();
+        return sdf.format(date);
     }
 
 }

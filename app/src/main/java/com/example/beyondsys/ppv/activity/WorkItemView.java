@@ -8,8 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -49,6 +52,7 @@ public class WorkItemView extends Fragment {
         listView=(ListView)rootView.findViewById(R.id.workitem_list);
         wi_s_one=(LinearLayout)rootView.findViewById(R.id.wi_s_one);
         wi_s_one_txt=(TextView)rootView.findViewById(R.id.wi_s_one_txt);
+
     }
 
     private void SetList(){
@@ -58,6 +62,7 @@ public class WorkItemView extends Fragment {
     }
 
     private void Listener(){
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

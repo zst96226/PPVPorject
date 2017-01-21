@@ -82,7 +82,8 @@
     <string name="wid_lab_9">状态：</string>
     <string name="wid_lab_10">截止时间：</string>
     <string name="wid_lab_11">描述：</string>
-    <string name="wv_lab_1">排序</string>
+    <string name="sortup">升序</string>
+    <string name="sortdown">降序</string>
     <string name="anw_lab_1">添加新工作项</string>
     <string name="popup_lab_1">添加子工作项</string>
     <string name="popup_lab_2">删除该工作项</string>
@@ -110,4 +111,7 @@
     <string name="sure">确定</string>
     <string name="userid">ID号码：</string>
     <string name="username">用户名：</string>
+    <string name="userRedister">用户注册</string>
+    <string name="filter_by_currentmonth">本月</string>
+    <string name="filter_by_all">全部累积</string>
 </resources>
