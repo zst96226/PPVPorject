@@ -6,31 +6,33 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.CallLog;
-import android.provider.MediaStore;
+import android.support.v4.view.LayoutInflaterFactory;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * Created by yhp on 2017/1/18.
  */
 public class SelectPicPopup extends Activity implements OnClickListener {
 
-    private static final int REQUEST_CODE_CAPTURE_CAMEIA = 1;
-    private static final int REQUEST_CODE_PICK_IMAGE= 1;
-    private static final int CUT_OK = 1;
+    private  int REQUEST_CODE_CAPTURE_CAMEIA = 1;
+    private   int REQUEST_CODE_PICK_IMAGE= 2;
+    private  int CUT_OK =3;
     private Button btn_take_photo, btn_pick_photo, btn_cancel;
     private LinearLayout layout;
+    private ImageView myImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,29 +89,50 @@ public class SelectPicPopup extends Activity implements OnClickListener {
         }
         finish();
     }
+
     /**
-     * 裁剪图片方法实现
+     * 开始裁剪
      *
-     * @param uri 图片来源
+     * @param uri
      */
-    public void clipPhoto(Uri uri) {
-        Intent intent = new Intent("com.android.camera.action.CROP");
+    private void startCrop(Uri uri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");//调用Android系统自带的一个图片剪裁页面,
         intent.setDataAndType(uri, "image/*");
-        intent.putExtra("crop", "true");
-        // aspectX aspectY 是宽高的比例，这里设置的是正方形（长宽比为1:1）
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
+        intent.putExtra("crop", "true");//进行修剪
+        if(android.os.Build.MODEL.contains("HUAWEI"))
+        {//华为特殊处理 不然会显示圆
+            intent.putExtra("aspectX", 9998);
+            intent.putExtra("aspectY", 9999);
+        }
+        else
+        {
+            intent.putExtra("aspectX", 1);
+            intent.putExtra("aspectY", 1);
+        }
+//        // aspectX aspectY 是宽高的比例
+//        intent.putExtra("aspectX", 1);
+//        intent.putExtra("aspectY", 1);
         // outputX outputY 是裁剪图片宽高
-        intent.putExtra("outputX", 300);
-        intent.putExtra("outputY", 300);
+        intent.putExtra("outputX", 100);
+        intent.putExtra("outputY", 100);
         intent.putExtra("return-data", true);
-        startActivityForResult(intent, CUT_OK);
+        startActivityForResult(intent,  CUT_OK);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_PICK_IMAGE) {
+            if(data == null)
+            {
+                Log.e("data 为空","qqww");
+                return;
+            }
+            Log.e("data 不为空","qqww");
             Uri uri = data.getData();
+            startCrop(uri);
             //to do find the path of pic by uri
+
+
 
         } else if (requestCode == REQUEST_CODE_CAPTURE_CAMEIA ) {
             Uri uri = data.getData();
@@ -119,7 +142,7 @@ public class SelectPicPopup extends Activity implements OnClickListener {
                 if (bundle != null) {
                     Bitmap photo = (Bitmap) bundle.get("data"); //get bitmap
                     //spath :生成图片取个名字和路径包含类型
-                   String   spath="";
+                    String   spath="";
                     saveImage( photo,  spath);
                 } else {
                     Toast.makeText(getApplicationContext(), "err****", Toast.LENGTH_LONG).show();
@@ -127,11 +150,30 @@ public class SelectPicPopup extends Activity implements OnClickListener {
                 }
             }else{
                 //to do find the path of pic by uri
+                if (data == null) {
+                    // TODO 如果之前以后有设置过显示之前设置的图片 否则显示默认的图片
+               //     Log.i(TAG, "剪裁后data为空");
+                    return;
+                }
+              //  Log.i(TAG, "剪裁后data不为空");
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                   // Log.i(TAG, "剪裁后ex不为空");
+                    Bitmap photo = extras.getParcelable("data");
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                 //   Log.i(TAG, "剪裁后输出");
+                    photo.compress(Bitmap.CompressFormat.JPEG, 75, stream);// (0-100)压缩文件
+                    //此处可以把Bitmap保存到sd卡中，具体请看：http://www.cnblogs.com/linjiqin/archive/2011/12/28/2304940.html
+                  //  Log.i(TAG, "剪裁后压缩");
+                  //  display.setImageBitmap(photo); //把图片显示在ImageView控件上
+                 //   Log.i(TAG, "剪裁后显示");
+                }
+              //  Log.i(TAG, "剪裁后ex为空");
             }
         }
     }
     //http://www.cnblogs.com/kobe8/p/4031226.html
-    public static boolean saveImage(Bitmap photo, String spath) {
+    public  boolean saveImage(Bitmap photo, String spath) {
         try {
             BufferedOutputStream bos = new BufferedOutputStream(
                     new FileOutputStream(spath, false));
