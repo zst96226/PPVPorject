@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/backcol"
     android:orientation="vertical"
+    android:id="@+id/person_info"
     tools:context="com.example.beyondsys.ppv.activity.PersonInfo">
     <LinearLayout
         android:layout_width="match_parent"
