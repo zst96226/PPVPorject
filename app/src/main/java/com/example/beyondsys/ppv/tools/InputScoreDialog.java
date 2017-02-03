@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 
 import com.example.beyondsys.ppv.R;
 
@@ -16,7 +17,8 @@ import com.example.beyondsys.ppv.R;
  */
 public class InputScoreDialog extends Dialog {
     private LinearLayout count_layout,step1_layout;
-    private EditText stepCount,step1_max,step1_min,step1_scale;
+    private EditText step1_max,step1_min,step1_scale;
+    private NumberPicker stepCount;
     private View mView;
     private Button ok_but,cancel_but;
 
@@ -29,7 +31,10 @@ public class InputScoreDialog extends Dialog {
         mView=LayoutInflater.from(getContext()).inflate(R.layout.dialog_inputscore,null);
         count_layout=(LinearLayout)mView.findViewById(R.id.stepCount_layout);
         step1_layout=(LinearLayout)mView.findViewById(R.id.step1_layout);
-        stepCount=(EditText)mView.findViewById(R.id.stepCount_edt);
+       stepCount=(NumberPicker)mView.findViewById(R.id.stepCount_num);
+        stepCount.setMaxValue(10);
+        stepCount.setMinValue(1);
+        stepCount.setValue(1);
         step1_max=(EditText)mView.findViewById(R.id.step1_max);
         step1_min=(EditText)mView.findViewById(R.id.step1_min);
         step1_scale=(EditText)mView.findViewById(R.id.step1_scale);
@@ -41,7 +46,7 @@ public class InputScoreDialog extends Dialog {
     public String  getStepCount()
     {
         String text="";
-        text= stepCount.getText().toString();
+        text= stepCount.getValue()+"";
         return text;
     }
 

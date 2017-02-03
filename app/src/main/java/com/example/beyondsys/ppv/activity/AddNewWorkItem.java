@@ -2,6 +2,7 @@ package com.example.beyondsys.ppv.activity;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -50,7 +51,8 @@ public class AddNewWorkItem extends Activity {
         inputScore_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog();
+                //  showDialog();
+                estimateValue();
             }
         });
     }
@@ -81,7 +83,9 @@ public class AddNewWorkItem extends Activity {
     }
    private void  estimateValue()
    {
-
+       Intent estimate=new Intent(AddNewWorkItem.this,EstimateValueActivity.class);
+       Log.e("esti","qqww");
+       startActivityForResult(estimate,1);
    }
     private  boolean inputCheck()
     {
@@ -92,5 +96,22 @@ public class AddNewWorkItem extends Activity {
     {
         //将合法输入填充到控件上
         input_score.setText(dialog.getStepDetail());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode)
+        {
+            case 1:
+                if(resultCode==1)
+                {
+                    input_score.setText(data.getStringExtra("stepDetail"));
+                }
+                input_score.setText("没有");
+                break;
+            default:
+                break;
+        }
     }
 }
