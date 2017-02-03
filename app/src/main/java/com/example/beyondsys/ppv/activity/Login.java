@@ -164,15 +164,15 @@ public class Login extends Activity implements OnClickListener  {
      */
     private void login() {
         Log.e("登陆啦", "qqww");
-        boolean nameCheck= ValidaService.isUserName(  et_name.getText().toString());
-        boolean passCheck=ValidaService.isPasswLength(et_pass.getText().toString())&&ValidaService.isPassword(et_pass.getText().toString());
-        if(!(nameCheck&&passCheck))
-        {
-            Log.e("登陆信息不对", "qqww");
-            log_tex.setVisibility(View.VISIBLE);
-            log_tex.setText("用户名或密码不正确");
-            return;
-        }
+//        boolean nameCheck= ValidaService.isNameLength(  et_name.getText().toString());
+//        boolean passCheck=ValidaService.isPasswLength(et_pass.getText().toString())&&ValidaService.isPassword(et_pass.getText().toString());
+//        if(!(nameCheck&&passCheck))
+//        {
+//            Log.e("登陆信息不对", "qqww");
+//            log_tex.setVisibility(View.VISIBLE);
+//            log_tex.setText("用户名或密码不正确");
+//            return;
+//        }
         Log.e("登陆成功", "qqww");
         startActivity(new Intent(Login.this,MainPPVActivity.class));
         this.finish();

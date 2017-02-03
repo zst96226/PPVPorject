@@ -164,7 +164,7 @@ public class ValidaService {
     }
 
     /**
-     * 用于判断用户输入住址字符长度1到250位
+     * 用于判断用户输入住址字符长度0到250位
      *
      * @param str
      * @return
@@ -175,7 +175,7 @@ public class ValidaService {
     }
 
     /**
-     * 用于判断用户输入描述字符长度1到50位
+     * 用于判断用户输入描述字符长度0到50位
      *
      * @param str
      * @return

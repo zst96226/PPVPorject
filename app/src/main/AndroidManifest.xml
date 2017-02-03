@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <!--请求访问使用照相设备-->
+    <!-- 请求访问使用照相设备 -->
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -69,14 +69,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.Login"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activity.Register"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity android:name=".activity.ForgetPass"
+        <activity
+            android:name=".activity.Login"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.Register"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".activity.ForgetPass"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.EstimateValueActivity"></activity>
     </application>
 
 </manifest>
