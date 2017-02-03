@@ -79,6 +79,10 @@ public class AddNewWorkItem extends Activity {
         });
         dialog.show();
     }
+   private void  estimateValue()
+   {
+
+   }
     private  boolean inputCheck()
     {
         //对各输入框进行输入验证
