@@ -14,4 +14,7 @@
 <color name="blueBut">#ff336699</color>
     <color name="forget">#d76cebff</color>
     <color name="forgetbac">#FFFFE0</color>
+    <color name="green">#8eaaec77</color>
+    <color name="accent">#94ea80ce</color>
+    <color name="blue">#9083e6f5</color>
 </resources>

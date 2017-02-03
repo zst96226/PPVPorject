@@ -190,6 +190,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/inputScore_layout"
                 android:layout_width="match_parent"
                 android:layout_height="100sp"
                 android:layout_marginTop="5sp"

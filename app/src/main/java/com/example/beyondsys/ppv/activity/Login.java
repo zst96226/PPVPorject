@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.tools.ValidaService;
 
 import static android.view.ViewGroup.*;
 
@@ -62,12 +63,14 @@ public class Login extends Activity implements OnClickListener  {
     private Button bt_pwd_eye;
     private TextWatcher username_watcher;
     private TextWatcher password_watcher;
+    private TextView log_tex;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
         et_name = (EditText) findViewById(R.id.username);
         et_pass = (EditText) findViewById(R.id.password);
+        log_tex=(TextView)findViewById(R.id.log_tex);
 
         bt_username_clear = (Button)findViewById(R.id.bt_username_clear);
         bt_pwd_clear = (Button)findViewById(R.id.bt_pwd_clear);
@@ -119,49 +122,60 @@ public class Login extends Activity implements OnClickListener  {
             }
         };
     }
-        @Override
+    @Override
     public void onClick(View arg0) {
-            // TODO Auto-generated method stub
-            switch (arg0.getId()) {
-                case R.id.login:  //登陆
-               login();
-                    startActivity(new Intent(Login.this,MainPPVActivity.class));
-                    break;
-                case R.id.login_error: //无法登陆(忘记密码了吧)
-   Intent login_error_intent=new Intent();
-   login_error_intent.setClass(Login.this, ForgetPass.class);
-   startActivity(login_error_intent);
-                    break;
-                case R.id.register:    //注册新的用户
-   Intent intent=new Intent();
-   intent.setClass(Login.this, Register.class);
-   startActivity(intent);
+        // TODO Auto-generated method stub
+        switch (arg0.getId()) {
+            case R.id.login:  //登陆
+                login();
+                break;
+            case R.id.login_error: //无法登陆(忘记密码了吧)
+                Intent login_error_intent=new Intent();
+                login_error_intent.setClass(Login.this, ForgetPass.class);
+                startActivity(login_error_intent);
+                break;
+            case R.id.register:    //注册新的用户
+                Intent intent=new Intent();
+                intent.setClass(Login.this, Register.class);
+                startActivity(intent);
 
-                    break;
-                case R.id.bt_username_clear:
-                    et_name.setText("");
-                    et_pass.setText("");
-                    break;
-                case R.id.bt_pwd_clear:
-                    et_pass.setText("");
-                    break;
-                case R.id.bt_pwd_eye:
-                    if(et_pass.getInputType() == (InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD)){
-                        bt_pwd_eye.setBackgroundResource(R.drawable.openeye);
-                        et_pass.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_NORMAL);
-                    }else{
-                        bt_pwd_eye.setBackgroundResource(R.drawable.closeeye);
-                        et_pass.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    }
-                    et_pass.setSelection(et_pass.getText().toString().length());
-                    break;
-            }
+                break;
+            case R.id.bt_username_clear:
+                et_name.setText("");
+                et_pass.setText("");
+                break;
+            case R.id.bt_pwd_clear:
+                et_pass.setText("");
+                break;
+            case R.id.bt_pwd_eye:
+                if(et_pass.getInputType() == (InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD)){
+                    bt_pwd_eye.setBackgroundResource(R.drawable.openeye);
+                    et_pass.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_NORMAL);
+                }else{
+                    bt_pwd_eye.setBackgroundResource(R.drawable.closeeye);
+                    et_pass.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+                et_pass.setSelection(et_pass.getText().toString().length());
+                break;
+        }
     }
     /**
      * 登陆
      */
     private void login() {
         Log.e("登陆啦", "qqww");
+        boolean nameCheck= ValidaService.isUserName(  et_name.getText().toString());
+        boolean passCheck=ValidaService.isPasswLength(et_pass.getText().toString())&&ValidaService.isPassword(et_pass.getText().toString());
+        if(!(nameCheck&&passCheck))
+        {
+            Log.e("登陆信息不对", "qqww");
+            log_tex.setVisibility(View.VISIBLE);
+            log_tex.setText("用户名或密码不正确");
+            return;
+        }
+        Log.e("登陆成功", "qqww");
+        startActivity(new Intent(Login.this,MainPPVActivity.class));
+        this.finish();
     }
 
 

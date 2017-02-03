@@ -198,6 +198,25 @@ android:id="@+id/getCode_layout"
             android:background="@color/White"
             />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/log_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:layout_marginLeft="20sp"
+        android:layout_marginRight="20sp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/log_tex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="@color/tabColor"
+            android:textStyle="bold"
+            android:text="请输入正确的手机号码!" />
+    </LinearLayout>
     <RelativeLayout
         android:layout_marginTop="5sp"
         android:layout_marginBottom="5sp"
