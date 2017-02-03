@@ -1,9 +1,17 @@
 package com.example.beyondsys.ppv.tools;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by zhsht on 2017/1/16.工具类
@@ -41,4 +49,5 @@ public class Tools {
 
         return true;
     }
+
 }
