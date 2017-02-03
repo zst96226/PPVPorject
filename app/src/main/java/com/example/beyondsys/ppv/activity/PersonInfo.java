@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -26,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.tools.ValidaService;
 import com.example.beyondsys.ppv.tools.SelectPicPopup;
 import com.example.beyondsys.ppv.tools.TakePhotoPopWin;
 import com.example.beyondsys.ppv.tools.Tools;
@@ -118,6 +120,36 @@ public class PersonInfo extends AppCompatActivity {
                     }
                 });
                 builder.show();
+                return;
+            }
+            //验证
+            boolean phoneCheck= ValidaService.isMobileOrPhone(myPhoneEdt.getText().toString());
+            boolean nameCheck=ValidaService.isUserName(myNameEdt.getText().toString());
+            boolean emailCheck=ValidaService.isValidEmail(myEmailEdt.getText().toString());
+            boolean idCheck=ValidaService.isValidIdCard(myIDEdt.getText().toString());
+            boolean addressChek=ValidaService.isAddressLength(myAdressEdt.getText().toString());
+            boolean desCheck=ValidaService.isRemarksLength( myDesEdt.getText().toString());
+            Log.e(phoneCheck+"phoneCheck","qqww");
+            Log.e(nameCheck+"nameCheck","qqww");
+            Log.e(emailCheck+"emailCheck","qqww");
+            Log.e(idCheck+"idCheck","qqww");
+            Log.e(addressChek+"addressChek","qqww");
+            Log.e(desCheck+"desCheck","qqww");
+            if(!(phoneCheck && nameCheck && emailCheck && idCheck && addressChek && desCheck))
+            {
+                Log.e("logggggggg","qqww");
+                AlertDialog.Builder builder  = new AlertDialog.Builder(PersonInfo.this);
+                builder.setTitle("输入无效") ;
+                builder.setMessage("请正确填写个人信息！") ;
+                builder.setPositiveButton("知道了", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        editFlag = false;
+                        isModify(myImgLayout);
+                    }
+                });
+                builder.show();
+                return;
             }
             myNameEdt.setEnabled(false);
             myPhoneEdt.setEnabled(false);
@@ -222,4 +254,5 @@ public class PersonInfo extends AppCompatActivity {
         intent.putExtra("return-data", true);
         startActivityForResult(intent, CROP_REQUEST_CODE);
     }
+
 }
