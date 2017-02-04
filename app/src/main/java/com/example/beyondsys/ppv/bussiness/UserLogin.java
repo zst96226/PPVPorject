@@ -1,6 +1,11 @@
 package com.example.beyondsys.ppv.bussiness;
 
+import android.app.Notification;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+
+import com.example.beyondsys.ppv.entities.ThreadAndHandlerMessage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -16,7 +21,7 @@ public class UserLogin {
 
     public String LoginAPI="";
 //  用户登录
-    public void UserLogin(final String Id,final String Pwd){
+    public void UserLogin(final String Id,final String Pwd,final Handler handler){
         new Thread(){
             public void run(){
                 HttpURLConnection connection = null;
@@ -33,6 +38,7 @@ public class UserLogin {
                     urlConnection.setConnectTimeout(5000);
                     // 传递的数据
                     String data = "Account=" + URLEncoder.encode(Id, "UTF-8") + "&password=" + URLEncoder.encode(Pwd, "UTF-8");
+
                     // 设置请求的头
                     urlConnection.setRequestProperty("Connection", "keep-alive");
                     // 设置请求的头
@@ -69,6 +75,10 @@ public class UserLogin {
                         // 返回字符串
                         String result = new String(baos.toByteArray());
                         Log.i("用户登录返回结果："+result,"TAG");
+                        Message msg = Message.obtain();
+                        msg.what= ThreadAndHandlerMessage.UserLogin;
+                        msg.obj=result;
+                        handler.sendMessage(msg);
                     }
                 }
                 catch (Exception e){
