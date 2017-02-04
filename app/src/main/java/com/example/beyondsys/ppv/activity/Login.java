@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.bussiness.UserLogin;
 import com.example.beyondsys.ppv.tools.ValidaService;
 
 import static android.view.ViewGroup.*;
@@ -64,6 +65,18 @@ public class Login extends Activity implements OnClickListener  {
     private TextWatcher username_watcher;
     private TextWatcher password_watcher;
     private TextView log_tex;
+
+
+
+    private Handler threadHandler=new Handler(){
+        public void handleMessage (Message msg){
+            switch(msg.what) {
+
+            }
+        }
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,8 +187,11 @@ public class Login extends Activity implements OnClickListener  {
 //            return;
 //        }
         Log.e("登陆成功", "qqww");
-        startActivity(new Intent(Login.this,MainPPVActivity.class));
+        startActivity(new Intent(Login.this, MainPPVActivity.class));
         this.finish();
+
+        UserLogin userLogin=new UserLogin();
+        userLogin.UserLogin(et_name.getText().toString(),et_pass.getText().toString(),threadHandler);
     }
 
 
@@ -204,5 +220,4 @@ public class Login extends Activity implements OnClickListener  {
             return super.onKeyDown(keyCode, event);
         }
     }
-
 }
