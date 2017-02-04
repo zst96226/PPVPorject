@@ -35,7 +35,7 @@ import java.util.Map;
 
 public class PersonValueDetail extends AppCompatActivity {
     private ListView listView;
-    private TextView textView;
+    private TextView textView,monthSum,valueSum;
     private ImageView back,lastone,nextone,lastmonth,nextmonth;
 
     @Override
@@ -55,6 +55,8 @@ public class PersonValueDetail extends AppCompatActivity {
         nextone=(ImageView)findViewById(R.id.nextone_img);
         lastmonth=(ImageView)findViewById(R.id.lastMonth);
         nextmonth=(ImageView)findViewById(R.id.nextMonth);
+        monthSum=(TextView)findViewById(R.id.monthsum_tex);
+        valueSum=(TextView)findViewById(R.id.valuesum_tex);
     }
     private void setListener()
     {
@@ -88,8 +90,31 @@ public class PersonValueDetail extends AppCompatActivity {
      lastmonth.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
+             //判断是否为最初月份，否则减一
+             String month=monthSum.getText().toString();
              String  oldTime=textView.getText().toString();
-             String newTime=dateFormat(oldTime,-1);
+             String newTime="";
+             SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
+             Date oldDate=null;
+             Date minDate=null;
+             Log.e("time","qq");
+             int change= Integer.parseInt(month);
+             String minTime=dateFormat(oldTime, -1);
+             Log.e("time2","qq");
+             try {
+                 oldDate=sdf.parse(oldTime);
+                 minDate=sdf.parse(minTime);
+             } catch (ParseException e) {
+                 e.printStackTrace();
+             }
+             Log.e("time3","qq");
+             if(oldDate.getTime()<minDate.getTime()||oldDate.getTime()==minDate.getTime())
+             {
+                 newTime=oldTime;
+             }
+             else {
+                  newTime = dateFormat(oldTime, -1);
+             }
              textView.setText(newTime);
          }
      });
@@ -102,8 +127,30 @@ public class PersonValueDetail extends AppCompatActivity {
         nextmonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //判断是否为当前月份，否则加一
                 String  oldTime=textView.getText().toString();
-                String newTime=dateFormat(oldTime, +1);
+                String newTime="";
+            SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
+                Date oldDate=null;
+                Date nowDate=null;
+                Log.e("time","qq");
+                String nowTime=sdf.format(new  java.util.Date());
+                Log.e("time2","qq");
+                try {
+                     oldDate=sdf.parse(oldTime);
+                     nowDate=sdf.parse(nowTime);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Log.e("time3","qq");
+                if(oldDate.getTime()>nowDate.getTime()||oldDate.getTime()==nowDate.getTime())
+                {
+                    newTime=oldTime;
+                }
+                 else
+                {
+                    newTime=dateFormat(oldTime, +1);
+                }
                 textView.setText(newTime);
             }
         });
@@ -194,7 +241,7 @@ public class PersonValueDetail extends AppCompatActivity {
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE)).show();
 
     }
-    public static String getDateStr(String day,int dayAddNum) {
+    private static String getDateStr(String day,int dayAddNum) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date nowDate = null;
         try {
@@ -207,7 +254,7 @@ public class PersonValueDetail extends AppCompatActivity {
         String dateOk = simpleDateFormat.format(newDate2);
         return dateOk;
     }
-    public static String dateFormat(String datetime,int change) {
+    private static String dateFormat(String datetime,int change) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
         Date date = null;
         try {

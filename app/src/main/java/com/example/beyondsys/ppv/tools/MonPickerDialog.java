@@ -6,6 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Created by yhp on 2017/1/17.
  */
@@ -28,6 +33,15 @@ public class MonPickerDialog extends DatePickerDialog {
     @Override
     public void onDateChanged(DatePicker view, int year, int month, int day) {
         super.onDateChanged(view, year, month, day);
-        this.setTitle(year + "年");
+       view.setMaxDate((new Date()).getTime());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+        Date date = null;
+        try {
+            date = sdf.parse("2000-01");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        view.setMinDate(date.getTime());
     }
+
 }
