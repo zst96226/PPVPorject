@@ -1,11 +1,14 @@
 package com.example.beyondsys.ppv.bussiness;
 
-import android.app.Notification;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.example.beyondsys.ppv.entities.ThreadAndHandlerMessage;
+import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -14,17 +17,16 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Created by zhsht on 2017/2/4.用户登录
+ * Created by zhsht on 2017/2/4.登录以及获取人员信息
  */
-public class UserLogin {
-
-    public String LoginAPI="";
-//  用户登录
+public class PersonnelVerify {
+    /*登录API*/
+    public String LoginAPI = "";
+    /*获取标识API*/
+    public String IdentifyingAPI="";
+    /*用户登录*/
     public void UserLogin(final String Id,final String Pwd,final Handler handler){
         new Thread(){
             public void run(){
@@ -82,13 +84,16 @@ public class UserLogin {
                         String result = new String(baos.toByteArray());
                         Log.i("用户登录返回结果："+result,"TAG");
                         Message msg = Message.obtain();
-                        msg.what= ThreadAndHandlerMessage.UserLogin;
+                        msg.what= ThreadAndHandlerLabel.UserLogin;
                         msg.obj=result;
                         handler.sendMessage(msg);
                     }
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Message msg = Message.obtain();
+                    msg.what= ThreadAndHandlerLabel.CallAPIError;
+                    handler.sendMessage(msg);
                 }
             };
         }.start();
@@ -101,4 +106,20 @@ public class UserLogin {
             Password=password;
         }
     }
+    /*获取程序运行期间的标识*/
+    public void GetIdentifying(final Handler handler,ACache mCache){
+        /*从缓存中获取凭据*/
+        UserLoginResultEntity model=(UserLoginResultEntity)mCache.getAsObject(LocalDataLabel.Proof);
+        if(model!=null && !model.Proof.equals("")) {
+            String _poof = model.Proof;
+        }
+        else
+        {
+            Message msg = Message.obtain();
+            msg.what= ThreadAndHandlerLabel.LocalNotdata;
+            handler.sendMessage(msg);
+        }
+    }
+
 }
+
