@@ -17,8 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.beyondsys.ppv.R;
-import com.example.beyondsys.ppv.bussiness.UserLogin;
-import com.example.beyondsys.ppv.tools.ValidaService;
+import com.example.beyondsys.ppv.bussiness.PersonnelVerify;
 
 import static android.view.ViewGroup.*;
 
@@ -190,8 +189,8 @@ public class Login extends Activity implements OnClickListener  {
         startActivity(new Intent(Login.this, MainPPVActivity.class));
         this.finish();
 
-        UserLogin userLogin=new UserLogin();
-        userLogin.UserLogin(et_name.getText().toString(),et_pass.getText().toString(),threadHandler);
+        PersonnelVerify personnelVerify =new PersonnelVerify();
+        personnelVerify.UserLogin(et_name.getText().toString(),et_pass.getText().toString(),threadHandler);
     }
 
 
