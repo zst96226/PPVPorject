@@ -107,8 +107,12 @@ public class AddNewWorkItem extends Activity {
                 if(resultCode==1)
                 {
                     input_score.setText(data.getStringExtra("stepDetail"));
+
                 }
-                input_score.setText("没有");
+                else
+                {
+                    input_score.setText("未估算分值");
+                }
                 break;
             default:
                 break;

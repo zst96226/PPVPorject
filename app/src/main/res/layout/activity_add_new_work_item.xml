@@ -192,7 +192,7 @@
             <LinearLayout
                 android:id="@+id/inputScore_layout"
                 android:layout_width="match_parent"
-                android:layout_height="100sp"
+                android:layout_height="120sp"
                 android:layout_marginTop="5sp"
                 android:orientation="horizontal">
                 <LinearLayout
@@ -237,7 +237,8 @@
                         <TextView
                             android:id="@+id/input_score"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:isScrollContainer="true"/>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -245,7 +246,7 @@
             <LinearLayout
                 android:layout_marginTop="10sp"
                 android:layout_width="match_parent"
-                android:layout_height="120sp"
+                android:layout_height="100sp"
                 android:orientation="horizontal"
                 android:background="@color/White">
                 <LinearLayout
@@ -272,7 +273,7 @@
                         android:layout_height="match_parent"
                         android:singleLine="false"
                         android:scrollbars="vertical"
-                        android:editable="false"
+                        android:editable="true"
                         android:textSize="12sp"
                         android:focusable="false"
                         android:gravity="top"/>
