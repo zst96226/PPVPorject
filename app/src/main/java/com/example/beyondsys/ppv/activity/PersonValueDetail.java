@@ -91,15 +91,16 @@ public class PersonValueDetail extends AppCompatActivity {
          @Override
          public void onClick(View v) {
              //判断是否为最初月份，否则减一
+             SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
              String month=monthSum.getText().toString();
              String  oldTime=textView.getText().toString();
              String newTime="";
-             SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
              Date oldDate=null;
              Date minDate=null;
+             String nowTime=sdf.format(new  java.util.Date());
              Log.e("time","qq");
              int change= Integer.parseInt(month);
-             String minTime=dateFormat(oldTime, -1);
+             String minTime=dateFormat(nowTime, -change);
              Log.e("time2","qq");
              try {
                  oldDate=sdf.parse(oldTime);

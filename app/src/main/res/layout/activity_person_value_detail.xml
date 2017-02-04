@@ -96,14 +96,22 @@
 
             <TextView android:id="@+id/valuesum_tex"
                 android:layout_width="0sp"
-                android:layout_weight="1.2"
+                android:layout_weight="0.8"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:text="100分"
+                android:text="100"
                 android:layout_height="wrap_content"
                 android:textColor="@color/infoFont"
                 android:textSize="12sp" />
-
+            <TextView
+                android:layout_width="0sp"
+                android:layout_weight="0.4"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="分"
+                android:layout_height="wrap_content"
+                android:textColor="@color/infoFont"
+                android:textSize="12sp" />
             <ImageView
                 android:layout_width="0sp"
                 android:layout_weight="0.8"
@@ -112,10 +120,19 @@
 
             <TextView android:id="@+id/monthsum_tex"
                 android:layout_width="0sp"
-                android:layout_weight="1.2"
+                android:layout_weight="0.6"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:text="3个月"
+                android:text="3"
+                android:layout_height="wrap_content"
+                android:textColor="@color/infoFont"
+                android:textSize="12sp" />
+            <TextView
+                android:layout_width="0sp"
+                android:layout_weight="0.8"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="个月"
                 android:layout_height="wrap_content"
                 android:textColor="@color/infoFont"
                 android:textSize="12sp" />
