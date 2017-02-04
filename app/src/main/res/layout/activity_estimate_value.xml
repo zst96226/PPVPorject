@@ -27,12 +27,8 @@
         <NumberPicker
             android:id="@+id/stepCount_num"
             android:layout_width="40sp"
-            android:layout_height="match_parent"
+            android:layout_height="100sp"
             android:background="@color/green"
-            android:textColor="@color/tabColor"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:gravity="center"
             android:layout_gravity="center_vertical"></NumberPicker>
 
         <TextView
@@ -63,8 +59,12 @@
                 android:layout_marginTop="5sp"
                 android:orientation="vertical"
                 android:background="@color/accent">
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="第一步："
                     android:textColor="@color/mainFont"
@@ -73,6 +73,17 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10sp"
                     android:gravity="left"/>
+                <EditText
+                    android:id="@+id/step1_name"
+                    android:layout_width="150sp"
+                    android:layout_height="wrap_content"
+                    android:text="搭建框架"
+                    android:textColor="@color/tabColor"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_gravity="center_horizontal" />
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -188,6 +199,10 @@
                 android:orientation="vertical"
                 android:background="@color/blue"
                 android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:orientation="horizontal">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -198,6 +213,17 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10sp"
                     android:gravity="left"/>
+                    <EditText
+                        android:id="@+id/step2_name"
+                        android:layout_width="150sp"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@color/tabColor"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginLeft="10sp"
+                        android:layout_gravity="center_horizontal" />
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -309,6 +335,10 @@
                 android:orientation="vertical"
                 android:background="@color/accent"
                 android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:orientation="horizontal">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -319,6 +349,17 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10sp"
                     android:gravity="left"/>
+                    <EditText
+                        android:id="@+id/step3_name"
+                        android:layout_width="150sp"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@color/tabColor"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginLeft="10sp"
+                        android:layout_gravity="center_horizontal" />
+                    </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -430,6 +471,10 @@
                 android:orientation="vertical"
                 android:background="@color/blue"
                 android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:orientation="horizontal">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -440,6 +485,17 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10sp"
                     android:gravity="left"/>
+                    <EditText
+                        android:id="@+id/step4_name"
+                        android:layout_width="150sp"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@color/tabColor"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginLeft="10sp"
+                        android:layout_gravity="center_horizontal" />
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -551,6 +607,10 @@
                 android:orientation="vertical"
                 android:background="@color/accent"
                 android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:orientation="horizontal">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -561,6 +621,17 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10sp"
                     android:gravity="left"/>
+                    <EditText
+                        android:id="@+id/step5_name"
+                        android:layout_width="150sp"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@color/tabColor"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginLeft="10sp"
+                        android:layout_gravity="center_horizontal" />
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -672,6 +743,10 @@
                 android:orientation="vertical"
                 android:background="@color/blue"
                 android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:orientation="horizontal">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -682,6 +757,17 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10sp"
                     android:gravity="left"/>
+                    <EditText
+                        android:id="@+id/step6_name"
+                        android:layout_width="150sp"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@color/tabColor"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginLeft="10sp"
+                        android:layout_gravity="center_horizontal" />
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -793,6 +879,10 @@
                 android:orientation="vertical"
                 android:background="@color/accent"
                 android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:orientation="horizontal">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -803,6 +893,17 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10sp"
                     android:gravity="left"/>
+                    <EditText
+                        android:id="@+id/step7_name"
+                        android:layout_width="150sp"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@color/tabColor"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginLeft="10sp"
+                        android:layout_gravity="center_horizontal" />
+                    </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -914,6 +1015,10 @@
                 android:orientation="vertical"
                 android:background="@color/blue"
                 android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:orientation="horizontal">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -924,6 +1029,17 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10sp"
                     android:gravity="left"/>
+                    <EditText
+                        android:id="@+id/step8_name"
+                        android:layout_width="150sp"
+                        android:layout_height="wrap_content"
+                        android:text="搭建框架"
+                        android:textColor="@color/tabColor"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginLeft="10sp"
+                        android:layout_gravity="center_horizontal" />
+                    </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1035,6 +1151,10 @@
                 android:orientation="vertical"
                 android:background="@color/accent"
                 android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:orientation="horizontal">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1045,6 +1165,17 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10sp"
                     android:gravity="left"/>
+                    <EditText
+                        android:id="@+id/step9_name"
+                        android:layout_width="150sp"
+                        android:layout_height="wrap_content"
+                        android:text="搭建框架"
+                        android:textColor="@color/tabColor"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginLeft="10sp"
+                        android:layout_gravity="center_horizontal" />
+                    </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1156,6 +1287,10 @@
                 android:orientation="vertical"
                 android:background="@color/blue"
                 android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:orientation="horizontal">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1166,6 +1301,17 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10sp"
                     android:gravity="left"/>
+                    <EditText
+                        android:id="@+id/step10_name"
+                        android:layout_width="150sp"
+                        android:layout_height="wrap_content"
+                        android:text="搭建框架"
+                        android:textColor="@color/tabColor"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:layout_marginLeft="10sp"
+                        android:layout_gravity="center_horizontal" />
+                    </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
