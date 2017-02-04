@@ -53,32 +53,4 @@ public class WorkItemEntity implements Serializable {
         this.HardScale=0.00;
         this.Remark=null;
     }
-
-    @Override
-    public String toString() {
-        StringBuilder sb=new StringBuilder();
-        sb.append("WorkItemEntity{ ");
-        sb.append("BID=").append(BID);
-        sb.append(",ID=").append(ID);
-        sb.append(",FID=").append(FID);
-        sb.append(",RID=").append(RID);
-        sb.append(",Name=").append(Name);
-        sb.append(",Description=").append(Description);
-        sb.append(",Category=").append(Category);
-        sb.append(",Status=").append(Status);
-        sb.append(",Assigned2=").append(Assigned2);
-        sb.append(",Belong2=").append(Belong2);
-        sb.append(",Checker=").append(Checker);
-        sb.append(",ClosingTime=").append(ClosingTime);
-        sb.append(",Creater=").append(Creater);
-        sb.append(",CreateTime=").append(CreateTime);
-        sb.append(",Modifier=").append(Modifier);
-        sb.append(",ModifyTime=").append(ModifyTime);
-        sb.append(",BusinessValue=").append(BusinessValue);
-        sb.append(",BasicScore=").append(BasicScore);
-        sb.append(",CheckedScore=").append(CheckedScore);
-        sb.append(",HardScale=").append(HardScale);
-        sb.append(",Remark=").append(Remark);
-        return sb.toString();
-    }
 }
