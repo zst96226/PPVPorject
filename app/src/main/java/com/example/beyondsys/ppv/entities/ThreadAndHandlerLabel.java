@@ -6,8 +6,10 @@ package com.example.beyondsys.ppv.entities;
 public class ThreadAndHandlerLabel {
     /*访问API失败*/
     public static int CallAPIError=-1;
-    /*用户登录成功标识*/
+    /*用户登录成功*/
     public static int UserLogin=0;
     /*本地无缓存凭据*/
     public static int LocalNotdata=1;
+    /*获取人员标识成功*/
+    public static int GetIdentifying=2;
 }
