@@ -15,13 +15,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.PersonnelVerify;
+import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 
 import static android.view.ViewGroup.*;
 
 public class Login extends Activity implements OnClickListener  {
+    /*本地缓存操作对象*/
+    ACache mCache = ACache.get(Login.this);
     // 声明控件对象
     private EditText et_name, et_pass;
     private Button mLoginButton,mLoginError,mRegister,ONLYTEST;
@@ -69,8 +75,38 @@ public class Login extends Activity implements OnClickListener  {
 
     private Handler threadHandler=new Handler(){
         public void handleMessage (Message msg){
-            switch(msg.what) {
+            if (msg.what == ThreadAndHandlerLabel.UserLogin)
+            {
+                /*判断返回结果*/
+                UserLoginResultEntity model=(UserLoginResultEntity)msg.obj;
+                switch (model.Result)
+                {
+                    case 0:
+                        Toast.makeText(Login.this,"服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
 
+
+                        PersonnelVerify personnelVerify =new PersonnelVerify();
+                        personnelVerify.GetIdentifying(threadHandler,mCache);
+
+                        break;
+                    case 2:
+                        Toast.makeText(Login.this,"密码错误，请重新输入或选择忘记密码", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 3:
+                        Toast.makeText(Login.this,"该账号不存在，请检查输入或联系管理员", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+            else if (msg.what==ThreadAndHandlerLabel.GetIdentifying)
+            {
+                startActivity(new Intent(Login.this, MainPPVActivity.class));
+                Login.this.finish();
+            }
+            else if (msg.what == ThreadAndHandlerLabel.CallAPIError)
+            {
+                Toast.makeText(Login.this,"请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -185,12 +221,10 @@ public class Login extends Activity implements OnClickListener  {
 //            log_tex.setText("用户名或密码不正确");
 //            return;
 //        }
-        Log.e("登陆成功", "qqww");
-        startActivity(new Intent(Login.this, MainPPVActivity.class));
-        this.finish();
-
         PersonnelVerify personnelVerify =new PersonnelVerify();
-        personnelVerify.UserLogin(et_name.getText().toString(),et_pass.getText().toString(),threadHandler);
+        personnelVerify.UserLogin(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
+        Log.e("登陆成功", "qqww");
+
     }
 
 
