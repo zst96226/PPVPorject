@@ -27,7 +27,7 @@ import static android.view.ViewGroup.*;
 
 public class Login extends Activity implements OnClickListener  {
     /*本地缓存操作对象*/
-    ACache mCache = ACache.get(Login.this);
+    ACache mCache = null;
     // 声明控件对象
     private EditText et_name, et_pass;
     private Button mLoginButton,mLoginError,mRegister,ONLYTEST;
@@ -50,7 +50,7 @@ public class Login extends Activity implements OnClickListener  {
             switch(msg.what){
                 case LOGIN_ENABLE:
                     mLoginButton.setClickable(true);
-//    mLoginButton.setText(R.string.login);
+                    //mLoginButton.setText(R.string.login);
                     break;
                 case LOGIN_UNABLE:
                     mLoginButton.setClickable(false);
@@ -113,6 +113,7 @@ public class Login extends Activity implements OnClickListener  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
+        mCache=ACache.get(this);
         et_name = (EditText) findViewById(R.id.username);
         et_pass = (EditText) findViewById(R.id.password);
         log_tex=(TextView)findViewById(R.id.log_tex);
@@ -221,7 +222,8 @@ public class Login extends Activity implements OnClickListener  {
         PersonnelVerify personnelVerify =new PersonnelVerify();
         personnelVerify.UserLogin(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
         Log.e("登陆成功", "qqww");
-
+        startActivity(new Intent(Login.this, MainPPVActivity.class));
+        Login.this.finish();
     }
 
 
