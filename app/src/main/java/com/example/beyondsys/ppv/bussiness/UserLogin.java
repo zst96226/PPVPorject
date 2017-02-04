@@ -6,13 +6,17 @@ import android.os.Message;
 import android.util.Log;
 
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerMessage;
+import com.example.beyondsys.ppv.tools.GsonUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhsht on 2017/2/4.用户登录
@@ -25,6 +29,9 @@ public class UserLogin {
         new Thread(){
             public void run(){
                 HttpURLConnection connection = null;
+                loginperson person=new loginperson(Id,Pwd);
+                String postJson= GsonUtil.getGson().toJson(person);
+                Log.i("用户Post字符串："+postJson,"TAG");
                 try {
                     // 根据地址创建URL对象
                     URL url = new URL(LoginAPI);
@@ -37,8 +44,7 @@ public class UserLogin {
                     urlConnection.setReadTimeout(5000);
                     urlConnection.setConnectTimeout(5000);
                     // 传递的数据
-                    String data = "Account=" + URLEncoder.encode(Id, "UTF-8") + "&password=" + URLEncoder.encode(Pwd, "UTF-8");
-
+                    String data = postJson;
                     // 设置请求的头
                     urlConnection.setRequestProperty("Connection", "keep-alive");
                     // 设置请求的头
@@ -86,5 +92,13 @@ public class UserLogin {
                 }
             };
         }.start();
+    }
+    public class loginperson implements Serializable{
+        public String Account;
+        public String Password;
+        public loginperson(String account,String password){
+            Account=account;
+            Password=password;
+        }
     }
 }
