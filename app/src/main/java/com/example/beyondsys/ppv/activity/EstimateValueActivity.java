@@ -543,6 +543,8 @@ public class EstimateValueActivity extends AppCompatActivity {
                      +"min:"+step10_min.getText().toString()
                      +"scale:"+step10_scale.getText().toString();
              break;
+
+
          default:
              text="请估算分值";
              break;
