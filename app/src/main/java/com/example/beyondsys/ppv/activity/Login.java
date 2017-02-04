@@ -85,11 +85,8 @@ public class Login extends Activity implements OnClickListener  {
                         Toast.makeText(Login.this,"服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
-
-
                         PersonnelVerify personnelVerify =new PersonnelVerify();
                         personnelVerify.GetIdentifying(threadHandler,mCache);
-
                         break;
                     case 2:
                         Toast.makeText(Login.this,"密码错误，请重新输入或选择忘记密码", Toast.LENGTH_SHORT).show();
