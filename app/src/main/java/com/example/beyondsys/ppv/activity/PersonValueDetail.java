@@ -236,7 +236,31 @@ public class PersonValueDetail extends AppCompatActivity {
 
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, monthOfYear);
-                textView.setText(DateUtil.clanderTodatetime(calendar, "yyyy-MM"));
+                SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
+                String month=monthSum.getText().toString();
+                String  newTime=DateUtil.clanderTodatetime(calendar, "yyyy-MM");
+                Date newDate=null;
+                Date minDate=null;
+                Date nowDate=null;
+                String nowTime=sdf.format(new  java.util.Date());
+                int change= Integer.parseInt(month);
+                String minTime=dateFormat(nowTime, -change);
+                try {
+                    newDate=sdf.parse(newTime);
+                    nowDate=sdf.parse(nowTime);
+                    minDate=sdf.parse(minTime);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if(newDate.getTime()<minDate.getTime()||newDate.getTime()<minDate.getTime())
+                {
+                    textView.setText(nowTime);
+                }
+                else
+                {
+                    textView.setText(DateUtil.clanderTodatetime(calendar, "yyyy-MM"));
+                }
+
 
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE)).show();
