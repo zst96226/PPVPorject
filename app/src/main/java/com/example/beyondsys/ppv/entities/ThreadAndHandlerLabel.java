@@ -14,4 +14,8 @@ public class ThreadAndHandlerLabel {
     public static int GetIdentifying=2;
     /*获取工作项内容成功*/
     public static int GetWorkItem=3;
+    /*获取工作价值内容成功*/
+    public static int GetWorkValue=4;
+    /*获取个人信息成功*/
+    public static int GetOneSelf=5;
 }

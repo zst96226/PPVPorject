@@ -23,22 +23,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by zhsht on 2017/2/5.工作项业务
+ * Created by zhsht on 2017/2/5.工作价值业务
  */
-public class WorkItemBusiness {
-    /*获取对应工作项*/
-    public void GetWorkItem(final Handler handler,int state,int relation,int pageNum,ACache mCache){
-        WorkItemupload person=new WorkItemupload();
-        /*获取缓存中的凭据和团队ID*/
+public class WorkValueBusiness {
+    /*获取工作价值*/
+    public void GetWorkValue(final Handler handler,int state,int pageNum,ACache mCache){
+        WorkValueupload person=new WorkValueupload();
         UserLoginResultEntity userLoginResultEntity=(UserLoginResultEntity)mCache.getAsObject(LocalDataLabel.Proof);
         person.poof=userLoginResultEntity.Proof;
         TeamEntity teamEntity=(TeamEntity)mCache.getAsObject(LocalDataLabel.Label);
         person.teamID=teamEntity.TeamID;
+        person.pagenum=pageNum;
         person.state=state;
-        person.relation=relation;
-        person.pageNum=pageNum;
         String JsonParams= GsonUtil.getGson().toJson(person);
-        final JSONObject postJson= JsonEntity.Getjson("3", JsonParams);
+        final JSONObject postJson= JsonEntity.Getjson("4", JsonParams);
         Log.i("Post:" + postJson, "TAG");
         new Thread(){
             public void run(){
@@ -94,7 +92,7 @@ public class WorkItemBusiness {
                         String result = new String(baos.toByteArray());
                         Log.i("用户登录返回结果："+result,"TAG");
                         Message msg = Message.obtain();
-                        msg.what= ThreadAndHandlerLabel.GetWorkItem;
+                        msg.what= ThreadAndHandlerLabel.GetWorkValue;
                         msg.obj=result;
                         handler.sendMessage(msg);
                     }
@@ -108,11 +106,10 @@ public class WorkItemBusiness {
             }
         }.start();
     }
-    public class WorkItemupload implements Serializable{
+    public class WorkValueupload implements Serializable{
         public String poof;
         public String teamID;
+        public int pagenum;
         public int state;
-        public int relation;
-        public int pageNum;
     }
 }

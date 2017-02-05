@@ -1,5 +1,6 @@
 package com.example.beyondsys.ppv.bussiness;
 
+import android.content.Loader;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -8,7 +9,6 @@ import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.APIEntity;
 import com.example.beyondsys.ppv.entities.JsonEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
-import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
@@ -18,27 +18,18 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by zhsht on 2017/2/5.工作项业务
+ * Created by zhsht on 2017/2/5.个人信息业务逻辑
  */
-public class WorkItemBusiness {
-    /*获取对应工作项*/
-    public void GetWorkItem(final Handler handler,int state,int relation,int pageNum,ACache mCache){
-        WorkItemupload person=new WorkItemupload();
-        /*获取缓存中的凭据和团队ID*/
+public class OneSelfBusiness {
+    /*获取个人信息*/
+    public void GetOneSelf(final Handler handler,ACache mCache){
         UserLoginResultEntity userLoginResultEntity=(UserLoginResultEntity)mCache.getAsObject(LocalDataLabel.Proof);
-        person.poof=userLoginResultEntity.Proof;
-        TeamEntity teamEntity=(TeamEntity)mCache.getAsObject(LocalDataLabel.Label);
-        person.teamID=teamEntity.TeamID;
-        person.state=state;
-        person.relation=relation;
-        person.pageNum=pageNum;
-        String JsonParams= GsonUtil.getGson().toJson(person);
-        final JSONObject postJson= JsonEntity.Getjson("3", JsonParams);
+        String JsonParams= GsonUtil.getGson().toJson(userLoginResultEntity.Proof);
+        final JSONObject postJson= JsonEntity.Getjson("5", JsonParams);
         Log.i("Post:" + postJson, "TAG");
         new Thread(){
             public void run(){
@@ -94,7 +85,7 @@ public class WorkItemBusiness {
                         String result = new String(baos.toByteArray());
                         Log.i("用户登录返回结果："+result,"TAG");
                         Message msg = Message.obtain();
-                        msg.what= ThreadAndHandlerLabel.GetWorkItem;
+                        msg.what= ThreadAndHandlerLabel.GetOneSelf;
                         msg.obj=result;
                         handler.sendMessage(msg);
                     }
@@ -107,12 +98,5 @@ public class WorkItemBusiness {
                 }
             }
         }.start();
-    }
-    public class WorkItemupload implements Serializable{
-        public String poof;
-        public String teamID;
-        public int state;
-        public int relation;
-        public int pageNum;
     }
 }
