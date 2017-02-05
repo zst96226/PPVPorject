@@ -35,7 +35,7 @@ import java.util.Map;
 
 public class PersonValueDetail extends AppCompatActivity {
     private ListView listView;
-    private TextView textView,monthSum,valueSum;
+    private TextView textView,monthSum,valueSum,personName;
     private ImageView back,lastone,nextone,lastmonth,nextmonth;
 
     @Override
@@ -43,6 +43,7 @@ public class PersonValueDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_value_detail);
         init();
+        setData();
         setListener();
     }
 
@@ -57,7 +58,17 @@ public class PersonValueDetail extends AppCompatActivity {
         nextmonth=(ImageView)findViewById(R.id.nextMonth);
         monthSum=(TextView)findViewById(R.id.monthsum_tex);
         valueSum=(TextView)findViewById(R.id.valuesum_tex);
+        personName=(TextView)findViewById(R.id.personname_tex);
     }
+    private void setData()
+    {
+        String name="";
+        Intent intent=getIntent();
+        Bundle bundle=intent.getExtras();
+        name=bundle.getString("personName");
+        personName.setText(name);
+    }
+
     private void setListener()
     {
         SimpleAdapter adapter = new SimpleAdapter(this, getData(), R.layout.valuedetailstyle, new String[]{"itemImg", "itemName", "planValue", "trueValue"},

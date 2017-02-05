@@ -71,7 +71,8 @@ public class WorkItemView extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent intent = new Intent(getActivity(), WorkItemDetail.class);
-                intent.putExtra("ItemName","");//view.findViewById(R.id.workname_tex)
+                TextView ItemName_tex=(TextView)view.findViewById(R.id.workname_tex);
+                intent.putExtra("ItemName",ItemName_tex.getText().toString());//
                 startActivity(intent);
             }
         });
