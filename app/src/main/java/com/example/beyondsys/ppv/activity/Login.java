@@ -77,6 +77,7 @@ public class Login extends Activity implements OnClickListener  {
         public void handleMessage (Message msg){
             if (msg.what == ThreadAndHandlerLabel.UserLogin)
             {
+                Log.i(msg.obj.toString(),"FHZ");
                 /*判断返回结果*/
                 UserLoginResultEntity model=(UserLoginResultEntity)msg.obj;
                 switch (model.Result)
@@ -219,16 +220,17 @@ public class Login extends Activity implements OnClickListener  {
 //            log_tex.setText("用户名或密码不正确");
 //            return;
 //        }
+//        LoginBusiness personnelVerify =new LoginBusiness();
+//        personnelVerify.UserLogin(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
 
-        LoginBusiness personnelVerify =new LoginBusiness();
-        personnelVerify.UserLogin(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
+        String str="{\"MethodID\": \"100\", \"Param\": \"{\\\"AccountName\\\":\\\"egdhdhehr\\\",\\\"Password\\\":\\\"cndndnfnf\\\"}\"}";
+
+        LoginBusiness loginBusiness=new LoginBusiness();
+        loginBusiness.Login(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
         Log.e("登陆成功", "qqww");
         startActivity(new Intent(Login.this, MainPPVActivity.class));
         Login.this.finish();
     }
-
-
-
     /**
      * 监听Back键按下事件,方法2:
      * 注意:

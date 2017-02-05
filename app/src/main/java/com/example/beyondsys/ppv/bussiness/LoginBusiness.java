@@ -14,13 +14,21 @@ import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 
 import org.json.JSONObject;
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by zhsht on 2017/2/4.登录业务
@@ -276,5 +284,61 @@ public class LoginBusiness {
         public String Account;
         public String OldPassword;
         public String NewPassword;
+    }
+
+    /*webServer命名空间*/
+    private static final String serviceNameSpace="http://sysmagic.com.cn/";
+    /*WSDL文档中的URL*/
+    private static final String WSDL = "http://120.26.37.247:8181/WSPPVService.asmx";
+    /*调用的方法*/
+    private static final String Login="ActionCommand";
+
+    private static final String soapAction="http://120.26.37.247:8181/ActionCommand";
+
+    /*用户登录*/
+    public void Login(String Id, String Pwd, final Handler handler){
+//        loginperson person = new loginperson(Id, Pwd);
+//        //String JsonParams = GsonUtil.getGson().toJson(person);
+//        final JSONObject postJson = JsonEntity.Getjson("100", "");
+
+        final String person=JsonEntity.GroupJSON("100", Id, Pwd);
+        Log.i("提交对象："+person, "FHZ");
+
+        new Thread(){
+            public void run(){
+                /*根据命名空间和方法得到SoapObject对象*/
+                SoapObject soapObject = new SoapObject(serviceNameSpace,Login);
+                soapObject.addProperty("actionJsonvalue", person);
+                // 通过SOAP1.1协议得到envelop对象
+                SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+                // 将soapObject对象设置为envelop对象，传出消息
+                envelop.bodyOut = soapObject;
+                envelop.dotNet = true;
+                envelop.setOutputSoapObject(soapObject);
+                HttpTransportSE httpSE = new HttpTransportSE(WSDL);
+                // 开始调用远程方法
+                try {
+                    httpSE.call(soapAction, envelop);
+                    // 得到远程方法返回的SOAP对象
+                    SoapObject resultObj = (SoapObject) envelop.getResponse();
+                    Log.i("sta6", "FHZ");
+                    Log.i(resultObj.toString(),"FHZ");
+//                    SoapObject object = (SoapObject) envelop.bodyIn;
+                    Log.i("sta7","FHZ");
+                    int count = resultObj.getPropertyCount();
+                    for (int i = 0; i < count; i++) {
+                        Log.i(resultObj.getProperty(i).toString(),"FHZ");
+                    }
+
+                    Message msg = Message.obtain();
+                    msg.what = ThreadAndHandlerLabel.UserLogin;
+                    msg.obj = resultObj;
+                    handler.sendMessage(msg);
+                } catch (IOException | XmlPullParserException e) {
+                    e.printStackTrace();
+                    Log.i(e.getMessage().toString(),"FHZ");
+                }
+            }
+        }.start();
     }
 }

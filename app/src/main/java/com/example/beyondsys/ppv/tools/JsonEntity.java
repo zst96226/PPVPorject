@@ -34,11 +34,17 @@ public class JsonEntity{
         JSONObject object = new JSONObject();//创建一个总的对象，这个对象对整个json串
         try {
             object.put("MethodID", methodID);
-            object.put("JsonParams", jsonParams);//向总对象里面添加包含pet的数组
+            object.put("Param", jsonParams);
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return object;
+    }
+
+    public static String GroupJSON(String methodID,String id,String pwd){
+        String jsonstr="";
+        jsonstr="{\"MethodID\":\""+methodID+"\",\"Param\":\"{\\\"AccountName\\\":\\\""+id+"\\\",\\\"Password\\\":\\\""+pwd+"\\\"}\"}";
+        return jsonstr;
     }
 }
