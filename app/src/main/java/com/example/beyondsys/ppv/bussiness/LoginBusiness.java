@@ -32,7 +32,6 @@ public class LoginBusiness {
         loginperson person=new loginperson(Id,Pwd);
         String JsonParams= GsonUtil.getGson().toJson(person);
         final JSONObject postJson=JsonEntity.Getjson("1", JsonParams);
-//        final String postJson="{\"MethodID\":\"1\",\"JsonParams\":{\"Account\":\""+Id+"\",\"Password\":\""+Pwd+"\"}}";
         Log.i("Post:"+postJson, "TAG");
         new Thread(){
             public void run(){

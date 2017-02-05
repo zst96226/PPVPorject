@@ -6,4 +6,6 @@ package com.example.beyondsys.ppv.entities;
 public class LocalDataLabel{
     /*用户凭据*/
     public static final String Proof = "proof_PERSON";
+    /*运行标识*/
+    public static final String Label = "label_PERSON";
 }

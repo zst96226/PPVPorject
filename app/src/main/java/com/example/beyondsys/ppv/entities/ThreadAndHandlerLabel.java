@@ -12,4 +12,6 @@ public class ThreadAndHandlerLabel {
     public static int LocalNotdata=1;
     /*获取人员标识成功*/
     public static int GetIdentifying=2;
+    /*获取工作项内容成功*/
+    public static int GetWorkItem=3;
 }
