@@ -17,8 +17,11 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.entities.WorkItemEntity;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +31,11 @@ import java.util.Map;
  */
 public class WorkItemView extends Fragment {
 
-    ListView listView;
-    View rootView;
-    LinearLayout wi_s_one;
-    TextView  wi_s_one_txt;
+   private ListView listView;
+    private View rootView;
+    private LinearLayout wi_s_one;
+    private TextView  wi_s_one_txt;
+    private WorkItemEntity workItemEntity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,7 +56,6 @@ public class WorkItemView extends Fragment {
         listView=(ListView)rootView.findViewById(R.id.workitem_list);
         wi_s_one=(LinearLayout)rootView.findViewById(R.id.wi_s_one);
         wi_s_one_txt=(TextView)rootView.findViewById(R.id.wi_s_one_txt);
-
     }
 
     private void SetList(){
@@ -68,6 +71,8 @@ public class WorkItemView extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent intent = new Intent(getActivity(), WorkItemDetail.class);
+                TextView ItemName_tex=(TextView)view.findViewById(R.id.workname_tex);
+                intent.putExtra("ItemName",ItemName_tex.getText().toString());//
                 startActivity(intent);
             }
         });
@@ -96,58 +101,92 @@ public class WorkItemView extends Fragment {
 
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("workimg", R.drawable.work_item);
-        map.put("workName", "事务1");
-        map.put("workState", R.drawable.img_done);
-        map.put("endingTime", "2017/11/22");
-        map.put("workValue", "100");
-        map.put("strartTime", "2017/11/22");
+        int listLength=10;
+        for(int i=0;i<listLength;i++)
+        {
+            Map<String, Object> map = new HashMap<String, Object>();
+            workItemEntity=new WorkItemEntity();
+            workItemEntity.BID="BID"+i;
+            workItemEntity.ID="ID"+i;
+            workItemEntity.FID="FID"+i;
+            workItemEntity.Name="Name"+i;
+            workItemEntity.Description="Des"+i;
+            workItemEntity.Category=i;
+            workItemEntity.Status=i;
+            workItemEntity.Assigned2="Assigned"+i;
+            workItemEntity.Belong2="Belong"+i;
+            workItemEntity.Checker="Check"+i;
+            workItemEntity.Creater="Creater"+i;
+            workItemEntity.CreateTime="Createtime"+i;
+            workItemEntity.ClosingTime="ClosingTime"+i;
+            workItemEntity.Modifier="Modifier"+i;
+            workItemEntity.ModifyTime="ModifiyTime"+i;
+            workItemEntity.BusinessValue=i;
+            workItemEntity.BasicScore=i;
+            workItemEntity.CheckedScore=i;
+            workItemEntity.HardScale=i;
+            workItemEntity.Remark="Remark"+i;
+            map.put("workimg", R.drawable.work_item);
+            map.put("workName", workItemEntity.Name);
+            map.put("workState", R.drawable.img_done);
+            map.put("endingTime", workItemEntity.ClosingTime);
+            map.put("workValue", workItemEntity.BusinessValue);
+            map.put("strartTime", workItemEntity.CreateTime);
         list.add(map);
+        }
 
-        map = new HashMap<String, Object>();
-        map.put("workimg", R.drawable.work_item);
-        map.put("workName", "事务2");
-        map.put("workState", R.drawable.img_pro);
-        map.put("endingTime", "2017/11/22");
-        map.put("workValue", "100");
-        map.put("strartTime", "2017/11/22");
-        list.add(map);
 
-        map = new HashMap<String, Object>();
-        map.put("workimg", R.drawable.work_item);
-        map.put("workName", "事务3");
-        map.put("workState", R.drawable.img_proing);
-        map.put("endingTime", "2017/11/22");
-        map.put("workValue", "100");
-        map.put("strartTime", "2017/11/22");
-        list.add(map);
-        map = new HashMap<String, Object>();
-        map.put("workimg", R.drawable.work_item);
-        map.put("workName", "事务4");
-        map.put("workState", R.drawable.img_del);
-        map.put("endingTime", "2017/11/22");
-        map.put("workValue", "100");
-        map.put("strartTime", "2017/11/22");
-        list.add(map);
-
-        map = new HashMap<String, Object>();
-        map.put("workimg", R.drawable.work_item);
-        map.put("workName", "事务5");
-        map.put("workState", R.drawable.img_proing);
-        map.put("endingTime", "2017/11/22");
-        map.put("workValue", "100");
-        map.put("strartTime", "2017/11/22");
-        list.add(map);
-
-        map = new HashMap<String, Object>();
-        map.put("workimg", R.drawable.work_item);
-        map.put("workName", "事务6");
-        map.put("workState", R.drawable.img_proing);
-        map.put("endingTime", "2017/11/22");
-        map.put("workValue", "100");
-        map.put("strartTime", "2017/11/22");
-        list.add(map);
+//        map.put("workimg", R.drawable.work_item);
+//        map.put("workName", "事务1");
+//        map.put("workState", R.drawable.img_done);
+//        map.put("endingTime", "2017/11/22");
+//        map.put("workValue", "100");
+//        map.put("strartTime", "2017/11/22");
+//        list.add(map);
+//
+//        map = new HashMap<String, Object>();
+//        map.put("workimg", R.drawable.work_item);
+//        map.put("workName", "事务2");
+//        map.put("workState", R.drawable.img_pro);
+//        map.put("endingTime", "2017/11/22");
+//        map.put("workValue", "100");
+//        map.put("strartTime", "2017/11/22");
+//        list.add(map);
+//
+//        map = new HashMap<String, Object>();
+//        map.put("workimg", R.drawable.work_item);
+//        map.put("workName", "事务3");
+//        map.put("workState", R.drawable.img_proing);
+//        map.put("endingTime", "2017/11/22");
+//        map.put("workValue", "100");
+//        map.put("strartTime", "2017/11/22");
+//        list.add(map);
+//        map = new HashMap<String, Object>();
+//        map.put("workimg", R.drawable.work_item);
+//        map.put("workName", "事务4");
+//        map.put("workState", R.drawable.img_del);
+//        map.put("endingTime", "2017/11/22");
+//        map.put("workValue", "100");
+//        map.put("strartTime", "2017/11/22");
+//        list.add(map);
+//
+//        map = new HashMap<String, Object>();
+//        map.put("workimg", R.drawable.work_item);
+//        map.put("workName", "事务5");
+//        map.put("workState", R.drawable.img_proing);
+//        map.put("endingTime", "2017/11/22");
+//        map.put("workValue", "100");
+//        map.put("strartTime", "2017/11/22");
+//        list.add(map);
+//
+//        map = new HashMap<String, Object>();
+//        map.put("workimg", R.drawable.work_item);
+//        map.put("workName", "事务6");
+//        map.put("workState", R.drawable.img_proing);
+//        map.put("endingTime", "2017/11/22");
+//        map.put("workValue", "100");
+//        map.put("strartTime", "2017/11/22");
+//        list.add(map);
         return list;
     }
 }

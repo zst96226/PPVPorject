@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.tools.PopupMenuForWorkItem;
@@ -29,7 +30,7 @@ public class WorkItemDetail extends AppCompatActivity {
     ImageView menu;
     LinearLayout main_workitem;
     ListView child_list;
-
+private TextView item_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +50,8 @@ public class WorkItemDetail extends AppCompatActivity {
         main_workitem=(LinearLayout)findViewById(R.id.main_workitem);
         child_list=(ListView)findViewById(R.id.wid_list);
         returen=(ImageView)findViewById(R.id.wid_return);
+        item_name=(TextView)findViewById(R.id.wid_workname);
+
     }
 
     private void Listener(){
@@ -131,6 +134,10 @@ public class WorkItemDetail extends AppCompatActivity {
     }
 
     private void SetData(){
-
+Intent intent=getIntent();
+        String name="";
+        Bundle bundle=intent.getExtras();
+         name=bundle.getString("ItemName");
+        item_name.setText(name);
     }
 }

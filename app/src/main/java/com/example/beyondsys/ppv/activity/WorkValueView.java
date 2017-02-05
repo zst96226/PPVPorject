@@ -86,14 +86,11 @@ public class WorkValueView extends Fragment {
         filter_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("qqww4","qqww");
-                if(filter_tex.getText().toString().equals(getResources().getString(R.string.filter_by_currentmonth)))
-                {
-                    Log.e("qqww5","qqww");
+                Log.e("qqww4", "qqww");
+                if (filter_tex.getText().toString().equals(getResources().getString(R.string.filter_by_currentmonth))) {
+                    Log.e("qqww5", "qqww");
                     filter_tex.setText(R.string.filter_by_all);
-                }
-                else
-                {
+                } else {
                     filter_tex.setText(R.string.filter_by_currentmonth);
                 }
             }
@@ -101,11 +98,9 @@ public class WorkValueView extends Fragment {
         topme_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(topme_che.isChecked())
-                {
+                if (topme_che.isChecked()) {
                     topme_che.setChecked(false);
-                }else
-                {
+                } else {
                     topme_che.setChecked(true);
                 }
             }
@@ -119,8 +114,13 @@ public class WorkValueView extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                String personName="";
                 Intent intent = new Intent(getActivity(), PersonValueDetail.class);
+                TextView person=(TextView)view.findViewById(R.id.personname_tex);
+                 personName=person.getText().toString();
+                intent.putExtra("personName",personName);
+              //传递ID
+              intent.putExtra("ID","");
                 startActivity(intent);
             }
         });
