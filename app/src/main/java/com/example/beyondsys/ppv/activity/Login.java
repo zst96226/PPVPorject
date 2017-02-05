@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
-import com.example.beyondsys.ppv.bussiness.PersonnelVerify;
+import com.example.beyondsys.ppv.bussiness.LoginBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
@@ -85,7 +85,7 @@ public class Login extends Activity implements OnClickListener  {
                         Toast.makeText(Login.this,"服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
-                        PersonnelVerify personnelVerify =new PersonnelVerify();
+                        LoginBusiness personnelVerify =new LoginBusiness();
                         personnelVerify.GetIdentifying(threadHandler,mCache);
                         break;
                     case 2:
@@ -219,7 +219,8 @@ public class Login extends Activity implements OnClickListener  {
 //            log_tex.setText("用户名或密码不正确");
 //            return;
 //        }
-        PersonnelVerify personnelVerify =new PersonnelVerify();
+
+        LoginBusiness personnelVerify =new LoginBusiness();
         personnelVerify.UserLogin(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
         Log.e("登陆成功", "qqww");
         startActivity(new Intent(Login.this, MainPPVActivity.class));

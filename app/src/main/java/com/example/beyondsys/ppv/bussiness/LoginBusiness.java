@@ -3,13 +3,16 @@ package com.example.beyondsys.ppv.bussiness;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.APIEntity;
+import com.example.beyondsys.ppv.entities.JsonEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -17,26 +20,27 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Objects;
 
 /**
- * Created by zhsht on 2017/2/4.登录以及获取人员信息
+ * Created by zhsht on 2017/2/4.登录业务
  */
-public class PersonnelVerify {
-    /*登录API*/
-    public String LoginAPI = "";
-    /*获取标识API*/
-    public String IdentifyingAPI="";
+public class LoginBusiness {
     /*用户登录*/
-    public void UserLogin(final String Id,final String Pwd,final Handler handler){
+    public void UserLogin(String Id,String Pwd,final Handler handler){
+
+        loginperson person=new loginperson(Id,Pwd);
+        String JsonParams= GsonUtil.getGson().toJson(person);
+        final JSONObject postJson=JsonEntity.Getjson("1", JsonParams);
+//        final String postJson="{\"MethodID\":\"1\",\"JsonParams\":{\"Account\":\""+Id+"\",\"Password\":\""+Pwd+"\"}}";
+        Log.i("Post:"+postJson, "TAG");
         new Thread(){
             public void run(){
                 HttpURLConnection connection = null;
-                loginperson person=new loginperson(Id,Pwd);
-                String postJson= GsonUtil.getGson().toJson(person);
-                Log.i("用户Post字符串："+postJson,"TAG");
+
                 try {
                     // 根据地址创建URL对象
-                    URL url = new URL(LoginAPI);
+                    URL url = new URL(APIEntity.LoginAPI);
                     // 根据URL对象打开链接
                     HttpURLConnection urlConnection = (HttpURLConnection) url
                             .openConnection();
@@ -46,7 +50,7 @@ public class PersonnelVerify {
                     urlConnection.setReadTimeout(5000);
                     urlConnection.setConnectTimeout(5000);
                     // 传递的数据
-                    String data = postJson;
+                    String data = postJson.toString();
                     // 设置请求的头
                     urlConnection.setRequestProperty("Connection", "keep-alive");
                     // 设置请求的头
@@ -111,15 +115,15 @@ public class PersonnelVerify {
         /*从缓存中获取凭据*/
         UserLoginResultEntity model=(UserLoginResultEntity)mCache.getAsObject(LocalDataLabel.Proof);
         if(model!=null && !model.Proof.equals("")) {
-            final String _poof = model.Proof;
+            String _poof = model.Proof;
+            final JSONObject postJson=JsonEntity.Getjson("8", _poof);
+            Log.i("用户Post字符串："+postJson,"TAG");
             new Thread(){
               public void run(){
                   HttpURLConnection connection = null;
-                  String postJson= GsonUtil.getGson().toJson(_poof);
-                  Log.i("用户Post字符串："+postJson,"TAG");
                   try {
                       // 根据地址创建URL对象
-                      URL url = new URL(IdentifyingAPI);
+                      URL url = new URL(APIEntity.IdentifyingAPI);
                       // 根据URL对象打开链接
                       HttpURLConnection urlConnection = (HttpURLConnection) url
                               .openConnection();
@@ -129,7 +133,7 @@ public class PersonnelVerify {
                       urlConnection.setReadTimeout(5000);
                       urlConnection.setConnectTimeout(5000);
                       // 传递的数据
-                      String data = postJson;
+                      String data = postJson.toString();
                       // 设置请求的头
                       urlConnection.setRequestProperty("Connection", "keep-alive");
                       // 设置请求的头
