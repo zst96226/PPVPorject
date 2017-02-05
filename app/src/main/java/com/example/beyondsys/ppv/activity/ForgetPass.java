@@ -5,10 +5,12 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.beyondsys.ppv.R;
 /**
@@ -18,6 +20,7 @@ public class ForgetPass extends AppCompatActivity {
     private ImageView back;
     private LinearLayout phone_layout,email_layout,service_layout,sub_layout;
     private RelativeLayout sure_layout,cancel_layout;
+    private TextView road_tex;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +37,7 @@ public class ForgetPass extends AppCompatActivity {
         sub_layout=(LinearLayout)findViewById(R.id.sub_layout);
         sure_layout=(RelativeLayout)findViewById(R.id.sure);
         cancel_layout=(RelativeLayout)findViewById(R.id.cancel);
-
+        road_tex=(TextView)findViewById(R.id.road_tex);
     }
     private void setListener()
     {
@@ -52,6 +55,7 @@ public class ForgetPass extends AppCompatActivity {
                     email_layout.setVisibility(View.GONE);
                     service_layout.setVisibility(View.GONE);
                     sub_layout.setVisibility(View.VISIBLE);
+                    road_tex.setText(getResources().getString(R.string.userPhone));
                 }
                 else
                 {
@@ -69,6 +73,7 @@ public class ForgetPass extends AppCompatActivity {
                     phone_layout.setVisibility(View.GONE);
                     service_layout.setVisibility(View.GONE);
                     sub_layout.setVisibility(View.VISIBLE);
+                    road_tex.setText(getResources().getString(R.string.userEmail));
                 }
                 else
                 {
@@ -82,6 +87,7 @@ public class ForgetPass extends AppCompatActivity {
         service_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sub_layout.setVisibility(View.GONE);
 //                if((phone_layout.getVisibility()==View.VISIBLE||email_layout.getVisibility()==View.VISIBLE)&&sub_layout.getVisibility()==View.GONE)
 //                {
 //                    phone_layout.setVisibility(View.GONE);

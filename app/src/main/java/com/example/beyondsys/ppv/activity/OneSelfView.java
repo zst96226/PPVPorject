@@ -102,7 +102,7 @@ private LinearLayout personInfoLayout;
                     }
                     else
                     {
-                    //服务端验证原密码
+                        //服务端验证原密码
                         Toast toast=Toast.makeText(getActivity().getApplicationContext(),"修改成功!",Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.CENTER,0,0);
                         toast.show();

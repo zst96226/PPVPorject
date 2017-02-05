@@ -4,19 +4,47 @@
     android:layout_height="fill_parent"
     android:background="@color/forget"
     android:fitsSystemWindows="true" >
+    <LinearLayout
+        android:id="@+id/head_layout"
+        android:layout_width="match_parent"
+        android:layout_height="200sp"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/login_img"
+            android:layout_width="120sp"
+            android:layout_height="120sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20sp"
+            android:layout_marginBottom="5sp"
+            android:background="@drawable/border"
+            android:src="@drawable/person"/>
+        <TextView
+            android:id="@+id/login_name_tex"
+            android:layout_width="wrap_content"
+            android:layout_height="50sp"
+            android:layout_marginTop="5sp"
+            android:layout_marginBottom="5sp"
+            android:background="@color/forget"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="155 2345 1234" />
+    </LinearLayout>
     <RelativeLayout
         android:id="@+id/login_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20sp"
         android:layout_marginRight="20sp"
+        android:layout_below="@+id/head_layout"
         android:background="@color/forget"
         android:gravity="center" >
         <FrameLayout
             android:id="@+id/username_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="55sp"
+            android:layout_marginTop="10sp"
             android:background="@color/White"
             android:gravity="center" >
             <EditText
@@ -139,26 +167,26 @@
        <Button
            android:id="@+id/register"
            android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
+           android:layout_height="20sp"
            android:layout_marginLeft="10sp"
            android:background="@color/White"
            android:gravity="center"
            android:text="注册"
            android:textStyle="bold"
            android:textColor="@color/colorAccent"
-           android:textSize="18sp"
+           android:textSize="12sp"
            android:visibility="visible" />
        <Button
            android:id="@+id/login_error"
            android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
+           android:layout_height="20sp"
            android:layout_marginRight="10sp"
            android:background="@color/White"
            android:layout_alignParentRight="true"
            android:text="忘记密码"
            android:textStyle="bold"
            android:textColor="@color/colorAccent"
-           android:textSize="18sp" />
+           android:textSize="12sp" />
 
    </RelativeLayout>
 
