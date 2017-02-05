@@ -1,23 +1,15 @@
-package com.example.beyondsys.ppv.entities;
+package com.example.beyondsys.ppv.tools;
 
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 
 /**
- * Created by zhsht on 2017/2/5.组织上传Json
+ * Created by zhsht on 2017/2/5.JSON工具类
  */
-public class JsonEntity implements Serializable{
-
-    public String MethodID;
-    public String JsonParams;
-//    public JsonEntity(String methodID,String jsonParams){
-//        this.MethodID=methodID;
-//        this.JsonParams=jsonParams;
-//    }
+public class JsonEntity{
 
     public static String JsonStr(String methodID,String jsonParams){
 

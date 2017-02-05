@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.APIEntity;
-import com.example.beyondsys.ppv.entities.JsonEntity;
+import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
@@ -56,7 +56,7 @@ public class WorkItemBusiness {
                     urlConnection.setReadTimeout(5000);
                     urlConnection.setConnectTimeout(5000);
                     // 传递的数据
-                    String data = postJson.toString();
+                    String data ="parameter="+ postJson.toString();
                     // 设置请求的头
                     urlConnection.setRequestProperty("Connection", "keep-alive");
                     // 设置请求的头
