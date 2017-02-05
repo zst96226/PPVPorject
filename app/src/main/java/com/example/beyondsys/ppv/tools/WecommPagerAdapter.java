@@ -8,7 +8,7 @@ import android.view.View;
 import java.util.List;
 
 /**
- * Created by Sysmagic on 2017/1/19.
+ * Created by yhp on 2017/1/19.
  */
 public class WecommPagerAdapter extends PagerAdapter {
 

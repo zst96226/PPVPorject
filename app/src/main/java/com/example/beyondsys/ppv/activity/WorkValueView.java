@@ -17,7 +17,10 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.entities.ValueDetailEntity;
+import com.example.beyondsys.ppv.entities.WorkValueEntity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +38,7 @@ public class WorkValueView extends Fragment {
     private CheckBox topme_che;
     private ImageView sort_img;
     private TextView sort_tex,filter_tex;
+    private WorkValueEntity valueEntity;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,6 +59,7 @@ public class WorkValueView extends Fragment {
         sort_tex=(TextView)rootView.findViewById(R.id.wv_sort_txt);
         filter_tex=(TextView)rootView.findViewById(R.id.wv_filter_txt);
 
+
     }
     private void setListenter()
     {
@@ -68,11 +73,13 @@ public class WorkValueView extends Fragment {
                   Log.e("qqww3","qqww");
                   sort_img.setImageResource(R.drawable.sort_down);
                   sort_tex.setText(R.string.sortdown);
+                  //降排序函数；
               }
             else
               {
                   sort_img.setImageResource(R.drawable.sort_up);
                   sort_tex.setText(R.string.sortup);
+                  //升排序函数；
               }
           }
       });
@@ -126,29 +133,30 @@ public class WorkValueView extends Fragment {
 
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("personImg",  R.drawable.person );
-        map.put("personName", "张三");
-        map.put("valueSum", "100分");
-        map.put("monthSum", "3个月");
-        list.add(map);
-
-        map = new HashMap<String, Object>();
-        map.put("personImg",  R.drawable.person);
-        map.put("personName", "王五");
-        map.put("valueSum", "70分");
-        map.put("monthSum", "4个月");
-        list.add(map);
-
-        map = new HashMap<String, Object>();
-        map.put("personImg",  R.drawable.person);
-        map.put("personName", "李四");
-        map.put("valueSum", "30分");
-        map.put("monthSum", "7个月");
-        list.add(map);
-
+        for (int i=0;i<10;i++) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            valueEntity = new WorkValueEntity();
+           // valueEntity.IMGTarget="";
+            valueEntity.BID = "BID" + i;
+            valueEntity.ID = "ID" + i;
+            valueEntity.Name = "Name" + i;
+            valueEntity.Status=i;
+            valueEntity.ScoreCount=i*100;
+            valueEntity.MonthCount=i;
+           String  MonthCount= valueEntity.MonthCount+"个月";
+            map.put("personImg",  R.drawable.person );
+            map.put("personName", valueEntity.Name);
+            map.put("valueSum",  valueEntity.ScoreCount);
+            map.put("monthSum", valueEntity.MonthCount);
+            list.add(map);
+        }
         return list;
     }
 
+
+        private void sortup()
+        {
+
+        }
 
 }

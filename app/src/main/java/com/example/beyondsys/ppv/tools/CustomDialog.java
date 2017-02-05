@@ -2,6 +2,7 @@ package com.example.beyondsys.ppv.tools;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +36,36 @@ public class CustomDialog extends Dialog {
         super.setContentView(mView);
     }
 
-    public View getEditText(){
-        return oldpass_edt;
+    public String getNewPass()
+    {
+        String newpass="";
+        if(TextUtils.isEmpty(newpass_edt.getText()))
+        {
+            return newpass;
+        }
+        newpass=newpass_edt.getText().toString();
+        return  newpass;
+    }
+
+    public  String getChePass()
+    {
+        String chepass="";
+        if(TextUtils.isEmpty(checkpass_edt.getText()))
+        {
+            return chepass;
+        }
+        chepass=checkpass_edt.getText().toString();
+        return  chepass;
+    }
+
+    public String  getoldpass(){
+        String  oldpass="";
+        if (TextUtils.isEmpty(oldpass_edt.getText().toString()))
+        {
+            return  oldpass;
+        }
+       oldpass=oldpass_edt.getText().toString();
+        return oldpass;
     }
 
     @Override
