@@ -104,20 +104,12 @@ private  void setdefault()
                 if (assignme == flag) {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt_2);
                     flag = aboutme;
+                    SetList();
                 } else {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt);
                     flag = assignme;
+                    SetList();
                 }
-//                String nowShowTxt=wi_s_one_txt.getText().toString();
-//                Log.e(nowShowTxt,"123");
-//                if (nowShowTxt.equals("指派给我"))
-//                {
-//                    wi_s_one_txt.setText(R.string.wi_s_one_txt_2);
-//                }
-//                else
-//                {
-//                    wi_s_one_txt.setText(R.string.wi_s_one_txt);
-//                }
             }
         });
 
@@ -128,6 +120,7 @@ private  void setdefault()
                 setdefault();
                 undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
                 flag = undo;
+                SetList();
             }
         });
 
@@ -137,6 +130,7 @@ private  void setdefault()
                 setdefault();
                 proing_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
                 flag = progress;
+                SetList();
             }
         });
 
@@ -146,6 +140,7 @@ private  void setdefault()
                 setdefault();
                 done_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
                 flag = done;
+                SetList();
             }
         });
 
@@ -167,36 +162,12 @@ private  void setdefault()
 
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        list.clear();
         //根据flag获取各状态事务对象列表
-     //   List<WorkItemEntity> entityList=getEntities(flag);
-        //查询出指派给我的各事项列表
-        for(int i=0;i<10;i++)
+        Log.e(flag+"","qq");
+       List<WorkItemEntity> entityList=getEntities(flag);
+        for (WorkItemEntity workItemEntity:entityList)
         {
-            workItemEntity=new WorkItemEntity();
-            workItemEntity.BID="BID"+i;
-            workItemEntity.ID="ID"+i;
-            workItemEntity.FID="FID"+i;
-            workItemEntity.Name="Name"+i;
-            workItemEntity.Description="Des"+i;
-            workItemEntity.Category=i;
-            workItemEntity.Status=i;
-            workItemEntity.Assigned2="Assigned"+i;
-            workItemEntity.Belong2="Belong"+i;
-            workItemEntity.Checker="Check"+i;
-            workItemEntity.Creater="Creater"+i;
-            workItemEntity.CreateTime="Createtime"+i;
-            workItemEntity.ClosingTime="ClosingTime"+i;
-            workItemEntity.Modifier="Modifier"+i;
-            workItemEntity.ModifyTime="ModifiyTime"+i;
-            workItemEntity.BusinessValue=i;
-            workItemEntity.BasicScore=i;
-            workItemEntity.CheckedScore=i;
-            workItemEntity.HardScale=i;
-            workItemEntity.Remark="Remark"+i;
-//            entityList.add(workItemEntity);
-//            Log.e(entityList.get(i).Name.toString(), "qq");
-
-
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("workimg", R.drawable.work_item);
             map.put("workName", workItemEntity.Name);
@@ -209,70 +180,76 @@ private  void setdefault()
         }
         return list;
     }
-    private  List<Map<String, Object>> entities2maps( List<WorkItemEntity> entityList)
-    {
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        for (WorkItemEntity workItemEntity:entityList)
-        {
-
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("workimg", R.drawable.work_item);
-            map.put("workName", workItemEntity.Name);
-            map.put("workState", R.drawable.img_done);
-            map.put("endingTime", workItemEntity.ClosingTime);
-            map.put("workValue", workItemEntity.BusinessValue);
-            map.put("strartTime", workItemEntity.CreateTime);
-            list.add(map);
-        }
-        return list;
-    }
+//    private  List<Map<String, Object>> entities2maps( List<WorkItemEntity> entityList)
+//    {
+//        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+//        for (WorkItemEntity workItemEntity:entityList)
+//        {
+//
+//            Map<String, Object> map = new HashMap<String, Object>();
+//            map.put("workimg", R.drawable.work_item);
+//            map.put("workName", workItemEntity.Name);
+//            map.put("workState", R.drawable.img_done);
+//            map.put("endingTime", workItemEntity.ClosingTime);
+//            map.put("workValue", workItemEntity.BusinessValue);
+//            map.put("strartTime", workItemEntity.CreateTime);
+//            list.add(map);
+//        }
+//        return list;
+//    }
     private  List<WorkItemEntity> getEntities(int flag)
     {
-        List<WorkItemEntity> entityList=null;
-        //        switch (flag)
-//        {
-//            case assignme:
-//
-//                break;
-//            case aboutme:
-//                break;
-//            case undo:
-//                break;
-//            case progress:
-//                break;
-//            case done:
-//                break;
-//            case cancel:
-//                break;
-//            default:
-//                    break;
-//        }
-        for(int i=0;i<10;i++)
+        List<WorkItemEntity> entityList=new ArrayList<WorkItemEntity>();
+                switch (flag)
         {
-            WorkItemEntity workItemEntity=new WorkItemEntity();
-            workItemEntity.BID="BID"+i;
-            workItemEntity.ID="ID"+i;
-            workItemEntity.FID="FID"+i;
-            workItemEntity.Name="Name"+i;
-            workItemEntity.Description="Des"+i;
-            workItemEntity.Category=i;
-            workItemEntity.Status=i;
-            workItemEntity.Assigned2="Assigned"+i;
-            workItemEntity.Belong2="Belong"+i;
-            workItemEntity.Checker="Check"+i;
-            workItemEntity.Creater="Creater"+i;
-            workItemEntity.CreateTime="Createtime"+i;
-            workItemEntity.ClosingTime="ClosingTime"+i;
-            workItemEntity.Modifier="Modifier"+i;
-            workItemEntity.ModifyTime="ModifiyTime"+i;
-            workItemEntity.BusinessValue=i;
-            workItemEntity.BasicScore=i;
-            workItemEntity.CheckedScore=i;
-            workItemEntity.HardScale=i;
-            workItemEntity.Remark="Remark"+i;
-            entityList.add(workItemEntity);
-            Log.e(entityList.get(i).Name.toString(), "qq");
+            case assignme:
+                for(int i=0;i<10;i++)
+                {
+                    WorkItemEntity workItemEntity=new WorkItemEntity();
+                    workItemEntity.BID="BID"+i;
+                    workItemEntity.ID="ID"+i;
+                    workItemEntity.FID="FID"+i;
+                    workItemEntity.Name="Name"+i;
+                    workItemEntity.Description="Des"+i;
+                    workItemEntity.Category=i;
+                    workItemEntity.Status=i;
+                    workItemEntity.Assigned2="Assigned"+i;
+                    workItemEntity.Belong2="Belong"+i;
+                    workItemEntity.Checker="Check"+i;
+                    workItemEntity.Creater="Creater"+i;
+                    workItemEntity.CreateTime="Createtime"+i;
+                    workItemEntity.ClosingTime="ClosingTime"+i;
+                    workItemEntity.Modifier="Modifier"+i;
+                    workItemEntity.ModifyTime="ModifiyTime"+i;
+                    workItemEntity.BusinessValue=i;
+                    workItemEntity.BasicScore=i;
+                    workItemEntity.CheckedScore=i;
+                    workItemEntity.HardScale=i;
+                    workItemEntity.Remark="Remark"+i;
+                    entityList.add(workItemEntity);
+                    Log.e(entityList.get(i).Name.toString(), "qq");
+                }
+                break;
+            case aboutme:
+               //   entityList.clear();
+                break;
+            case undo:
+                //entityList.clear();
+                break;
+            case progress:
+              //  entityList.clear();
+                break;
+            case done:
+             //   entityList.clear();
+                break;
+            case cancel:
+               // entityList.clear();
+                break;
+            default:
+              //  entityList.clear();
+                    break;
         }
+
         return  entityList;
     }
 }
