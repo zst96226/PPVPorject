@@ -8,11 +8,13 @@ import java.util.List;
  */
 public class TeamEntity implements Serializable{
     public String TeamID;
+    public String TeamName;
     public String TeamLeave;
 
     public TeamEntity()
     {
         TeamID=null;
         TeamLeave=null;
+        TeamName=null;
     }
 }
