@@ -2,13 +2,18 @@ package com.example.beyondsys.ppv.tools;
 
 import android.util.Log;
 
+import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,5 +87,14 @@ public class JsonEntity{
         }else{
             return null;
         }
+    }
+
+    private List<TeamEntity> readDatas(ACache mCache) {
+        JSONArray result = mCache.getAsJSONArray(LocalDataLabel.Label);
+
+        Type mType = new TypeToken<List<TeamEntity>>(){}.getType();
+
+        List<TeamEntity> persons = GsonUtil.getGson().fromJson(result.toString(), mType);
+        return persons;
     }
 }

@@ -5,23 +5,29 @@ package com.example.beyondsys.ppv.entities;
  */
 public class APIEntity {
     /*通用API地址*/
-    public static String APIURL="";
-    /*登录API*/
-    public static String LoginAPI = "";
-    /*获取标识API*/
-    public static String IdentifyingAPI="";
+    public static String APIURL = "";
 
     /*webServer命名空间*/
-    public static final String NAME_SPACE ="http://sysmagic.com.cn/";
+    public static final String NAME_SPACE = "http://sysmagic.com.cn/";
 
     /*调用的方法*/
-    public static final String METHOD_NAME="ActionCommand";
+    public static final String METHOD_NAME = "ActionCommand";
 
     /*WSDL文档中的URL*/;
-    public static final String WSDL_URL  = "http://120.26.37.247:8181/WSPPVService.asmx?wsdl";
+    public static final String WSDL_URL = "http://120.26.37.247:8181/WSPPVService.asmx?wsdl";
 
     /*登录接口标识*/
-    public static final int LOGIN=100;
+    public static final int LOGIN = 100;
     /*获取标识接口标识*/
-    public static final int GETLOGO=8;
+    public static final int GETLOGO = 8;
+    /*登出接口标识*/
+    public static final int LOGOUT = 2;
+    /*获取工作项接口标识*/
+    public static final int GETWORKITEM = 3;
+    /*获取工作价值接口标识*/
+    public static final int GETWORKVALUE = 4;
+    /*获取个人信息接口标识*/
+    public static final int GETUSERMES = 5;
+    /*修改密码接口标识*/
+    public static final int CHANGPWD=6;
 }

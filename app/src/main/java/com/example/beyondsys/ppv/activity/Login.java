@@ -31,29 +31,29 @@ import java.util.List;
 
 import static android.view.ViewGroup.*;
 
-public class Login extends Activity implements OnClickListener  {
+public class Login extends Activity implements OnClickListener {
     /*本地缓存操作对象*/
     ACache mCache = null;
     // 声明控件对象
     private EditText et_name, et_pass;
-    private Button mLoginButton,mLoginError,mRegister,ONLYTEST;
-    int selectIndex=1;
-    int tempSelect=selectIndex;
-    boolean isReLogin=false;
-    private int SERVER_FLAG=0;
+    private Button mLoginButton, mLoginError, mRegister, ONLYTEST;
+    int selectIndex = 1;
+    int tempSelect = selectIndex;
+    boolean isReLogin = false;
+    private int SERVER_FLAG = 0;
     private RelativeLayout countryselect;
     private TextView coutry_phone_sn, coutryName;//
     // private String [] coutry_phone_sn_array,coutry_name_array;
-    public final static int LOGIN_ENABLE=0x01;    //注册完毕了
-    public final static int LOGIN_UNABLE=0x02;    //注册完毕了
-    public final static int PASS_ERROR=0x03;      //注册完毕了
-    public final static int NAME_ERROR=0x04;      //注册完毕了
+    public final static int LOGIN_ENABLE = 0x01;    //注册完毕了
+    public final static int LOGIN_UNABLE = 0x02;    //注册完毕了
+    public final static int PASS_ERROR = 0x03;      //注册完毕了
+    public final static int NAME_ERROR = 0x04;      //注册完毕了
 
-    final Handler UiMangerHandler = new Handler(){
+    final Handler UiMangerHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
-            switch(msg.what){
+            switch (msg.what) {
                 case LOGIN_ENABLE:
                     mLoginButton.setClickable(true);
                     //mLoginButton.setText(R.string.login);
@@ -78,69 +78,56 @@ public class Login extends Activity implements OnClickListener  {
     private TextView log_tex;
 
 
-
-    private Handler threadHandler=new Handler(){
-        public void handleMessage (Message msg){
-            if (msg.what == ThreadAndHandlerLabel.UserLogin)
-            {
-                if(msg.obj!=null)
-                {
-                    String jsonStr=msg.obj.toString();
+    private Handler threadHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            if (msg.what == ThreadAndHandlerLabel.UserLogin) {
+                if (msg.obj != null) {
+                    String jsonStr = msg.obj.toString();
                     /*解析Json*/
-                    UserLoginResultEntity entity= JsonEntity.ParsingJsonForUserLoginResult(jsonStr);
-                    if(entity!=null){
-                        switch (entity.Result)
-                        {
+                    UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(jsonStr);
+                    if (entity != null) {
+                        switch (entity.Result) {
                             case -1:
-                                Toast.makeText(Login.this,"服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this, "服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
                                 break;
                             case 0:
                                 /*将凭据保存缓存*/
-                                mCache.put(LocalDataLabel.Proof,entity);
+                                mCache.put(LocalDataLabel.Proof, entity);
                                 /*获取运行期间所需的标识*/
-                                LoginBusiness personnelVerify =new LoginBusiness();
-                                personnelVerify.GetIdentifying(threadHandler,mCache);
+                                LoginBusiness personnelVerify = new LoginBusiness();
+                                personnelVerify.UserLogo(threadHandler, mCache);
                                 break;
                             case 1:
-                                Toast.makeText(Login.this,"密码错误，请重新输入或选择忘记密码", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this, "密码错误，请重新输入或选择忘记密码", Toast.LENGTH_SHORT).show();
                                 break;
                             case 2:
-                                Toast.makeText(Login.this,"该账号不存在，请检查输入或联系管理员", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this, "该账号不存在，请检查输入或联系管理员", Toast.LENGTH_SHORT).show();
                                 break;
                         }
                     }
+                } else {
+                    Toast.makeText(Login.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
                 }
-                else
-                {
-                    Toast.makeText(Login.this,"服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
-                }
-            }
-            else if (msg.what==ThreadAndHandlerLabel.GetIdentifying)
-            {
-                if (msg.obj!=null)
-                {
-                    String jsonStr=msg.obj.toString();
+            } else if (msg.what == ThreadAndHandlerLabel.GetIdentifying) {
+                if (msg.obj != null) {
+                    String jsonStr = msg.obj.toString();
                     /*解析Json*/
-                    List<TeamEntity> entity= JsonEntity.ParsingJsonForTeam(jsonStr);
+                    List<TeamEntity> entity = JsonEntity.ParsingJsonForTeam(jsonStr);
+                    if (entity != null && entity.size() != 0) {
                     /*缓存*/
-                    String personArray = GsonUtil.getGson().toJson(entity);
-                    mCache.put(LocalDataLabel.Label, personArray);
+                        String personArray = GsonUtil.getGson().toJson(entity);
+                        mCache.put(LocalDataLabel.Label, personArray);
+                    }
                     /*跳转主Activity*/
                     startActivity(new Intent(Login.this, MainPPVActivity.class));
                     Login.this.finish();
+                } else {
+                    Toast.makeText(Login.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
                 }
-                else
-                {
-                    Toast.makeText(Login.this,"服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
-                }
-            }
-            else if (msg.what == ThreadAndHandlerLabel.CallAPIError)
-            {
-                Toast.makeText(Login.this,"请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
-            }
-            else if(msg.what==ThreadAndHandlerLabel.LocalNotdata)
-            {
-                Toast.makeText(Login.this,"缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
+            } else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
+                Toast.makeText(Login.this, "请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+            } else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
+                Toast.makeText(Login.this, "缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -150,14 +137,14 @@ public class Login extends Activity implements OnClickListener  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
-        mCache=ACache.get(this);
+        mCache = ACache.get(this);
         et_name = (EditText) findViewById(R.id.username);
         et_pass = (EditText) findViewById(R.id.password);
-        log_tex=(TextView)findViewById(R.id.log_tex);
+        log_tex = (TextView) findViewById(R.id.log_tex);
 
-        bt_username_clear = (Button)findViewById(R.id.bt_username_clear);
-        bt_pwd_clear = (Button)findViewById(R.id.bt_pwd_clear);
-        bt_pwd_eye = (Button)findViewById(R.id.bt_pwd_eye);
+        bt_username_clear = (Button) findViewById(R.id.bt_username_clear);
+        bt_pwd_clear = (Button) findViewById(R.id.bt_pwd_clear);
+        bt_pwd_eye = (Button) findViewById(R.id.bt_pwd_eye);
         bt_username_clear.setOnClickListener(this);
         bt_pwd_clear.setOnClickListener(this);
         bt_pwd_eye.setOnClickListener(this);
@@ -166,13 +153,14 @@ public class Login extends Activity implements OnClickListener  {
         et_pass.addTextChangedListener(password_watcher);
 
         mLoginButton = (Button) findViewById(R.id.login);
-        mLoginError  = (Button) findViewById(R.id.login_error);
-        mRegister    = (Button) findViewById(R.id.register);
+        mLoginError = (Button) findViewById(R.id.login_error);
+        mRegister = (Button) findViewById(R.id.register);
         mLoginButton.setOnClickListener(this);
         mLoginError.setOnClickListener(this);
         mRegister.setOnClickListener(this);
 
     }
+
     /**
      * 手机号，密码输入控件公用这一个watcher
      */
@@ -194,17 +182,22 @@ public class Login extends Activity implements OnClickListener  {
             }
         };
         password_watcher = new TextWatcher() {
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             public void afterTextChanged(Editable s) {
-                if(s.toString().length()>0){
+                if (s.toString().length() > 0) {
                     bt_pwd_clear.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     bt_pwd_clear.setVisibility(View.INVISIBLE);
                 }
             }
         };
     }
+
     @Override
     public void onClick(View arg0) {
         // TODO Auto-generated method stub
@@ -213,12 +206,12 @@ public class Login extends Activity implements OnClickListener  {
                 login();
                 break;
             case R.id.login_error: //无法登陆(忘记密码了吧)
-                Intent login_error_intent=new Intent();
+                Intent login_error_intent = new Intent();
                 login_error_intent.setClass(Login.this, ForgetPass.class);
                 startActivity(login_error_intent);
                 break;
             case R.id.register:    //注册新的用户
-                Intent intent=new Intent();
+                Intent intent = new Intent();
                 intent.setClass(Login.this, Register.class);
                 startActivity(intent);
 
@@ -231,17 +224,18 @@ public class Login extends Activity implements OnClickListener  {
                 et_pass.setText("");
                 break;
             case R.id.bt_pwd_eye:
-                if(et_pass.getInputType() == (InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD)){
+                if (et_pass.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
                     bt_pwd_eye.setBackgroundResource(R.drawable.openeye);
-                    et_pass.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_NORMAL);
-                }else{
+                    et_pass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+                } else {
                     bt_pwd_eye.setBackgroundResource(R.drawable.closeeye);
-                    et_pass.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    et_pass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 }
                 et_pass.setSelection(et_pass.getText().toString().length());
                 break;
         }
     }
+
     /**
      * 登陆
      */
@@ -259,12 +253,13 @@ public class Login extends Activity implements OnClickListener  {
 //        LoginBusiness personnelVerify =new LoginBusiness();
 //        personnelVerify.UserLogin(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
 
-        LoginBusiness loginBusiness=new LoginBusiness();
+        LoginBusiness loginBusiness = new LoginBusiness();
         loginBusiness.Login(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
         Log.e("登陆成功", "qqww");
         startActivity(new Intent(Login.this, MainPPVActivity.class));
         Login.this.finish();
     }
+
     /**
      * 监听Back键按下事件,方法2:
      * 注意:
@@ -275,17 +270,17 @@ public class Login extends Activity implements OnClickListener  {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            if(isReLogin){
+            if (isReLogin) {
                 Intent mHomeIntent = new Intent(Intent.ACTION_MAIN);
                 mHomeIntent.addCategory(Intent.CATEGORY_HOME);
                 mHomeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                 Login.this.startActivity(mHomeIntent);
-            }else{
+            } else {
                 Login.this.finish();
             }
             return false;
-        }else {
+        } else {
             return super.onKeyDown(keyCode, event);
         }
     }
