@@ -22,6 +22,9 @@ import com.example.beyondsys.ppv.entities.WorkValueEntity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +41,10 @@ public class WorkValueView extends Fragment {
     private CheckBox topme_che;
     private ImageView sort_img;
     private TextView sort_tex,filter_tex;
-    private WorkValueEntity valueEntity;
+   // private WorkValueEntity valueEntity;
+    private final  static int sortup=1;
+    private  final  static  int sortdown=-1;
+    private  int sortFlag=1;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,12 +80,16 @@ public class WorkValueView extends Fragment {
                   sort_img.setImageResource(R.drawable.sort_down);
                   sort_tex.setText(R.string.sortdown);
                   //降排序函数；
+                  sortFlag=sortdown;
+                  setAdapter();
               }
             else
               {
                   sort_img.setImageResource(R.drawable.sort_up);
                   sort_tex.setText(R.string.sortup);
                   //升排序函数；
+                  sortFlag=sortup;
+                  setAdapter();
               }
           }
       });
@@ -100,6 +110,7 @@ public class WorkValueView extends Fragment {
             public void onClick(View v) {
                 if (topme_che.isChecked()) {
                     topme_che.setChecked(false);
+
                 } else {
                     topme_che.setChecked(true);
                 }
@@ -114,13 +125,13 @@ public class WorkValueView extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String personName="";
+                String personName = "";
                 Intent intent = new Intent(getActivity(), PersonValueDetail.class);
-                TextView person=(TextView)view.findViewById(R.id.personname_tex);
-                 personName=person.getText().toString();
-                intent.putExtra("personName",personName);
-              //传递ID
-              intent.putExtra("ID","");
+                TextView person = (TextView) view.findViewById(R.id.personname_tex);
+                personName = person.getText().toString();
+                intent.putExtra("personName", personName);
+                //传递ID
+                intent.putExtra("ID", "");
                 startActivity(intent);
             }
         });
@@ -133,16 +144,9 @@ public class WorkValueView extends Fragment {
 
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        for (int i=0;i<10;i++) {
+        List<WorkValueEntity> entityList=getEntities(sortFlag);
+        for (WorkValueEntity valueEntity:entityList) {
             Map<String, Object> map = new HashMap<String, Object>();
-            valueEntity = new WorkValueEntity();
-           // valueEntity.IMGTarget="";
-            valueEntity.BID = "BID" + i;
-            valueEntity.ID = "ID" + i;
-            valueEntity.Name = "Name" + i;
-            valueEntity.Status=i;
-            valueEntity.ScoreCount=i*100;
-            valueEntity.MonthCount=i;
            String  MonthCount= valueEntity.MonthCount+"个月";
             map.put("personImg",  R.drawable.person );
             map.put("personName", valueEntity.Name);
@@ -153,10 +157,44 @@ public class WorkValueView extends Fragment {
         return list;
     }
 
-
-        private void sortup()
-        {
-
+    private  List<WorkValueEntity> getEntities(int sort)
+    {
+        List<WorkValueEntity> entityList=new ArrayList<WorkValueEntity>();
+        for (int i=0;i<10;i++) {
+            WorkValueEntity    valueEntity = new WorkValueEntity();
+            // valueEntity.IMGTarget="";
+            valueEntity.BID = "BID" + i;
+            valueEntity.ID = "ID" + i;
+            valueEntity.Name = "Name" + i;
+            valueEntity.Status = i;
+            valueEntity.ScoreCount = (5-i) * 100;
+            valueEntity.MonthCount = i;
+            entityList.add(valueEntity);
+            Log.e(entityList.get(i).ScoreCount+"","qq");
         }
+        if(sort==sortdown)
+        {
+            Collections.sort(entityList, new ValueComparator());
+        }
+        else
+        {
+            Collections.sort(entityList,new ValueComparator());
+            Collections.reverse(entityList);
+        }
+         Log.e(entityList.get(4).ScoreCount+"", "qq");
+        return  entityList;
+    }
+    // 自定义比较器：按价值排序
+    static class ValueComparator implements Comparator {
+        public int compare(Object object1, Object object2) {// 实现接口中的方法
+           WorkValueEntity p1 = (WorkValueEntity) object1; // 强制转换
+            WorkValueEntity p2 = (WorkValueEntity) object2;
+            return new Double(p1.ScoreCount).compareTo(new Double(p2.ScoreCount));
+        }
+    }
 
+    private  void topme()
+    {
+
+    }
 }

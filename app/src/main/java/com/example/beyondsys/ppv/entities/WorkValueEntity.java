@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by zhsht on 2017/1/12.价值实体类
  */
-public class WorkValueEntity implements Serializable {
+public class WorkValueEntity implements Serializable{
     public  String BID;//归属ID
     public  String  ID;//本身ID
     public  String  Name;//名称

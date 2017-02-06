@@ -34,7 +34,7 @@ public class WorkItemView extends Fragment {
     private View rootView;
     private LinearLayout wi_s_one,undo_layout,progress_layout,done_layout,cancel_layout;
     private TextView  wi_s_one_txt,undo_tex,proing_tex,done_tex,cancel_tex;
-    private WorkItemEntity workItemEntity;
+   // private WorkItemEntity workItemEntity;
     private  final static int aboutme=2;
     private final static int  assignme=1;
     private final static int undo=3;
