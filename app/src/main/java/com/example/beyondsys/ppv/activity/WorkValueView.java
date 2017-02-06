@@ -3,6 +3,7 @@ package com.example.beyondsys.ppv.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -108,12 +110,17 @@ public class WorkValueView extends Fragment {
         topme_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (topme_che.isChecked()) {
+                if (topme_che.isChecked())
+                {
                     topme_che.setChecked(false);
-
+                    Log.e("setAdapter();false","ee");
+                    setAdapter();
                 } else {
                     topme_che.setChecked(true);
+                    Log.e("setAdapter();true", "ee");
+                    setAdapter();
                 }
+
             }
         });
     }
@@ -144,19 +151,65 @@ public class WorkValueView extends Fragment {
 
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        list.clear();
         List<WorkValueEntity> entityList=getEntities(sortFlag);
-        for (WorkValueEntity valueEntity:entityList) {
-            Map<String, Object> map = new HashMap<String, Object>();
-           String  MonthCount= valueEntity.MonthCount+"个月";
-            map.put("personImg",  R.drawable.person );
-            map.put("personName", valueEntity.Name);
-            map.put("valueSum",  valueEntity.ScoreCount);
-            map.put("monthSum", valueEntity.MonthCount);
-            list.add(map);
+        Log.e("topme_che.isChecked:"+topme_che.isChecked(),"ee");
+        if(topme_che.isChecked())
+        {
+            Log.e("topme_che.TRUE","ee");
+            //通过ID获得当前登录用户对象
+            String  myID="ID" + 5;
+            String myBID="BID" + 5;
+            WorkValueEntity me=  new WorkValueEntity();
+            me.BID = "BID" + 5;
+            me.ID = "ID" + 5;
+            me.Name = "Name" + 5;
+            me.Status = 5;
+            me.ScoreCount = 0;
+            me.MonthCount = 5;
+            for (int i=0;i<entityList.size();i++)
+            {
+                if(entityList.get(i).BID.equals(me.BID))
+                {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                map.put("personImg",  R.drawable.person );
+                map.put("personName", entityList.get(i).Name);
+                map.put("valueSum", entityList.get(i).ScoreCount);
+                map.put("monthSum", entityList.get(i).MonthCount + "个月");
+                list.add(map);
+                    entityList.remove(i);
+                }
+            }
+            for (WorkValueEntity valueEntity:entityList) {
+                Log.e(valueEntity.Name.toString(),"ee");
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("personImg",  R.drawable.person );
+                map.put("personName", valueEntity.Name);
+                map.put("valueSum",  valueEntity.ScoreCount);
+                map.put("monthSum",  valueEntity.MonthCount+"个月");
+                list.add(map);
+            }
+        }
+        else
+        {
+            for (WorkValueEntity valueEntity:entityList) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("personImg",  R.drawable.person );
+                map.put("personName", valueEntity.Name);
+                map.put("valueSum",  valueEntity.ScoreCount);
+                map.put("monthSum", valueEntity.MonthCount+"个月");
+                list.add(map);
+            }
         }
         return list;
     }
 
+    private  List<Map<String, Object>> topme()
+    {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        return list;
+    }
     private  List<WorkValueEntity> getEntities(int sort)
     {
         List<WorkValueEntity> entityList=new ArrayList<WorkValueEntity>();
@@ -170,7 +223,6 @@ public class WorkValueView extends Fragment {
             valueEntity.ScoreCount = (5-i) * 100;
             valueEntity.MonthCount = i;
             entityList.add(valueEntity);
-            Log.e(entityList.get(i).ScoreCount+"","qq");
         }
         if(sort==sortdown)
         {
@@ -181,9 +233,9 @@ public class WorkValueView extends Fragment {
             Collections.sort(entityList,new ValueComparator());
             Collections.reverse(entityList);
         }
-         Log.e(entityList.get(4).ScoreCount+"", "qq");
         return  entityList;
     }
+
     // 自定义比较器：按价值排序
     static class ValueComparator implements Comparator {
         public int compare(Object object1, Object object2) {// 实现接口中的方法
@@ -193,8 +245,5 @@ public class WorkValueView extends Fragment {
         }
     }
 
-    private  void topme()
-    {
 
-    }
 }

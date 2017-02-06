@@ -69,7 +69,9 @@
                     android:layout_toLeftOf="@+id/topme_tex"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:checked="true"/>
+                    android:checked="true"
+                    android:focusable="false"
+                    android:clickable="false"/>
                 <TextView
                     android:id="@+id/topme_tex"
                     android:layout_width="wrap_content"
