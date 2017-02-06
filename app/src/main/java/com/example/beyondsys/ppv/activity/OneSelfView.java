@@ -11,7 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
@@ -25,6 +28,9 @@ public class OneSelfView extends Fragment {
 private LinearLayout personInfoLayout;
     private LinearLayout passwordChangeLayout,qiutLayout;
     private CustomDialog dialog;
+    private RelativeLayout changeTeam_layout;
+    private ListView child_list;
+    private ImageView show_team;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,6 +47,9 @@ private LinearLayout personInfoLayout;
         personInfoLayout=(LinearLayout)rootView.findViewById(R.id.personInfo_layout);
         passwordChangeLayout=(LinearLayout)rootView.findViewById(R.id.passwordChange_layout);
         qiutLayout=(LinearLayout)rootView.findViewById( R.id.quit_layout);
+        changeTeam_layout=(RelativeLayout)rootView.findViewById(R.id.changeTeam_layout);
+        child_list=(ListView)rootView.findViewById(R.id.wid_list);
+        show_team=(ImageView)rootView.findViewById(R.id.show_team);
     }
 
     private void setListener()
@@ -66,6 +75,19 @@ private LinearLayout personInfoLayout;
                        "已退出登录！", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
+            }
+        });
+        changeTeam_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (child_list.getVisibility() == View.GONE) {
+                    child_list.setVisibility(View.VISIBLE);
+                   // SetList();
+                    show_team.setImageResource(R.drawable.arrow_up_float);
+                } else {
+                    child_list.setVisibility(View.GONE);
+                   show_team.setImageResource(R.drawable.arrow_down_float);
+                }
             }
         });
     }

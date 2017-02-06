@@ -129,6 +129,28 @@ private TextView item_name;
         map.put("workValue", "100");
         map.put("strartTime", "17-11-22");
         list.add(map);
+        map.put("workName", "事务1");
+        map.put("workState", R.drawable.img_done);
+        map.put("endingTime", "17-11-22");
+        map.put("workValue", "100");
+        map.put("strartTime", "17-11-22");
+        list.add(map);
+
+        map = new HashMap<String, Object>();
+        map.put("workName", "事务2");
+        map.put("workState", R.drawable.img_pro);
+        map.put("endingTime", "17-11-22");
+        map.put("workValue", "100");
+        map.put("strartTime", "17-11-22");
+        list.add(map);
+
+        map = new HashMap<String, Object>();
+        map.put("workName", "事务3");
+        map.put("workState", R.drawable.img_proing);
+        map.put("endingTime", "17-11-22");
+        map.put("workValue", "100");
+        map.put("strartTime", "17-11-22");
+        list.add(map);
 
         return list;
     }
