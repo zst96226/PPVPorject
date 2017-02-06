@@ -209,7 +209,7 @@ public class LoginBusiness {
     }
 
     /*修改密码参数*/
-    public class ChangePWDPerson implements Serializable {
+    private class ChangePWDPerson implements Serializable {
         public String proof;
         public String Acc;
         public String oldPwd;

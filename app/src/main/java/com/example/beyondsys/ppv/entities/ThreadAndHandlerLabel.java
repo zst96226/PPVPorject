@@ -24,4 +24,10 @@ public class ThreadAndHandlerLabel {
     public static int OneselfInf = 7;
     /*退出登录*/
     public static int LogOut = 8;
+    /*获取工作项详细信息*/
+    public static int GetWorkItemContext = 9;
+    /*获取工作子项*/
+    public static int GetChildWorkItem = 10;
+    /*获取工作价值详细信息*/
+    public static int GetWorkValueContext = 11;
 }

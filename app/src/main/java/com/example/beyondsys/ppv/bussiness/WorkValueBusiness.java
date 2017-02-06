@@ -80,11 +80,67 @@ public class WorkValueBusiness {
     }
 
     /*获取工作价值参数*/
-    public class WorkValueperson implements Serializable {
+    private class WorkValueperson implements Serializable {
         public String poof;
         public String teamID;
         public int pagenum;
         public int state;
     }
 
+    /*获取详细价值*/
+    public void GetWorkValueContext(final Handler handler, ACache mCache, String UserID, String TeamID, String DateTime, int pagenum) {
+        /*获取缓存*/
+        UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+        if (entity != null) {
+            WorkValueContextPerson person = new WorkValueContextPerson();
+            person.proof = entity.Proof;
+            person.TeamID = TeamID;
+            person.UserID = UserID;
+            person.datetime = DateTime;
+            person.pageNum = pagenum;
+            final String JsonParams = GsonUtil.getGson().toJson(person);
+            new Thread() {
+                public void run() {
+                /*根据命名空间和方法得到SoapObject对象*/
+                    SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
+                    soapObject.addProperty("actionid", APIEntity.GETWORKVALUECONTEXT);
+                    soapObject.addProperty("jsonvalue", JsonParams);
+                    // 通过SOAP1.1协议得到envelop对象
+                    SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+                    // 将soapObject对象设置为envelop对象，传出消息
+                    envelop.bodyOut = soapObject;
+                    envelop.dotNet = true;
+                    HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
+                    // 开始调用远程方法
+                    try {
+                        httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
+                        // 得到远程方法返回的SOAP对象
+                        SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+                        Message msg = Message.obtain();
+                        msg.what = ThreadAndHandlerLabel.GetWorkValueContext;
+                        msg.obj = result;
+                        handler.sendMessage(msg);
+                    } catch (IOException | XmlPullParserException e) {
+                        e.printStackTrace();
+                        Message msg = Message.obtain();
+                        msg.what = ThreadAndHandlerLabel.CallAPIError;
+                        handler.sendMessage(msg);
+                    }
+                }
+            }.start();
+        } else {
+            Message msg = Message.obtain();
+            msg.what = ThreadAndHandlerLabel.LocalNotdata;
+            handler.sendMessage(msg);
+        }
+    }
+
+    /*获取详细价值参数*/
+    private class WorkValueContextPerson implements Serializable {
+        public String proof;
+        public String UserID;
+        public String TeamID;
+        public String datetime;
+        public int pageNum;
+    }
 }

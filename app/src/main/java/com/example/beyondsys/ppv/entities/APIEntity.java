@@ -30,4 +30,12 @@ public class APIEntity {
     public static final int GETUSERMES = 5;
     /*修改密码接口标识*/
     public static final int CHANGPWD=6;
+    /*修改个人信息接口标识*/
+    public static final int CHANGONESELF=7;
+    /*获取工作项详细信息接口标识*/
+    public static final int GETlWORKITEMCONTEXT=9;
+    /*获取工作子项信息*/
+    public static final int GETCHILDWORKITEM=10;
+    /*获取工作价值详细信息*/
+    public static final int GETWORKVALUECONTEXT=11;
 }
