@@ -223,10 +223,10 @@ public class Login extends Activity implements OnClickListener  {
 //        LoginBusiness personnelVerify =new LoginBusiness();
 //        personnelVerify.UserLogin(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
 
-        String str="{\"MethodID\": \"100\", \"Param\": \"{\\\"AccountName\\\":\\\"egdhdhehr\\\",\\\"Password\\\":\\\"cndndnfnf\\\"}\"}";
-
-        LoginBusiness loginBusiness=new LoginBusiness();
-        loginBusiness.Login(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
+//        String str="{\"MethodID\": \"100\", \"Param\": \"{\\\"AccountName\\\":\\\"egdhdhehr\\\",\\\"Password\\\":\\\"cndndnfnf\\\"}\"}";
+//
+//        LoginBusiness loginBusiness=new LoginBusiness();
+//        loginBusiness.Login(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
         Log.e("登陆成功", "qqww");
         startActivity(new Intent(Login.this, MainPPVActivity.class));
         Login.this.finish();

@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/wi_s_one_txt"
                 android:textSize="11sp"
+                android:textColor="@color/text"
                 android:layout_marginTop="2sp"
                 android:layout_gravity="center_horizontal"/>
         </LinearLayout>
@@ -48,6 +49,7 @@
                 android:layout_marginTop="4sp"
                 android:src="@drawable/work_pro"/>
             <TextView
+                android:id="@+id/undo_tex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/wi_s_pro_txt"
@@ -69,6 +71,7 @@
                 android:layout_marginTop="4sp"
                 android:src="@drawable/work_proing"/>
             <TextView
+                android:id="@+id/proing_tex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/wi_s_proing_txt"
@@ -90,6 +93,7 @@
                 android:layout_marginTop="4sp"
                 android:src="@drawable/work_complete"/>
             <TextView
+                android:id="@+id/done_tex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/wi_s_complete_txt"
@@ -111,6 +115,7 @@
                 android:layout_marginTop="4sp"
                 android:src="@drawable/work_invalid"/>
             <TextView
+                android:id="@+id/cancel_tex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/wi_s_invalid_txt"

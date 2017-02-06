@@ -2,28 +2,27 @@ package com.example.beyondsys.ppv.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
 
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -33,10 +32,16 @@ public class WorkItemView extends Fragment {
 
    private ListView listView;
     private View rootView;
-    private LinearLayout wi_s_one;
-    private TextView  wi_s_one_txt;
+    private LinearLayout wi_s_one,undo_layout,progress_layout,done_layout,cancel_layout;
+    private TextView  wi_s_one_txt,undo_tex,proing_tex,done_tex,cancel_tex;
     private WorkItemEntity workItemEntity;
-
+    private  final static int aboutme=2;
+    private final static int  assignme=1;
+    private final static int undo=3;
+    private final static int  progress=4;
+    private final static int done=5;
+    private final static int  cancel=6;
+    private  int flag=1;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,6 +61,14 @@ public class WorkItemView extends Fragment {
         listView=(ListView)rootView.findViewById(R.id.workitem_list);
         wi_s_one=(LinearLayout)rootView.findViewById(R.id.wi_s_one);
         wi_s_one_txt=(TextView)rootView.findViewById(R.id.wi_s_one_txt);
+        undo_layout=(LinearLayout)rootView.findViewById(R.id.wi_s_pro);
+        progress_layout=(LinearLayout)rootView.findViewById(R.id.wi_s_proing);
+        done_layout=(LinearLayout)rootView.findViewById(R.id.wi_s_complete);
+        cancel_layout=(LinearLayout)rootView.findViewById(R.id.wi_s_invalid);
+        undo_tex=(TextView)rootView.findViewById(R.id.undo_tex);
+        proing_tex=(TextView)rootView.findViewById(R.id.proing_tex);
+        done_tex=(TextView)rootView.findViewById(R.id.done_tex);
+        cancel_tex=(TextView)rootView.findViewById(R.id.cancel_tex);
     }
 
     private void SetList(){
@@ -63,7 +76,14 @@ public class WorkItemView extends Fragment {
                 new int[]{R.id.work_img,R.id .workname_tex ,R.id.workvalue_tex ,R.id .work_state_img ,R.id .strarttime_tex ,R.id.endtime_tex}) ;
         listView.setAdapter(adapter);
     }
-
+private  void setdefault()
+{
+    wi_s_one_txt.setTextColor(getActivity().getResources().getColor(R.color.Gray));
+    undo_tex.setTextColor(getActivity().getResources().getColor(R.color.Gray));
+    proing_tex.setTextColor(getActivity().getResources().getColor(R.color.Gray));
+    done_tex.setTextColor(getActivity().getResources().getColor(R.color.Gray));
+    cancel_tex.setTextColor(getActivity().getResources().getColor(R.color.Gray));
+}
     private void Listener(){
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -79,16 +99,62 @@ public class WorkItemView extends Fragment {
         wi_s_one.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nowShowTxt=wi_s_one_txt.getText().toString();
-                Log.e(nowShowTxt,"123");
-                if (nowShowTxt.equals("指派给我"))
-                {
+                setdefault();
+                wi_s_one_txt.setTextColor(getActivity().getResources().getColor(R.color.text));
+                if (assignme == flag) {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt_2);
-                }
-                else
-                {
+                    flag = aboutme;
+                } else {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt);
+                    flag = assignme;
                 }
+//                String nowShowTxt=wi_s_one_txt.getText().toString();
+//                Log.e(nowShowTxt,"123");
+//                if (nowShowTxt.equals("指派给我"))
+//                {
+//                    wi_s_one_txt.setText(R.string.wi_s_one_txt_2);
+//                }
+//                else
+//                {
+//                    wi_s_one_txt.setText(R.string.wi_s_one_txt);
+//                }
+            }
+        });
+
+
+        undo_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setdefault();
+                undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
+                flag = undo;
+            }
+        });
+
+        progress_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setdefault();
+                proing_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
+                flag = progress;
+            }
+        });
+
+        done_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setdefault();
+                done_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
+                flag = done;
+            }
+        });
+
+        cancel_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setdefault();
+                cancel_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
+                flag = cancel;
             }
         });
     }
@@ -101,10 +167,11 @@ public class WorkItemView extends Fragment {
 
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        int listLength=10;
-        for(int i=0;i<listLength;i++)
+        //根据flag获取各状态事务对象列表
+     //   List<WorkItemEntity> entityList=getEntities(flag);
+        //查询出指派给我的各事项列表
+        for(int i=0;i<10;i++)
         {
-            Map<String, Object> map = new HashMap<String, Object>();
             workItemEntity=new WorkItemEntity();
             workItemEntity.BID="BID"+i;
             workItemEntity.ID="ID"+i;
@@ -126,67 +193,86 @@ public class WorkItemView extends Fragment {
             workItemEntity.CheckedScore=i;
             workItemEntity.HardScale=i;
             workItemEntity.Remark="Remark"+i;
+//            entityList.add(workItemEntity);
+//            Log.e(entityList.get(i).Name.toString(), "qq");
+
+
+            Map<String, Object> map = new HashMap<String, Object>();
             map.put("workimg", R.drawable.work_item);
             map.put("workName", workItemEntity.Name);
             map.put("workState", R.drawable.img_done);
             map.put("endingTime", workItemEntity.ClosingTime);
             map.put("workValue", workItemEntity.BusinessValue);
             map.put("strartTime", workItemEntity.CreateTime);
-        list.add(map);
+            Log.e("map", "qq");
+            list.add(map);
         }
-
-
-//        map.put("workimg", R.drawable.work_item);
-//        map.put("workName", "事务1");
-//        map.put("workState", R.drawable.img_done);
-//        map.put("endingTime", "2017/11/22");
-//        map.put("workValue", "100");
-//        map.put("strartTime", "2017/11/22");
-//        list.add(map);
-//
-//        map = new HashMap<String, Object>();
-//        map.put("workimg", R.drawable.work_item);
-//        map.put("workName", "事务2");
-//        map.put("workState", R.drawable.img_pro);
-//        map.put("endingTime", "2017/11/22");
-//        map.put("workValue", "100");
-//        map.put("strartTime", "2017/11/22");
-//        list.add(map);
-//
-//        map = new HashMap<String, Object>();
-//        map.put("workimg", R.drawable.work_item);
-//        map.put("workName", "事务3");
-//        map.put("workState", R.drawable.img_proing);
-//        map.put("endingTime", "2017/11/22");
-//        map.put("workValue", "100");
-//        map.put("strartTime", "2017/11/22");
-//        list.add(map);
-//        map = new HashMap<String, Object>();
-//        map.put("workimg", R.drawable.work_item);
-//        map.put("workName", "事务4");
-//        map.put("workState", R.drawable.img_del);
-//        map.put("endingTime", "2017/11/22");
-//        map.put("workValue", "100");
-//        map.put("strartTime", "2017/11/22");
-//        list.add(map);
-//
-//        map = new HashMap<String, Object>();
-//        map.put("workimg", R.drawable.work_item);
-//        map.put("workName", "事务5");
-//        map.put("workState", R.drawable.img_proing);
-//        map.put("endingTime", "2017/11/22");
-//        map.put("workValue", "100");
-//        map.put("strartTime", "2017/11/22");
-//        list.add(map);
-//
-//        map = new HashMap<String, Object>();
-//        map.put("workimg", R.drawable.work_item);
-//        map.put("workName", "事务6");
-//        map.put("workState", R.drawable.img_proing);
-//        map.put("endingTime", "2017/11/22");
-//        map.put("workValue", "100");
-//        map.put("strartTime", "2017/11/22");
-//        list.add(map);
         return list;
+    }
+    private  List<Map<String, Object>> entities2maps( List<WorkItemEntity> entityList)
+    {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        for (WorkItemEntity workItemEntity:entityList)
+        {
+
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("workimg", R.drawable.work_item);
+            map.put("workName", workItemEntity.Name);
+            map.put("workState", R.drawable.img_done);
+            map.put("endingTime", workItemEntity.ClosingTime);
+            map.put("workValue", workItemEntity.BusinessValue);
+            map.put("strartTime", workItemEntity.CreateTime);
+            list.add(map);
+        }
+        return list;
+    }
+    private  List<WorkItemEntity> getEntities(int flag)
+    {
+        List<WorkItemEntity> entityList=null;
+        //        switch (flag)
+//        {
+//            case assignme:
+//
+//                break;
+//            case aboutme:
+//                break;
+//            case undo:
+//                break;
+//            case progress:
+//                break;
+//            case done:
+//                break;
+//            case cancel:
+//                break;
+//            default:
+//                    break;
+//        }
+        for(int i=0;i<10;i++)
+        {
+            WorkItemEntity workItemEntity=new WorkItemEntity();
+            workItemEntity.BID="BID"+i;
+            workItemEntity.ID="ID"+i;
+            workItemEntity.FID="FID"+i;
+            workItemEntity.Name="Name"+i;
+            workItemEntity.Description="Des"+i;
+            workItemEntity.Category=i;
+            workItemEntity.Status=i;
+            workItemEntity.Assigned2="Assigned"+i;
+            workItemEntity.Belong2="Belong"+i;
+            workItemEntity.Checker="Check"+i;
+            workItemEntity.Creater="Creater"+i;
+            workItemEntity.CreateTime="Createtime"+i;
+            workItemEntity.ClosingTime="ClosingTime"+i;
+            workItemEntity.Modifier="Modifier"+i;
+            workItemEntity.ModifyTime="ModifiyTime"+i;
+            workItemEntity.BusinessValue=i;
+            workItemEntity.BasicScore=i;
+            workItemEntity.CheckedScore=i;
+            workItemEntity.HardScale=i;
+            workItemEntity.Remark="Remark"+i;
+            entityList.add(workItemEntity);
+            Log.e(entityList.get(i).Name.toString(), "qq");
+        }
+        return  entityList;
     }
 }
