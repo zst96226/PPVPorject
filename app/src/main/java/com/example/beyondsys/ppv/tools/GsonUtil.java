@@ -43,6 +43,7 @@ public class GsonUtil
      * 将对象转化为字符串(泛型实现)
      * 
      * @param
+     * @param <T>
      * @return
      */
     public static <T> String t2Json2(T t)
@@ -52,8 +53,7 @@ public class GsonUtil
 
     /**
      * 将字符转化为对象
-     * 
-     * @param <T>
+     *
      * @param jsonString
      * @param clazz
      * @return

@@ -1,6 +1,7 @@
 package com.example.beyondsys.ppv.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by zhsht on 2017/2/5.团队标识

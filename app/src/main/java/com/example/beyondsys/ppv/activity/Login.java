@@ -20,8 +20,14 @@ import android.widget.Toast;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.LoginBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
+import com.example.beyondsys.ppv.tools.GsonUtil;
+import com.example.beyondsys.ppv.tools.JsonEntity;
+
+import java.util.List;
 
 import static android.view.ViewGroup.*;
 
@@ -77,34 +83,64 @@ public class Login extends Activity implements OnClickListener  {
         public void handleMessage (Message msg){
             if (msg.what == ThreadAndHandlerLabel.UserLogin)
             {
-                Log.i(msg.obj.toString(),"FHZ");
-                /*判断返回结果*/
-                UserLoginResultEntity model=(UserLoginResultEntity)msg.obj;
-                switch (model.Result)
+                if(msg.obj!=null)
                 {
-                    case 0:
-                        Toast.makeText(Login.this,"服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 1:
-                        LoginBusiness personnelVerify =new LoginBusiness();
-                        personnelVerify.GetIdentifying(threadHandler,mCache);
-                        break;
-                    case 2:
-                        Toast.makeText(Login.this,"密码错误，请重新输入或选择忘记密码", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 3:
-                        Toast.makeText(Login.this,"该账号不存在，请检查输入或联系管理员", Toast.LENGTH_SHORT).show();
-                        break;
+                    String jsonStr=msg.obj.toString();
+                    /*解析Json*/
+                    UserLoginResultEntity entity= JsonEntity.ParsingJsonForUserLoginResult(jsonStr);
+                    if(entity!=null){
+                        switch (entity.Result)
+                        {
+                            case -1:
+                                Toast.makeText(Login.this,"服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
+                                break;
+                            case 0:
+                                /*将凭据保存缓存*/
+                                mCache.put(LocalDataLabel.Proof,entity);
+                                /*获取运行期间所需的标识*/
+                                LoginBusiness personnelVerify =new LoginBusiness();
+                                personnelVerify.GetIdentifying(threadHandler,mCache);
+                                break;
+                            case 1:
+                                Toast.makeText(Login.this,"密码错误，请重新输入或选择忘记密码", Toast.LENGTH_SHORT).show();
+                                break;
+                            case 2:
+                                Toast.makeText(Login.this,"该账号不存在，请检查输入或联系管理员", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    Toast.makeText(Login.this,"服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
                 }
             }
             else if (msg.what==ThreadAndHandlerLabel.GetIdentifying)
             {
-                startActivity(new Intent(Login.this, MainPPVActivity.class));
-                Login.this.finish();
+                if (msg.obj!=null)
+                {
+                    String jsonStr=msg.obj.toString();
+                    /*解析Json*/
+                    List<TeamEntity> entity= JsonEntity.ParsingJsonForTeam(jsonStr);
+                    /*缓存*/
+                    String personArray = GsonUtil.getGson().toJson(entity);
+                    mCache.put(LocalDataLabel.Label, personArray);
+                    /*跳转主Activity*/
+                    startActivity(new Intent(Login.this, MainPPVActivity.class));
+                    Login.this.finish();
+                }
+                else
+                {
+                    Toast.makeText(Login.this,"服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+                }
             }
             else if (msg.what == ThreadAndHandlerLabel.CallAPIError)
             {
                 Toast.makeText(Login.this,"请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+            }
+            else if(msg.what==ThreadAndHandlerLabel.LocalNotdata)
+            {
+                Toast.makeText(Login.this,"缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -223,10 +259,8 @@ public class Login extends Activity implements OnClickListener  {
 //        LoginBusiness personnelVerify =new LoginBusiness();
 //        personnelVerify.UserLogin(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
 
-//        String str="{\"MethodID\": \"100\", \"Param\": \"{\\\"AccountName\\\":\\\"egdhdhehr\\\",\\\"Password\\\":\\\"cndndnfnf\\\"}\"}";
-//
-//        LoginBusiness loginBusiness=new LoginBusiness();
-//        loginBusiness.Login(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
+        LoginBusiness loginBusiness=new LoginBusiness();
+        loginBusiness.Login(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
         Log.e("登陆成功", "qqww");
         startActivity(new Intent(Login.this, MainPPVActivity.class));
         Login.this.finish();

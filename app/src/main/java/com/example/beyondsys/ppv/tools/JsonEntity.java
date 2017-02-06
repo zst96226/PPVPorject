@@ -2,8 +2,15 @@ package com.example.beyondsys.ppv.tools;
 
 import android.util.Log;
 
+import com.example.beyondsys.ppv.entities.TeamEntity;
+import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
+import com.google.gson.Gson;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -43,8 +50,37 @@ public class JsonEntity{
     }
 
     public static String GroupJSON(String methodID,String id,String pwd){
-        String jsonstr="";
-        jsonstr="{\"MethodID\":\""+methodID+"\",\"Param\":\"{\\\"AccountName\\\":\\\""+id+"\\\",\\\"Password\\\":\\\""+pwd+"\\\"}\"}";
-        return jsonstr;
+        String jsonstr="{&quot;MethodID&quot;:&quot;"+methodID+"&quot;,&quot;Param&quot;:&quot;{&quot;AccountName&quot;:&quot;"+id+"&quot;,&quot;Password&quot;:&quot;"+pwd+"&quot;}&quot;}";
+        //Log.i(jsonstr, "FHZ");
+        StringBuilder str=new StringBuilder();
+        str.append("{&quot;MethodID&quot;:&quot;");
+        str.append(methodID);
+        str.append("&quot;,&quot;Param&quot;:&quot;{&quot;AccountName&quot;:&quot;");
+        str.append(id);
+        str.append("&quot;,&quot;Password&quot;:&quot;");
+        str.append(pwd);
+        str.append("&quot;}&quot;}");
+        Log.i(str.toString(),"FHZ");
+        return str.toString();
+    }
+
+    public static UserLoginResultEntity ParsingJsonForUserLoginResult(String result){
+        UserLoginResultEntity entity=null;
+        entity =GsonUtil.json2T(result,UserLoginResultEntity.class);
+        if (entity!=null){
+            return entity;
+        }else{
+            return null;
+        }
+    }
+
+    public static List<TeamEntity> ParsingJsonForTeam(String result){
+        List<TeamEntity> entity=null;
+        entity =GsonUtil.json2Collection(result, TeamEntity.class);
+        if (entity!=null){
+            return entity;
+        }else{
+            return null;
+        }
     }
 }
