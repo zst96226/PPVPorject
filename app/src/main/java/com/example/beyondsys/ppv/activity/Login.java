@@ -96,6 +96,7 @@ public class Login extends Activity implements OnClickListener {
                                 /*获取运行期间所需的标识*/
                                 LoginBusiness personnelVerify = new LoginBusiness();
                                 personnelVerify.UserLogo(threadHandler, mCache);
+
                                 break;
                             case 1:
                                 Toast.makeText(Login.this, "密码错误，请重新输入或选择忘记密码", Toast.LENGTH_SHORT).show();
@@ -127,7 +128,8 @@ public class Login extends Activity implements OnClickListener {
             } else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
                 Toast.makeText(Login.this, "请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
             } else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
-                Toast.makeText(Login.this, "缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Login.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
+                /*清除其余活动中Activity以及全部缓存显示登录界面*/
             }
         }
     };
