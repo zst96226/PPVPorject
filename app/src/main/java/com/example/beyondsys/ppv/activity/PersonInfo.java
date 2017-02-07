@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.UploadImg;
+import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.tools.ValidaService;
 import com.example.beyondsys.ppv.tools.SelectPicPopup;
@@ -45,6 +46,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class PersonInfo extends AppCompatActivity {
+    /*本地缓存操作对象*/
+    ACache mCache = null;
     /*裁剪后的图像*/
     private Bitmap bitmap = null;
     private LinearLayout infoModify;
@@ -53,7 +56,7 @@ public class PersonInfo extends AppCompatActivity {
     private RelativeLayout myImgLayout, myNameLayout, myPhoneLayout, myEmailLayout, myIDlayout, myAdressLayout, myDesLayout;
     private EditText myNameEdt, myPhoneEdt, myEmailEdt, myIDEdt, myAdressEdt, myDesEdt;
     private boolean editFlag = false;
-
+    private    TakePhotoPopWin takePhotoPopWin;
     private String IMAGE_FILE_LOCATION = Tools.getSDPath() + File.separator + "photo.jpeg";
 
     private Handler threadHandler = new Handler() {
@@ -184,7 +187,7 @@ public class PersonInfo extends AppCompatActivity {
         if (!editFlag) {
             return;
         }
-        TakePhotoPopWin takePhotoPopWin = new TakePhotoPopWin(this, onClickListener);
+         takePhotoPopWin = new TakePhotoPopWin(this, onClickListener);
         //showAtLocation(View parent, int gravity, int x, int y)
         takePhotoPopWin.showAtLocation(findViewById(R.id.person_info), Gravity.CENTER, 0, 0);
     }
@@ -268,6 +271,7 @@ public class PersonInfo extends AppCompatActivity {
                         //获取到裁剪后的图像
                         bitmap = extras.getParcelable("data");
                         myImg.setImageBitmap(bitmap);
+                       takePhotoPopWin.dismiss();
                         /*上传头像，不在这个位置，以后会改*/
                         UploadImg uploadImg = new UploadImg();
                         uploadImg.uploadImg(threadHandler, Tools.bitmap2Base64(bitmap));

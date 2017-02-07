@@ -1,6 +1,7 @@
 package com.example.beyondsys.ppv.activity;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,14 +28,16 @@ import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.tools.InputScoreDialog;
 import com.example.beyondsys.ppv.tools.PopupMenuForWorkItem;
 
+import java.util.Calendar;
+
 public class AddNewWorkItem extends Activity {
 
     ImageView back;
     private LinearLayout inputScore_layout;
     private InputScoreDialog dialog;
     private TextView input_score;
-    String[] list = new String[]{"张三", "李四", "王五", "赵六"};
-    EditText input_AssignedTo, input_Head, input_Checker;
+    String[] list = new String[]{"空","张三", "李四", "王五", "赵六"};
+    EditText input_AssignedTo, input_Head, input_Checker,input_CloseTime;
     ListPopupWindow AssignedTo_pop, Head_pop, Checker_pop;
 
     @Override
@@ -55,6 +59,21 @@ public class AddNewWorkItem extends Activity {
         input_AssignedTo = (EditText) findViewById(R.id.input_AssignedTo);
         input_Head = (EditText) findViewById(R.id.input_Head);
         input_Checker = (EditText) findViewById(R.id.input_Checker);
+        input_CloseTime=(EditText)findViewById(R.id.input_endtime);
+    }
+
+    protected void showDatePickDlg() {
+        int currentapiVersion=android.os.Build.VERSION.SDK_INT;
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(AddNewWorkItem.this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                input_CloseTime.setText(year + "-" + monthOfYear + "-" + dayOfMonth);
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+
     }
 
     private void Listener() {
@@ -69,6 +88,12 @@ public class AddNewWorkItem extends Activity {
             public void onClick(View v) {
                 //  showDialog();
                 estimateValue();
+            }
+        });
+        input_CloseTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             showDatePickDlg();
             }
         });
         input_AssignedTo.setOnTouchListener(new View.OnTouchListener() {

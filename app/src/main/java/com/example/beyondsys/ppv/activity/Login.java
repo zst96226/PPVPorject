@@ -26,6 +26,7 @@ import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
+import com.example.beyondsys.ppv.tools.ValidaService;
 
 import java.util.List;
 
@@ -243,7 +244,7 @@ public class Login extends Activity implements OnClickListener {
      */
     private void login() {
         Log.e("登陆啦", "qqww");
-//        boolean nameCheck= ValidaService.isNameLength(  et_name.getText().toString());
+//        boolean nameCheck= ValidaService.isNameLength(et_name.getText().toString());
 //        boolean passCheck=ValidaService.isPasswLength(et_pass.getText().toString())&&ValidaService.isPassword(et_pass.getText().toString());
 //        if(!(nameCheck&&passCheck))
 //        {
