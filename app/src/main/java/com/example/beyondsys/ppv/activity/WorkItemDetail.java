@@ -4,17 +4,24 @@ import android.content.Intent;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListPopupWindow;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.tools.PopupMenuForWorkItem;
 
 import java.util.ArrayList;
@@ -30,7 +37,9 @@ public class WorkItemDetail extends AppCompatActivity {
     ImageView menu;
     LinearLayout main_workitem;
     ListView child_list;
-private TextView item_name;
+
+    private TextView item_name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,18 +52,17 @@ private TextView item_name;
         SetData();
     }
 
-    private void initView(){
-        back=(ImageView)this.findViewById(R.id.wid_back);
-        wid_show_chid=(ImageView)findViewById(R.id.wid_show_chid);
-        menu=(ImageView)findViewById(R.id.anwi_menu);
-        main_workitem=(LinearLayout)findViewById(R.id.main_workitem);
-        child_list=(ListView)findViewById(R.id.wid_list);
-        returen=(ImageView)findViewById(R.id.wid_return);
-        item_name=(TextView)findViewById(R.id.wid_workname);
-
+    private void initView() {
+        back = (ImageView) this.findViewById(R.id.wid_back);
+        wid_show_chid = (ImageView) findViewById(R.id.wid_show_chid);
+        menu = (ImageView) findViewById(R.id.anwi_menu);
+        main_workitem = (LinearLayout) findViewById(R.id.main_workitem);
+        child_list = (ListView) findViewById(R.id.wid_list);
+        returen = (ImageView) findViewById(R.id.wid_return);
+        item_name = (TextView) findViewById(R.id.wid_workname);
     }
 
-    private void Listener(){
+    private void Listener() {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,12 +103,14 @@ private TextView item_name;
                 popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
             }
         });
+
     }
 
-    private void SetList(){
-        SimpleAdapter adapter =new SimpleAdapter(this,getData() ,R.layout.child_list_item,  new String[]{"workName","workValue","workState","strartTime","endingTime"},
-                new int[]{R.id .workname_tex ,R.id.workvalue_tex ,R.id .work_state_img ,R.id .strarttime_tex ,R.id.endtime_tex}) ;
+    private void SetList() {
+        SimpleAdapter adapter = new SimpleAdapter(this, getData(), R.layout.child_list_item, new String[]{"workName", "workValue", "workState", "strartTime", "endingTime"},
+                new int[]{R.id.workname_tex, R.id.workvalue_tex, R.id.work_state_img, R.id.strarttime_tex, R.id.endtime_tex});
         child_list.setAdapter(adapter);
+
     }
 
     private List<Map<String, Object>> getData() {
@@ -155,11 +165,12 @@ private TextView item_name;
         return list;
     }
 
-    private void SetData(){
-Intent intent=getIntent();
-        String name="";
-        Bundle bundle=intent.getExtras();
-         name=bundle.getString("ItemName");
+    private void SetData() {
+        Intent intent = getIntent();
+        String name = "";
+        Bundle bundle = intent.getExtras();
+        name = bundle.getString("ItemName");
         item_name.setText(name);
     }
+
 }

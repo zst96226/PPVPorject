@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 /**
  * Created by zhsht on 2017/1/16.工具类
@@ -49,5 +50,10 @@ public class Tools {
 
         return true;
     }
-
+    /*GUID号生成器*/
+    public String GetGUID()
+    {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+    }
 }

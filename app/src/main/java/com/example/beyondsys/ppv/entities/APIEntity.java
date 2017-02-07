@@ -38,4 +38,6 @@ public class APIEntity {
     public static final int GETCHILDWORKITEM=10;
     /*获取工作价值详细信息*/
     public static final int GETWORKVALUECONTEXT=11;
+    /*获取团队内部人员*/
+    public static final int GETALLSTAFF=14;
 }

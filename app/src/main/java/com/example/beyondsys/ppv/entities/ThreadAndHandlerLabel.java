@@ -30,4 +30,6 @@ public class ThreadAndHandlerLabel {
     public static int GetChildWorkItem = 10;
     /*获取工作价值详细信息*/
     public static int GetWorkValueContext = 11;
+    /*获取团队人员*/
+    public static int GetAllStaff=12;
 }
