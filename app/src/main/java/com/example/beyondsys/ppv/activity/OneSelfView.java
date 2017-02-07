@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Layout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +16,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.tools.CustomDialog;
 import com.example.beyondsys.ppv.tools.ValidaService;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhsht on 2017/1/13.个人信息界面
@@ -82,7 +89,7 @@ private LinearLayout personInfoLayout;
             public void onClick(View v) {
                 if (child_list.getVisibility() == View.GONE) {
                     child_list.setVisibility(View.VISIBLE);
-                   // SetList();
+                    setList();
                     show_team.setImageResource(R.drawable.arrow_up_float);
                 } else {
                     child_list.setVisibility(View.GONE);
@@ -92,6 +99,29 @@ private LinearLayout personInfoLayout;
         });
     }
 
+    private  void setList()
+    {
+        SimpleAdapter adapter=new SimpleAdapter(getActivity(),getData(),R.layout.teamliststyle,
+                new String[]{"teamName","teamLevel"},new int []{R.id.TeamName_tex,R.id.TeamLevel_tex});
+        child_list.setAdapter(adapter);
+    }
+    private List<Map<String, Object>> getData() {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        map.put("teamName", "杉石科技");
+        map.put("teamLevel", "员工");
+        list.add(map);
+        map=new HashMap<String,Object>();
+        map.put("teamName", "杉石科技");
+        map.put("teamLevel", "经理");
+        list.add(map);
+        map=new HashMap<String,Object>();
+        map.put("teamName", "杉石科技");
+        map.put("teamLevel", "项目总监");
+        list.add(map);
+    return  list;
+    }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
