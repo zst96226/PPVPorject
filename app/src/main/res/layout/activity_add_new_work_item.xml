@@ -190,6 +190,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10sp"
                     android:layout_marginRight="10sp"
+                    android:drawableRight="@drawable/arrow_down_float"
                     android:maxLines="20"/>
             </LinearLayout>
 
