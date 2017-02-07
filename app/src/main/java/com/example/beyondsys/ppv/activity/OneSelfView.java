@@ -11,12 +11,15 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
@@ -38,6 +41,7 @@ private LinearLayout personInfoLayout;
     private RelativeLayout changeTeam_layout;
     private ListView child_list;
     private ImageView show_team;
+    private TextView teamName_tex,teamlevel_tex;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,13 +54,14 @@ private LinearLayout personInfoLayout;
 
     private  void init(View  rootView)
     {
-
         personInfoLayout=(LinearLayout)rootView.findViewById(R.id.personInfo_layout);
         passwordChangeLayout=(LinearLayout)rootView.findViewById(R.id.passwordChange_layout);
         qiutLayout=(LinearLayout)rootView.findViewById( R.id.quit_layout);
         changeTeam_layout=(RelativeLayout)rootView.findViewById(R.id.changeTeam_layout);
-        child_list=(ListView)rootView.findViewById(R.id.wid_list);
+        child_list=(ListView)rootView.findViewById(R.id.wid_list_of);
         show_team=(ImageView)rootView.findViewById(R.id.show_team);
+        teamlevel_tex=(TextView)rootView.findViewById(R.id.personlevel_tex);
+        teamName_tex=(TextView)rootView.findViewById(R.id.personteam_tex);
     }
 
     private void setListener()
@@ -90,11 +95,25 @@ private LinearLayout personInfoLayout;
                 if (child_list.getVisibility() == View.GONE) {
                     child_list.setVisibility(View.VISIBLE);
                     setList();
+                   // setListListener();
                     show_team.setImageResource(R.drawable.arrow_up_float);
                 } else {
                     child_list.setVisibility(View.GONE);
                    show_team.setImageResource(R.drawable.arrow_down_float);
                 }
+            }
+        });
+        child_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
+                TextView  teamName=(TextView)view.findViewById(R.id.TeamName_tex);
+                TextView teamLevel=(TextView)view.findViewById(R.id.TeamLevel_tex);
+                checkBox.setChecked(true);
+                teamName_tex.setText(teamName.getText());
+                teamlevel_tex.setText(teamLevel.getText());
+                child_list.setVisibility(View.GONE);
+                show_team.setImageResource(R.drawable.arrow_down_float);
             }
         });
     }
@@ -104,6 +123,7 @@ private LinearLayout personInfoLayout;
         SimpleAdapter adapter=new SimpleAdapter(getActivity(),getData(),R.layout.teamliststyle,
                 new String[]{"teamName","teamLevel"},new int []{R.id.TeamName_tex,R.id.TeamLevel_tex});
         child_list.setAdapter(adapter);
+
     }
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();

@@ -80,7 +80,8 @@
         <activity
             android:name=".activity.ForgetPass"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.EstimateValueActivity"></activity>
+        <activity android:name=".activity.EstimateValueActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

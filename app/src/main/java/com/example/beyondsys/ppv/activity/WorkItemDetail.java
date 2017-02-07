@@ -86,6 +86,7 @@ public class WorkItemDetail extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //有子项则
+                Log.e("dianji","tag");
                 SetData();
             }
         });

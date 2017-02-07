@@ -1,5 +1,7 @@
 package com.example.beyondsys.ppv.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 
@@ -25,14 +28,15 @@ public class EstimateValueActivity extends AppCompatActivity {
     private View mView;
     private Button ok_but,cancel_but;
     private  String stepDetail;
-    private int stepCount=1;
+    private int stepCount=1,flag=-1;
+    ImageView back,ok;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_estimate_value);
         init();
-        setOkListener();
-        setCancelListener();
+//        setOkListener();
+//        setCancelListener();
     }
     private void init()
     {
@@ -51,6 +55,7 @@ public class EstimateValueActivity extends AppCompatActivity {
         stepCount_num.setMaxValue(10);
         stepCount_num.setMinValue(1);
         stepCount_num.setValue(1);
+        stepCount_num.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         step1_name=(EditText)findViewById(R.id.step1_name);
         step1_max=(EditText)findViewById(R.id.step1_max);
         step1_min=(EditText)findViewById(R.id.step1_min);
@@ -91,13 +96,56 @@ public class EstimateValueActivity extends AppCompatActivity {
         step10_max=(EditText)findViewById(R.id.step10_max);
         step10_min=(EditText)findViewById(R.id.step10_min);
         step10_scale=(EditText)findViewById(R.id.step10_scale);
-        ok_but=(Button)findViewById(R.id.ok_dut);
-        cancel_but=(Button)findViewById(R.id.cancel_but);
+//        ok_but=(Button)findViewById(R.id.ok_dut);
+//        cancel_but=(Button)findViewById(R.id.cancel_but);
         stepCount_num.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 stepCount = newVal;
                 stepShow();
+            }
+        });
+        back=(ImageView)this.findViewById(R.id.anwi_back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder=new AlertDialog.Builder(EstimateValueActivity.this);
+                builder.setTitle("是否保存更改？");
+                builder.setMessage("");
+                builder.setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.e("aaaa"+getStepDetail(), "qqww");
+                        Intent rIntent = new Intent();
+                        rIntent.putExtra("stepCount", getStepCount());
+                        rIntent.putExtra("stepDetail", getStepDetail());
+                        setResult(1, rIntent);
+                        finish();
+                    }
+                });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent rIntent = new Intent();
+                        rIntent.putExtra("stepCount",getStepCount());
+                        rIntent.putExtra("stepDetail", "");
+                        setResult(2, rIntent);
+                        finish();
+                    }
+                });
+                builder.show();
+            }
+        });
+        ok=(ImageView)this.findViewById(R.id.anwi_ok);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("aaaa"+getStepDetail(), "qqww");
+                Intent rIntent = new Intent();
+                rIntent.putExtra("stepCount", getStepCount());
+                rIntent.putExtra("stepDetail", getStepDetail());
+                setResult(1, rIntent);
+                finish();
             }
         });
     }
@@ -237,9 +285,7 @@ public class EstimateValueActivity extends AppCompatActivity {
     }
     public String getStepDetail()
     {
-
         String text="";
-        StringBuilder builder=new StringBuilder();
      switch (stepCount)
      {
          case 1:
@@ -553,37 +599,37 @@ public class EstimateValueActivity extends AppCompatActivity {
         Log.e(text,"qwe");
         return text;
     }
-    /**
-     * 确定键监听器
-     */
-    public   void setOkListener()
-    {
-        ok_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e("aaaa"+getStepDetail(), "qqww");
-                Intent rIntent = new Intent();
-                rIntent.putExtra("stepCount", getStepCount());
-                rIntent.putExtra("stepDetail", getStepDetail());
-                setResult(1, rIntent);
-                finish();
-            }
-        });
-    }
-    /**
-     * 取消键监听器
-     */
-    public void setCancelListener()
-    {
-        cancel_but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent rIntent = new Intent();
-                rIntent.putExtra("stepCount",getStepCount());
-                rIntent.putExtra("stepDetail", "");
-                setResult(2, rIntent);
-                finish();
-            }
-        });
-    }
+//    /**
+//     * 确定键监听器
+//     */
+//    public   void setOkListener()
+//    {
+//        ok_but.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.e("aaaa"+getStepDetail(), "qqww");
+//                Intent rIntent = new Intent();
+//                rIntent.putExtra("stepCount", getStepCount());
+//                rIntent.putExtra("stepDetail", getStepDetail());
+//                setResult(1, rIntent);
+//                finish();
+//            }
+//        });
+//    }
+//    /**
+//     * 取消键监听器
+//     */
+//    public void setCancelListener()
+//    {
+//        cancel_but.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent rIntent = new Intent();
+//                rIntent.putExtra("stepCount",getStepCount());
+//                rIntent.putExtra("stepDetail", "");
+//                setResult(2, rIntent);
+//                finish();
+//            }
+//        });
+//    }
 }

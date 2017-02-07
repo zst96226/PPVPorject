@@ -140,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <com.example.beyondsys.ppv.tools.ListViewForScrollView
-                    android:id="@+id/wid_list"
+                    android:id="@+id/wid_list_of"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="gone"/>
