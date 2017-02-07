@@ -13,6 +13,9 @@ public class APIEntity {
     /*调用的方法*/
     public static final String METHOD_NAME = "ActionCommand";
 
+    /*上传头像*/
+    public static final String METHOD_IMG_NAME = "UploadImage";
+
     /*WSDL文档中的URL*/;
     public static final String WSDL_URL = "http://120.26.37.247:8181/WSPPVService.asmx?wsdl";
 

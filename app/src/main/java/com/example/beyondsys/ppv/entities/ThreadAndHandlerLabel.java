@@ -32,4 +32,6 @@ public class ThreadAndHandlerLabel {
     public static int GetWorkValueContext = 11;
     /*获取团队人员*/
     public static int GetAllStaff=12;
+    /*获取上传头像返回值*/
+    public static int UploadImg=13;
 }
