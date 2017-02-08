@@ -62,30 +62,33 @@ public class Login extends Activity implements OnClickListener {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.UserLogin) {
                 if (msg.obj != null) {
+                    Log.i("返回值："+msg.obj,"FHZ");
                     String jsonStr = msg.obj.toString();
                     /*解析Json*/
-                    UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(jsonStr);
-                    if (entity != null) {
-                        switch (entity.Result) {
-                            case -1:
-                                Toast.makeText(Login.this, "服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
-                                break;
-                            case 0:
+                    try {
+                        UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(jsonStr);
+                        if (entity != null) {
+                            switch (entity.Result) {
+                                case -1:
+                                    Toast.makeText(Login.this, "服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 0:
                                 /*将凭据保存缓存*/
-                                mCache.put(LocalDataLabel.Proof, entity);
+                                    mCache.put(LocalDataLabel.Proof, entity);
                                 /*获取运行期间所需的标识*/
-                                LoginBusiness personnelVerify = new LoginBusiness();
-                                personnelVerify.UserLogo(threadHandler, mCache);
+                                    LoginBusiness personnelVerify = new LoginBusiness();
+                                    personnelVerify.UserLogo(threadHandler, mCache);
 
-                                break;
-                            case 1:
-                                Toast.makeText(Login.this, "密码错误，请重新输入或选择忘记密码", Toast.LENGTH_SHORT).show();
-                                break;
-                            case 2:
-                                Toast.makeText(Login.this, "该账号不存在，请检查输入或联系管理员", Toast.LENGTH_SHORT).show();
-                                break;
+                                    break;
+                                case 1:
+                                    Toast.makeText(Login.this, "密码错误，请重新输入或选择忘记密码", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 2:
+                                    Toast.makeText(Login.this, "该账号不存在，请检查输入或联系管理员", Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
                         }
-                    }
+                    }catch (Exception e){}
                 } else {
                     Toast.makeText(Login.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
                 }

@@ -42,21 +42,22 @@ public class LoginBusiness {
         Log.i("提交对象：" + JsonParams, "FHZ");
         new Thread() {
             public void run() {
-                /*根据命名空间和方法得到SoapObject对象*/
-                SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
-                soapObject.addProperty("actionid", APIEntity.LOGIN);
-                soapObject.addProperty("jsonvalue", JsonParams);
-                // 通过SOAP1.1协议得到envelop对象
-                SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-                // 将soapObject对象设置为envelop对象，传出消息
-                envelop.bodyOut = soapObject;
-                envelop.dotNet = true;
-                HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
-                // 开始调用远程方法
                 try {
+                    /*根据命名空间和方法得到SoapObject对象*/
+                    SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
+                    soapObject.addProperty("actionid", APIEntity.LOGIN);
+                    soapObject.addProperty("jsonvalue", JsonParams);
+                    // 通过SOAP1.1协议得到envelop对象
+                    SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+                    // 将soapObject对象设置为envelop对象，传出消息
+                    envelop.bodyOut = soapObject;
+                    envelop.dotNet = true;
+                    HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
+                    // 开始调用远程方法
                     httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
                     // 得到远程方法返回的SOAP对象
-                    SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+//                    SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+                    SoapObject result = (SoapObject) envelop.getResponse();
                     Message msg = Message.obtain();
                     msg.what = ThreadAndHandlerLabel.UserLogin;
                     msg.obj = result;
@@ -82,17 +83,17 @@ public class LoginBusiness {
             new Thread() {
                 public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
-                    SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
-                    soapObject.addProperty("actionid", APIEntity.GETLOGO);
-                    soapObject.addProperty("jsonvalue", JsonParams);
-                    // 通过SOAP1.1协议得到envelop对象
-                    SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-                    // 将soapObject对象设置为envelop对象，传出消息
-                    envelop.bodyOut = soapObject;
-                    envelop.dotNet = true;
-                    HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
-                    // 开始调用远程方法
                     try {
+                        SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
+                        soapObject.addProperty("actionid", APIEntity.GETLOGO);
+                        soapObject.addProperty("jsonvalue", JsonParams);
+                        // 通过SOAP1.1协议得到envelop对象
+                        SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+                        // 将soapObject对象设置为envelop对象，传出消息
+                        envelop.bodyOut = soapObject;
+                        envelop.dotNet = true;
+                        HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
+                        // 开始调用远程方法
                         httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
                         // 得到远程方法返回的SOAP对象
                         SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
