@@ -83,10 +83,13 @@ private LinearLayout personInfoLayout;
             @Override
             public void onClick(View v) {
                 //退出操作
-               Toast toast = Toast.makeText(getActivity().getApplicationContext(),
-                       "已退出登录！", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
+//               Toast toast = Toast.makeText(getActivity().getApplicationContext(),
+//                       "已退出登录！", Toast.LENGTH_LONG);
+//                toast.setGravity(Gravity.CENTER, 0, 0);
+//                toast.show();
+                //注销账户
+                Intent intent = new Intent(getActivity(),Login.class);
+                startActivity(intent);
             }
         });
         changeTeam_layout.setOnClickListener(new View.OnClickListener() {

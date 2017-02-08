@@ -55,6 +55,7 @@
             android:layout_marginTop="5sp"
             android:layout_width="200sp"
             android:layout_height="40sp"
+            android:singleLine="true"
             android:background="@color/White"
             />
     </LinearLayout>
@@ -79,6 +80,9 @@
             android:layout_marginTop="5sp"
             android:layout_width="200sp"
             android:layout_height="40sp"
+            android:singleLine="true"
+            android:inputType="numberDecimal"
+            android:digits="1234567890"
             android:background="@color/White"
             />
     </LinearLayout>
@@ -99,6 +103,7 @@
             android:text="密&#160;&#160;码："/>
         <EditText
             android:id="@+id/password_edt"
+            android:singleLine="true"
             android:layout_marginBottom="5sp"
             android:layout_marginTop="5sp"
             android:layout_width="200sp"
@@ -123,6 +128,7 @@
             android:text="确认密码："/>
         <EditText
             android:id="@+id/checkpass_edt"
+            android:singleLine="true"
             android:layout_marginBottom="5sp"
             android:layout_marginTop="5sp"
             android:layout_width="200sp"
@@ -151,6 +157,9 @@
             android:layout_marginTop="5sp"
             android:layout_width="200sp"
             android:layout_height="40sp"
+            android:singleLine="true"
+            android:inputType="numberDecimal"
+            android:digits="1234567890"
             android:background="@color/White"
             />
     </LinearLayout>
@@ -195,6 +204,9 @@ android:id="@+id/getCode_layout"
             android:layout_marginTop="5sp"
             android:layout_width="200sp"
             android:layout_height="40sp"
+            android:singleLine="true"
+            android:inputType="numberDecimal"
+            android:digits="1234567890"
             android:background="@color/White"
             />
     </LinearLayout>
@@ -212,11 +224,12 @@ android:id="@+id/getCode_layout"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:textSize="18sp"
+            android:textSize="12sp"
             android:textColor="@color/tabColor"
             android:textStyle="bold"
             android:text="请输入正确的手机号码!" />
     </LinearLayout>
+
     <RelativeLayout
         android:layout_marginTop="5sp"
         android:layout_marginBottom="5sp"

@@ -127,6 +127,7 @@
                 android:layout_marginTop="5sp"
                 android:layout_marginBottom="5sp"
                 android:layout_marginRight="5sp"
+                android:singleLine="true"
                 android:layout_gravity="center_vertical"/>
         </LinearLayout>
         <LinearLayout
@@ -152,6 +153,9 @@
                 android:layout_marginTop="5sp"
                 android:layout_marginBottom="5sp"
                 android:layout_marginRight="5sp"
+                android:singleLine="true"
+                android:inputType="numberDecimal"
+                android:digits="1234567890"
                 android:layout_gravity="center_vertical"/>
         </LinearLayout>
         <LinearLayout

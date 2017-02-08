@@ -116,6 +116,11 @@ public class PersonInfo extends AppCompatActivity {
         myIDEdt = (EditText) findViewById(R.id.myID_edt);
         myAdressEdt = (EditText) findViewById(R.id.myAddress_edt);
         myDesEdt = (EditText) findViewById(R.id.myDes_edt);
+        //实际上要从缓存或服务器中获取
+        personInfoEntity=new PersonInfoEntity();
+        personInfoEntity.BID="BID";
+        personInfoEntity.ID="ID";
+
     }
 
     public void isModify(View v) {

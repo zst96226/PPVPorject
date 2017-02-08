@@ -54,6 +54,7 @@
                 android:layout_marginTop="5sp"
                 android:paddingRight="60sp"
                 android:maxLength="20"
+                android:singleLine="true"
                 android:textStyle="bold"
                 android:textColor="@color/blueBut"
                 android:paddingLeft="55sp" >
@@ -99,9 +100,10 @@
                 android:id="@+id/password"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:paddingRight="60sp"
-            android:maxLength="20"
+                android:inputType="textPassword"
+                android:paddingRight="60sp"
+                android:singleLine="true"
+                android:maxLength="20"
                 android:textStyle="bold"
                 android:textColor="@color/blueBut"
             android:paddingLeft="55sp" >
