@@ -281,6 +281,7 @@
                         android:singleLine="false"
                         android:scrollbars="vertical"
                         android:editable="true"
+                        android:maxLength="200"
                         android:textSize="12sp"
                         android:focusable="false"
                         android:gravity="top"/>

@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.UploadImg;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.tools.ValidaService;
 import com.example.beyondsys.ppv.tools.SelectPicPopup;
@@ -58,7 +59,7 @@ public class PersonInfo extends AppCompatActivity {
     private boolean editFlag = false;
     private    TakePhotoPopWin takePhotoPopWin;
     private String IMAGE_FILE_LOCATION = Tools.getSDPath() + File.separator + "photo.jpeg";
-
+    private PersonInfoEntity personInfoEntity;
     private Handler threadHandler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.UploadImg) {

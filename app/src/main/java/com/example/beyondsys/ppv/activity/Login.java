@@ -50,27 +50,6 @@ public class Login extends Activity implements OnClickListener {
     public final static int PASS_ERROR = 0x03;      //注册完毕了
     public final static int NAME_ERROR = 0x04;      //注册完毕了
 
-    final Handler UiMangerHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
-            switch (msg.what) {
-                case LOGIN_ENABLE:
-                    mLoginButton.setClickable(true);
-                    //mLoginButton.setText(R.string.login);
-                    break;
-                case LOGIN_UNABLE:
-                    mLoginButton.setClickable(false);
-                    break;
-                case PASS_ERROR:
-
-                    break;
-                case NAME_ERROR:
-                    break;
-            }
-            super.handleMessage(msg);
-        }
-    };
     private Button bt_username_clear;
     private Button bt_pwd_clear;
     private Button bt_pwd_eye;
@@ -244,15 +223,17 @@ public class Login extends Activity implements OnClickListener {
      */
     private void login() {
         Log.e("登陆啦", "qqww");
-//        boolean nameCheck= ValidaService.isNameLength(et_name.getText().toString());
-//        boolean passCheck=ValidaService.isPasswLength(et_pass.getText().toString())&&ValidaService.isPassword(et_pass.getText().toString());
-//        if(!(nameCheck&&passCheck))
-//        {
-//            Log.e("登陆信息不对", "qqww");
-//            log_tex.setVisibility(View.VISIBLE);
-//            log_tex.setText("用户名或密码不正确");
-//            return;
-//        }
+        boolean nameCheck= ValidaService.isNameLength(et_name.getText().toString());
+        boolean passCheck=ValidaService.isPasswLength(et_pass.getText().toString())&&ValidaService.isPassword(et_pass.getText().toString());
+        if(!(nameCheck&&passCheck))
+        {
+            Log.e("登陆信息不对", "qqww");
+            log_tex.setVisibility(View.VISIBLE);
+            log_tex.setText("用户名或密码不正确");
+            return;
+        }
+        log_tex.setVisibility(View.GONE);
+        log_tex.setText("");
 //        LoginBusiness personnelVerify =new LoginBusiness();
 //        personnelVerify.UserLogin(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
 
