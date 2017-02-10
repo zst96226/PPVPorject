@@ -28,6 +28,7 @@ import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.tools.InputScoreDialog;
 import com.example.beyondsys.ppv.tools.PopupMenuForWorkItem;
 
+import java.lang.reflect.Type;
 import java.util.Calendar;
 
 public class AddNewWorkItem extends Activity {
@@ -37,8 +38,9 @@ public class AddNewWorkItem extends Activity {
     private InputScoreDialog dialog;
     private TextView input_score;
     String[] list = new String[]{"空","张三", "李四", "王五", "赵六"};
-    EditText input_AssignedTo, input_Head, input_Checker,input_CloseTime;
-    ListPopupWindow AssignedTo_pop, Head_pop, Checker_pop;
+    String[]  typeList=new String[]{"事项","任务"};
+    EditText input_AssignedTo, input_Head, input_Checker,input_CloseTime,input_type;
+    ListPopupWindow AssignedTo_pop, Head_pop, Checker_pop,Type_pop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,7 @@ public class AddNewWorkItem extends Activity {
         SetPopWinForAssignedTo();
         SetPopWinForHead();
         SetPopWinForChecker();
+        setPopWinForType();
     }
 
     private void InitView() {
@@ -60,6 +63,7 @@ public class AddNewWorkItem extends Activity {
         input_Head = (EditText) findViewById(R.id.input_Head);
         input_Checker = (EditText) findViewById(R.id.input_Checker);
         input_CloseTime=(EditText)findViewById(R.id.input_endtime);
+        input_type=(EditText)findViewById(R.id.input_Type);
     }
 
     protected void showDatePickDlg() {
@@ -94,6 +98,46 @@ public class AddNewWorkItem extends Activity {
             @Override
             public void onClick(View v) {
              showDatePickDlg();
+            }
+        });
+        input_type.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_RIGHT = 2;
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getX() >= (v.getWidth() - ((EditText) v)
+                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        Type_pop.show();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+        input_type.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String inputstr = input_type.getText().toString();
+                int strlen = inputstr.length();
+                for (int i = 0; i < typeList.length; i++) {
+                    if (typeList[i].length() >strlen) {
+                        String str = typeList[i].substring(0, strlen);
+                        if (str.equals(inputstr)) {
+                            input_type.setText(typeList[i]);
+                            input_type.setSelection(typeList[i].length());
+                        }
+                    }
+                }
             }
         });
         input_AssignedTo.setOnTouchListener(new View.OnTouchListener() {
@@ -274,7 +318,22 @@ public class AddNewWorkItem extends Activity {
             }
         });
     }
-
+private  void setPopWinForType()
+{
+    Type_pop=new ListPopupWindow(this);
+    Type_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, typeList));
+    Type_pop.setAnchorView(input_type);
+    Type_pop.setModal(true);
+    Type_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            String item=typeList[position];
+            input_type.setText(item);
+            input_type.setSelection(item.length());
+            Type_pop.dismiss();
+        }
+    });
+}
     private void SetPopWinForHead() {
         Head_pop = new ListPopupWindow(this);
         Head_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list));

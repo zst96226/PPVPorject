@@ -29,12 +29,21 @@
                 android:id="@+id/workname_tex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="30"
                 android:textColor="@color/mainFont"
                 android:text="事务1"
                 android:textSize="15sp"
-                android:layout_marginTop="17.5sp"/>
+                android:layout_marginTop="15sp"/>
 
+            <TextView
+                android:id="@+id/workid_tex"
+                android:layout_toRightOf="@+id/workname_tex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/mainFont"
+                android:text="事务1id"
+                android:visibility="gone"
+                android:textSize="15sp"
+                android:layout_marginTop="15sp"/>
             <ImageView
                 android:id="@+id/work_value_img"
                 android:layout_width="18sp"

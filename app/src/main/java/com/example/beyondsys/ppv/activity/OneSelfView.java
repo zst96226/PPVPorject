@@ -23,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.tools.CustomDialog;
 import com.example.beyondsys.ppv.tools.ValidaService;
 
@@ -36,24 +38,28 @@ import java.util.Map;
  */
 public class OneSelfView extends Fragment {
 private LinearLayout personInfoLayout;
+    ACache mCache=null;
     private LinearLayout passwordChangeLayout,qiutLayout;
     private CustomDialog dialog;
     private RelativeLayout changeTeam_layout;
     private ListView child_list;
     private ImageView show_team;
-    private TextView teamName_tex,teamlevel_tex;
+    private TextView teamName_tex,teamlevel_tex,personname_tex,valuesum_tex,monthsum_tex;
+    private PersonInfoEntity personInfoEntity;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.oneself_view, container, false);
         init(rootView);
+        setData();
        setListener();
         return rootView;
     }
 
     private  void init(View  rootView)
     {
+        mCache=ACache.get(getActivity());
         personInfoLayout=(LinearLayout)rootView.findViewById(R.id.personInfo_layout);
         passwordChangeLayout=(LinearLayout)rootView.findViewById(R.id.passwordChange_layout);
         qiutLayout=(LinearLayout)rootView.findViewById( R.id.quit_layout);
@@ -62,8 +68,20 @@ private LinearLayout personInfoLayout;
         show_team=(ImageView)rootView.findViewById(R.id.show_team);
         teamlevel_tex=(TextView)rootView.findViewById(R.id.personlevel_tex);
         teamName_tex=(TextView)rootView.findViewById(R.id.personteam_tex);
+        personname_tex=(TextView)rootView.findViewById(R.id.personname_tex);
     }
-
+    private  void setData()
+    {
+        personInfoEntity=(PersonInfoEntity)mCache.getAsObject("CurrentUser");
+        if(personInfoEntity==null)
+        {
+            //从服务器c查询
+        }
+        else
+        {
+            personname_tex.setText(personInfoEntity.Name);
+        }
+    }
     private void setListener()
     {
         personInfoLayout.setOnClickListener(new View.OnClickListener() {
@@ -109,10 +127,10 @@ private LinearLayout personInfoLayout;
         child_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
+             //   CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
                 TextView  teamName=(TextView)view.findViewById(R.id.TeamName_tex);
                 TextView teamLevel=(TextView)view.findViewById(R.id.TeamLevel_tex);
-                checkBox.setChecked(true);
+               // checkBox.setChecked(true);
                 teamName_tex.setText(teamName.getText());
                 teamlevel_tex.setText(teamLevel.getText());
                 child_list.setVisibility(View.GONE);

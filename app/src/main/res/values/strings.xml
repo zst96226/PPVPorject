@@ -117,4 +117,6 @@
     <string name="quit">退出登录</string>
     <string name="userPhone">手机号码：</string>
     <string name="userEmail">邮箱地址：</string>
+    <string name="changestatus">修改当前状态</string>
+    <string name="del_child">删除子工作项</string>
 </resources>

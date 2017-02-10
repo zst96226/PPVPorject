@@ -12,6 +12,7 @@ import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
+import com.example.beyondsys.ppv.tools.MD5;
 
 import org.json.JSONObject;
 import org.ksoap2.SoapEnvelope;
@@ -28,6 +29,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +39,8 @@ import java.util.Map;
 public class LoginBusiness {
     /*用户登录*/
     public void Login(String Id, String Pwd, final Handler handler) {
-        AccAndPwd person = new AccAndPwd(Id, Pwd);
+        String str= MD5.getMD5(Pwd);
+        AccAndPwd person = new AccAndPwd(Id,str );
         final String JsonParams = GsonUtil.getGson().toJson(person);
         Log.i("提交对象：" + JsonParams, "FHZ");
         new Thread() {
@@ -53,7 +56,7 @@ public class LoginBusiness {
                     envelop.bodyOut = soapObject;
                     envelop.dotNet = true;
                     HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
-                    // 开始调用远程方法
+                    // 开始调用远程方法s
                     httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
                     // 得到远程方法返回的SOAP对象
 //                    SoapPrimitive result = (SoapPrimitive) envelop.getResponse();

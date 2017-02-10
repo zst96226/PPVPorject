@@ -21,6 +21,7 @@ import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.LoginBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
@@ -57,6 +58,7 @@ public class Login extends Activity implements OnClickListener {
     private TextWatcher password_watcher;
     private TextView log_tex;
 
+    private PersonInfoEntity personInfoEntity;
 
     private Handler threadHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -225,24 +227,43 @@ public class Login extends Activity implements OnClickListener {
      * 登陆
      */
     private void login() {
-        Log.e("登陆啦", "qqww");
-        boolean nameCheck= ValidaService.isNameLength(et_name.getText().toString());
-        boolean passCheck=ValidaService.isPasswLength(et_pass.getText().toString())&&ValidaService.isPassword(et_pass.getText().toString());
-        if(!(nameCheck&&passCheck))
-        {
-            Log.e("登陆信息不对", "qqww");
-            log_tex.setVisibility(View.VISIBLE);
-            log_tex.setText("用户名或密码不正确");
-            return;
-        }
-        log_tex.setVisibility(View.GONE);
-        log_tex.setText("");
-//        LoginBusiness personnelVerify =new LoginBusiness();
-//        personnelVerify.UserLogin(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
-
+//        Log.e("登陆啦", "qqww");
+//        boolean nameCheck= ValidaService.isNameLength(et_name.getText().toString());
+//        boolean passCheck=ValidaService.isPasswLength(et_pass.getText().toString())&&ValidaService.isPassword(et_pass.getText().toString());
+//        if(!(nameCheck&&passCheck))
+//        {
+//            Log.e("登陆信息不对", "qqww");
+//            log_tex.setVisibility(View.VISIBLE);
+//            log_tex.setText("用户名或密码不正确");
+//            return;
+//        }
+//        log_tex.setVisibility(View.GONE);
+//        log_tex.setText("");
+//
         LoginBusiness loginBusiness = new LoginBusiness();
         loginBusiness.Login(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
         Log.e("登陆成功", "qqww");
+        //根据用户名获取用户实体类
+        personInfoEntity=new PersonInfoEntity();
+        personInfoEntity.BID="BID";
+        personInfoEntity.ID="ID";
+        personInfoEntity.Name="Name";
+        personInfoEntity.AccName="AccName";
+        personInfoEntity.AccPwd="Accpwd";
+        personInfoEntity.Address="Address";
+        personInfoEntity.EMail="Email";
+        personInfoEntity.IDNo="IDNo";
+        personInfoEntity.IMGTarget="img";
+        personInfoEntity.MonthCount=1;
+        personInfoEntity.Remark="Remark";
+        personInfoEntity.ScoreCount=1.11;
+        personInfoEntity.Tel="Tel";
+        PersonInfoEntity hasEntity=(PersonInfoEntity)mCache.getAsObject("CurentUser");
+        if (hasEntity!=null)
+        {
+            mCache.remove("CurrentUser");
+        }
+        mCache.put("CurrentUser",personInfoEntity);
         startActivity(new Intent(Login.this, MainPPVActivity.class));
         Login.this.finish();
     }

@@ -15,6 +15,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
 
 import java.util.ArrayList;
@@ -29,7 +30,8 @@ import java.util.Map;
  * Created by zhsht on 2017/1/12.工作项页面
  */
 public class WorkItemView extends Fragment {
-
+    /*本地缓存操作对象*/
+    ACache mCache = null;
    private ListView listView;
     private View rootView;
     private LinearLayout wi_s_one,undo_layout,progress_layout,done_layout,cancel_layout;
@@ -59,6 +61,7 @@ public class WorkItemView extends Fragment {
     }
 
     private void IninView(){
+        mCache = ACache.get(getActivity());
         listView=(ListView)rootView.findViewById(R.id.workitem_list);
         wi_s_one=(LinearLayout)rootView.findViewById(R.id.wi_s_one);
         wi_s_one_txt=(TextView)rootView.findViewById(R.id.wi_s_one_txt);
@@ -73,8 +76,8 @@ public class WorkItemView extends Fragment {
     }
 
     private void SetList(){
-        SimpleAdapter adapter =new SimpleAdapter(this.getActivity(),getData() ,R.layout.workitemliststyle,  new String[]{"workimg","workName","workValue","workState","strartTime","endingTime"},
-                new int[]{R.id.work_img,R.id .workname_tex ,R.id.workvalue_tex ,R.id .work_state_img ,R.id .strarttime_tex ,R.id.endtime_tex}) ;
+        SimpleAdapter adapter =new SimpleAdapter(this.getActivity(),getData() ,R.layout.workitemliststyle,  new String[]{"workimg","workId","workName","workValue","workState","strartTime","endingTime"},
+                new int[]{R.id.work_img,R.id.workid_tex,R.id .workname_tex ,R.id.workvalue_tex ,R.id .work_state_img ,R.id .strarttime_tex ,R.id.endtime_tex}) ;
         listView.setAdapter(adapter);
     }
 private  void setdefault()
@@ -90,10 +93,12 @@ private  void setdefault()
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Intent intent = new Intent(getActivity(), WorkItemDetail.class);
                 TextView ItemName_tex=(TextView)view.findViewById(R.id.workname_tex);
-                intent.putExtra("ItemName",ItemName_tex.getText().toString());//
+                TextView ItemId_tex=(TextView)view.findViewById(R.id.workid_tex);
+                //实际上是传递ID过去
+                intent.putExtra("ItemID",ItemId_tex.getText().toString().trim());
+               // intent.putExtra("ItemName",ItemName_tex.getText().toString().trim());
                 startActivity(intent);
             }
         });
@@ -172,13 +177,18 @@ private  void setdefault()
         {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("workimg", R.drawable.work_item);
+            map.put("workId",workItemEntity.ID);
             map.put("workName", workItemEntity.Name);
             map.put("workState", R.drawable.img_done);
             map.put("endingTime", workItemEntity.ClosingTime);
             map.put("workValue", workItemEntity.BusinessValue);
             map.put("strartTime", workItemEntity.CreateTime);
-            Log.e("map", "qq");
             list.add(map);
+          WorkItemEntity hasEntity=(WorkItemEntity)  mCache.getAsObject(workItemEntity.ID.toString().trim());
+            if(hasEntity==null)
+            {
+                mCache.put(workItemEntity.ID.toString().trim(), workItemEntity);
+            }
         }
         return list;
     }
@@ -197,8 +207,8 @@ private  void setdefault()
 //            map.put("strartTime", workItemEntity.CreateTime);
 //            list.add(map);
 //        }
-//        return list;
-//    }
+//       return list;
+//   }
     private  List<WorkItemEntity> getEntities(int flag)
     {
         List<WorkItemEntity> entityList=new ArrayList<WorkItemEntity>();
@@ -229,8 +239,10 @@ private  void setdefault()
                     workItemEntity.HardScale=i;
                     workItemEntity.Remark="Remark"+i;
                     entityList.add(workItemEntity);
+
                     Log.e(entityList.get(i).Name.toString(), "qq");
                 }
+                //往缓存中存列表
                 break;
             case aboutme:
                //   entityList.clear();
