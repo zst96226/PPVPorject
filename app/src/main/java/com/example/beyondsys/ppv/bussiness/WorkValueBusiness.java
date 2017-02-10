@@ -38,7 +38,7 @@ public class WorkValueBusiness {
         WorkValueperson person = new WorkValueperson();
         UserLoginResultEntity userLoginResultEntity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
         if (userLoginResultEntity != null) {
-            person.poof = userLoginResultEntity.Proof;
+            person.poof = userLoginResultEntity.TicketID;
             person.teamID = TeamID;
             person.pagenum = pageNum;
             person.state = state;
@@ -93,7 +93,7 @@ public class WorkValueBusiness {
         UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
         if (entity != null) {
             WorkValueContextPerson person = new WorkValueContextPerson();
-            person.proof = entity.Proof;
+            person.proof = entity.TicketID;
             person.TeamID = TeamID;
             person.UserID = UserID;
             person.datetime = DateTime;

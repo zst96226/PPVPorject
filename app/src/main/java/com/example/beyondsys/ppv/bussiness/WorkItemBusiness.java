@@ -39,7 +39,7 @@ public class WorkItemBusiness {
         /*获取缓存中的凭据和团队ID*/
         UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
         if (entity != null) {
-            person.poof = entity.Proof;
+            person.poof = entity.TicketID;
             person.teamID = TeamID;
             person.state = state;
             person.relation = relation;
@@ -97,7 +97,7 @@ public class WorkItemBusiness {
         UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
         if (entity != null) {
             GetWorkItemContentPerson person = new GetWorkItemContentPerson();
-            person.proof = entity.Proof;
+            person.proof = entity.TicketID;
             person.WorkItemid = WorkItemID;
             final String JsonParams = GsonUtil.getGson().toJson(person);
             Log.i("提交对象：" + JsonParams, "FHZ");
@@ -150,7 +150,7 @@ public class WorkItemBusiness {
         UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
         if (entity != null) {
             ChildWorkItemPerson person = new ChildWorkItemPerson();
-            person.proof = entity.Proof;
+            person.proof = entity.TicketID;
             person.WorkItemid = WorkItemID;
             person.pageNum = pagenum;
             final String JsonParams = GsonUtil.getGson().toJson(person);

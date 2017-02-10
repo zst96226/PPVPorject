@@ -59,8 +59,9 @@ public class LoginBusiness {
                     // 开始调用远程方法s
                     httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
                     // 得到远程方法返回的SOAP对象
-//                    SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
-                    SoapObject result = (SoapObject) envelop.getResponse();
+                    SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+//                    SoapObject result = (SoapObject) envelop.getResponse();
+                    Log.i("SOAP对象：" + result, "FHZ");
                     Message msg = Message.obtain();
                     msg.what = ThreadAndHandlerLabel.UserLogin;
                     msg.obj = result;
@@ -79,8 +80,8 @@ public class LoginBusiness {
     public void UserLogo(final Handler handler, ACache mCache) {
         /*从缓存中获取凭据*/
         UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
-        if (entity != null && !entity.Proof.equals("")) {
-            String _poof = entity.Proof;
+        if (entity != null && !entity.TicketID.equals("")) {
+            String _poof = entity.TicketID;
             final String JsonParams = GsonUtil.getGson().toJson(_poof);
             Log.i("提交对象：" + JsonParams, "FHZ");
             new Thread() {
@@ -123,8 +124,8 @@ public class LoginBusiness {
     public void LogOut(final Handler handler, ACache mCache) {
         /*从缓存中获取凭据*/
         UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
-        if (entity != null && !entity.Proof.equals("")) {
-            String _poof = entity.Proof;
+        if (entity != null && !entity.TicketID.equals("")) {
+            String _poof = entity.TicketID;
             final String JsonParams = GsonUtil.getGson().toJson(_poof);
             Log.i("提交对象：" + JsonParams, "FHZ");
             new Thread() {
@@ -170,7 +171,7 @@ public class LoginBusiness {
         AccAndPwd entity = (AccAndPwd) mCache.getAsObject(LocalDataLabel.AccAndPwd);
         if (entity != null && entitys != null) {
             ChangePWDPerson person = new ChangePWDPerson();
-            person.proof = entitys.Proof;
+            person.proof = entitys.TicketID;
             person.Acc = entity.AccountName;
             person.oldPwd = entity.Password;
             person.newPwd = newpwd;

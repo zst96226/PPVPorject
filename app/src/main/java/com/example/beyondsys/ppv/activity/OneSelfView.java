@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.tools.CustomDialog;
 import com.example.beyondsys.ppv.tools.ValidaService;
@@ -72,14 +73,16 @@ private LinearLayout personInfoLayout;
     }
     private  void setData()
     {
-        personInfoEntity=(PersonInfoEntity)mCache.getAsObject("CurrentUser");
+        personInfoEntity=(PersonInfoEntity)mCache.getAsObject(LocalDataLabel.CurPerson);
         if(personInfoEntity==null)
         {
             //从服务器c查询
+
         }
         else
         {
             personname_tex.setText(personInfoEntity.Name);
+            //其他信息设置未完成
         }
     }
     private void setListener()
@@ -133,6 +136,7 @@ private LinearLayout personInfoLayout;
                // checkBox.setChecked(true);
                 teamName_tex.setText(teamName.getText());
                 teamlevel_tex.setText(teamLevel.getText());
+
                 child_list.setVisibility(View.GONE);
                 show_team.setImageResource(R.drawable.arrow_down_float);
             }
@@ -152,6 +156,7 @@ private LinearLayout personInfoLayout;
 
         map.put("teamName", "杉石科技");
         map.put("teamLevel", "员工");
+
         list.add(map);
         map=new HashMap<String,Object>();
         map.put("teamName", "杉石科技");

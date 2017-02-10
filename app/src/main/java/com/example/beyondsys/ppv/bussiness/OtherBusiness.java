@@ -30,7 +30,7 @@ public class OtherBusiness {
         UserLoginResultEntity entity=(UserLoginResultEntity)mCachem.getAsObject(LocalDataLabel.Proof);
         if (entity!=null){
             AllStaffPerson person = new AllStaffPerson();
-            person.proof = entity.Proof;
+            person.proof = entity.TicketID;
             person.teamid=TeamID;
             final String JsonParams = GsonUtil.getGson().toJson(person);
             Log.i("提交对象：" + JsonParams, "FHZ");

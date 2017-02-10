@@ -2,10 +2,14 @@ package com.example.beyondsys.ppv.tools;
 
 import android.util.Log;
 
+import com.example.beyondsys.ppv.activity.PersonInfo;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
+import com.example.beyondsys.ppv.entities.WorkItemEntity;
+import com.example.beyondsys.ppv.entities.WorkValueEntity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -79,13 +83,47 @@ public class JsonEntity{
         }
     }
 
-    public static List<TeamEntity> ParsingJsonForTeam(String result){
+    public  static List<WorkItemEntity> ParsingJsonForWorkItemList(String result)
+    {
+       List<WorkItemEntity > entityList=null;
+        entityList=GsonUtil.json2Collection(result, WorkItemEntity.class);
+        if(entityList!=null)
+        {
+            return entityList;
+        }else
+        {
+            return  null;
+        }
+    }
+    public  static List<WorkValueEntity> ParseJsonForWorkValueList(String result)
+    {
+        List<WorkValueEntity> entityList=null;
+        entityList=GsonUtil.json2Collection(result,WorkValueEntity.class);
+        if(entityList!=null)
+        {
+            return entityList;
+        }else{
+            return  null;
+        }
+    }
+    public static List<TeamEntity> ParsingJsonForTeamList(String result){
         List<TeamEntity> entity=null;
         entity =GsonUtil.json2Collection(result, TeamEntity.class);
         if (entity!=null){
             return entity;
         }else{
             return null;
+        }
+    }
+    public static  PersonInfoEntity ParseJsonForPerson(String result)
+    {
+        PersonInfoEntity personInfoEntity=null;
+        personInfoEntity=GsonUtil.json2T(result,PersonInfoEntity.class);
+        if (personInfoEntity!=null)
+        {
+            return  personInfoEntity;
+        }else {
+            return  null;
         }
     }
 

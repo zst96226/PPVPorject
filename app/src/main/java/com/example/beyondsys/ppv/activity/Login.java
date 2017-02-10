@@ -63,23 +63,28 @@ public class Login extends Activity implements OnClickListener {
     private Handler threadHandler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.UserLogin) {
+
                 if (msg.obj != null) {
-                    Log.i("返回值："+msg.obj,"FHZ");
+                    Log.i("登录返回值："+msg.obj,"FHZ");
                     String jsonStr = msg.obj.toString();
+                    Log.i("登录返回值："+jsonStr.toString(),"FHZ");
+                    Log.i("xxxx","FHZ");
                     /*解析Json*/
                     try {
                         UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(jsonStr);
+                        Log.i("凭据："+entity.TicketID+"； 返回值"+entity.LoginResult,"FHZ");
                         if (entity != null) {
-                            switch (entity.Result) {
+                            switch (entity.LoginResult) {
                                 case -1:
                                     Toast.makeText(Login.this, "服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 0:
+                                    Toast.makeText(Login.this,entity.TicketID+" "+entity.LoginResult , Toast.LENGTH_SHORT).show();
                                 /*将凭据保存缓存*/
-                                    mCache.put(LocalDataLabel.Proof, entity);
-                                /*获取运行期间所需的标识*/
-                                    LoginBusiness personnelVerify = new LoginBusiness();
-                                    personnelVerify.UserLogo(threadHandler, mCache);
+//                                    mCache.put(LocalDataLabel.Proof, entity);
+//                                /*获取运行期间所需的标识*/
+//                                    LoginBusiness personnelVerify = new LoginBusiness();
+//                                    personnelVerify.UserLogo(threadHandler, mCache);
 
                                     break;
                                 case 1:
@@ -98,7 +103,7 @@ public class Login extends Activity implements OnClickListener {
                 if (msg.obj != null) {
                     String jsonStr = msg.obj.toString();
                     /*解析Json*/
-                    List<TeamEntity> entity = JsonEntity.ParsingJsonForTeam(jsonStr);
+                    List<TeamEntity> entity = JsonEntity.ParsingJsonForTeamList(jsonStr);
                     if (entity != null && entity.size() != 0) {
                     /*缓存*/
                         String personArray = GsonUtil.getGson().toJson(entity);
@@ -243,27 +248,7 @@ public class Login extends Activity implements OnClickListener {
         LoginBusiness loginBusiness = new LoginBusiness();
         loginBusiness.Login(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
         Log.e("登陆成功", "qqww");
-        //根据用户名获取用户实体类
-        personInfoEntity=new PersonInfoEntity();
-        personInfoEntity.BID="BID";
-        personInfoEntity.ID="ID";
-        personInfoEntity.Name="Name";
-        personInfoEntity.AccName="AccName";
-        personInfoEntity.AccPwd="Accpwd";
-        personInfoEntity.Address="Address";
-        personInfoEntity.EMail="Email";
-        personInfoEntity.IDNo="IDNo";
-        personInfoEntity.IMGTarget="img";
-        personInfoEntity.MonthCount=1;
-        personInfoEntity.Remark="Remark";
-        personInfoEntity.ScoreCount=1.11;
-        personInfoEntity.Tel="Tel";
-        PersonInfoEntity hasEntity=(PersonInfoEntity)mCache.getAsObject("CurentUser");
-        if (hasEntity!=null)
-        {
-            mCache.remove("CurrentUser");
-        }
-        mCache.put("CurrentUser",personInfoEntity);
+
         startActivity(new Intent(Login.this, MainPPVActivity.class));
         Login.this.finish();
     }

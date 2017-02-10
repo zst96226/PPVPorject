@@ -1,7 +1,10 @@
 package com.example.beyondsys.ppv.activity;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,10 +16,18 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.bussiness.WorkItemBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.TeamEntity;
+import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
+import com.example.beyondsys.ppv.tools.GsonUtil;
+import com.example.beyondsys.ppv.tools.JsonEntity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.logging.LogRecord;
 
 /**
  * Created by zhsht on 2017/1/12.工作项页面
@@ -37,15 +49,48 @@ public class WorkItemView extends Fragment {
     private LinearLayout wi_s_one,undo_layout,progress_layout,done_layout,cancel_layout;
     private TextView  wi_s_one_txt,undo_tex,proing_tex,done_tex,cancel_tex;
    // private WorkItemEntity workItemEntity;
-    private  final static int aboutme=2;
-    private final static int  assignme=1;
-    private final static int undo=3;
-    private final static int  progress=4;
-    private final static int done=5;
-    private final static int  cancel=6;
-    private  int flag=1;
+    private   List<WorkItemEntity> workItemEntityList;
+    private  final static int aboutme=1;
+    private final static int  assignme=0;
+    private final static int undo=0;
+    private final static int  progress=1;
+    private final static int done=2;
+    private final static int  cancel=3;
+    private  int reflag=0,stflag=0;
 
-
+    private Handler threadHander=new Handler(){
+        public void handleMessage(Message msg)
+        {
+          if(msg.what== ThreadAndHandlerLabel.GetWorkItem)
+          {
+              if(msg.obj!=null)
+              {
+                  Log.i("返回值："+msg.obj,"FHZ");
+                  String jsonStr = msg.obj.toString();
+                    /*解析Json*/
+                 // UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(jsonStr);
+                  try{
+                      List<WorkItemEntity> entityList=JsonEntity.ParsingJsonForWorkItemList(jsonStr);
+                      if(entityList!=null&&(!entityList.isEmpty()))
+                      {
+                          //
+                          workItemEntityList=entityList;
+                      }else{
+                          Toast.makeText(WorkItemView.this.getActivity(), "没有当前状态的数据", Toast.LENGTH_SHORT).show();
+                      }
+                  }catch (Exception e){}
+              }else
+              {
+                  Toast.makeText(WorkItemView.this.getActivity(), "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+              }
+          }else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
+              Toast.makeText(WorkItemView.this.getActivity(), "请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+          } else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
+              Toast.makeText(WorkItemView.this.getActivity(), "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
+                /*清除其余活动中Activity以及全部缓存显示登录界面*/
+          }
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,14 +127,16 @@ public class WorkItemView extends Fragment {
                 new int[]{R.id.work_img,R.id.workid_tex,R.id .workname_tex ,R.id.workvalue_tex ,R.id .work_state_img ,R.id .strarttime_tex ,R.id.endtime_tex}) ;
         listView.setAdapter(adapter);
     }
-private  void setdefault()
-{
-    wi_s_one_txt.setTextColor(getActivity().getResources().getColor(R.color.Gray));
-    undo_tex.setTextColor(getActivity().getResources().getColor(R.color.Gray));
-    proing_tex.setTextColor(getActivity().getResources().getColor(R.color.Gray));
-    done_tex.setTextColor(getActivity().getResources().getColor(R.color.Gray));
-    cancel_tex.setTextColor(getActivity().getResources().getColor(R.color.Gray));
-}
+
+    private  void setdefault()
+    {
+        wi_s_one_txt.setTextColor(getActivity().getResources().getColor(R.color.text));
+        undo_tex.setTextColor(getActivity().getResources().getColor(R.color.Gray));
+        proing_tex.setTextColor(getActivity().getResources().getColor(R.color.Gray));
+        done_tex.setTextColor(getActivity().getResources().getColor(R.color.Gray));
+        cancel_tex.setTextColor(getActivity().getResources().getColor(R.color.Gray));
+    }
+
     private void Listener(){
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -108,14 +155,13 @@ private  void setdefault()
             @Override
             public void onClick(View v) {
                 setdefault();
-                wi_s_one_txt.setTextColor(getActivity().getResources().getColor(R.color.text));
-                if (assignme == flag) {
+                if (assignme == reflag) {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt_2);
-                    flag = aboutme;
+                    reflag = aboutme;
                     SetList();
                 } else {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt);
-                    flag = assignme;
+                    reflag = assignme;
                     SetList();
                 }
             }
@@ -127,7 +173,7 @@ private  void setdefault()
             public void onClick(View v) {
                 setdefault();
                 undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
-                flag = undo;
+                stflag = undo;
                 SetList();
             }
         });
@@ -137,7 +183,7 @@ private  void setdefault()
             public void onClick(View v) {
                 setdefault();
                 proing_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
-                flag = progress;
+               stflag = progress;
                 SetList();
             }
         });
@@ -147,7 +193,7 @@ private  void setdefault()
             public void onClick(View v) {
                 setdefault();
                 done_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
-                flag = done;
+                stflag = done;
                 SetList();
             }
         });
@@ -157,7 +203,7 @@ private  void setdefault()
             public void onClick(View v) {
                 setdefault();
                 cancel_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
-                flag = cancel;
+                stflag = cancel;
             }
         });
     }
@@ -171,10 +217,14 @@ private  void setdefault()
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         list.clear();
-        //根据flag获取各状态事务对象列表
-        Log.e(flag+"","qq");
-
-       List<WorkItemEntity> entityList=getEntities(flag);
+        Log.e(stflag + reflag + "", "qq");
+       List<WorkItemEntity> entityList=getEntities(reflag,stflag);
+        if(entityList==null)
+        {
+            return list;
+        }
+        String workItemArray=GsonUtil.getGson().toJson(entityList);
+        mCache.put(LocalDataLabel.WorkItemList+reflag+stflag,workItemArray);
         for (WorkItemEntity workItemEntity:entityList)
         {
             Map<String, Object> map = new HashMap<String, Object>();
@@ -186,11 +236,11 @@ private  void setdefault()
             map.put("workValue", workItemEntity.BusinessValue);
             map.put("strartTime", workItemEntity.CreateTime);
             list.add(map);
-          WorkItemEntity hasEntity=(WorkItemEntity)  mCache.getAsObject(workItemEntity.ID.toString().trim());
-            if(hasEntity==null)
-            {
-                mCache.put(workItemEntity.ID.toString().trim(), workItemEntity);
-            }
+//          WorkItemEntity hasEntity=(WorkItemEntity)  mCache.getAsObject(workItemEntity.ID.toString().trim());
+//            if(hasEntity==null)
+//            {
+//                mCache.put(workItemEntity.ID.toString().trim(), workItemEntity);
+//            }
         }
         return list;
     }
@@ -211,61 +261,25 @@ private  void setdefault()
 //        }
 //       return list;
 //   }
-    private  List<WorkItemEntity> getEntities(int flag)
+    private  List<WorkItemEntity> getEntities(int reflag,int stflag)
     {
-        List<WorkItemEntity> entityList=new ArrayList<WorkItemEntity>();
-                switch (flag)
+        //根据flag获取各状态事务对象列表
+        WorkItemBusiness workItemBusiness=new WorkItemBusiness();
+        //从缓存中取TeamID
+        String TeamID="";
+        String jsonarr=mCache.getAsString(LocalDataLabel.Label);
+        if(jsonarr!=null)
         {
-            case assignme:
-                for(int i=0;i<10;i++)
+            try {
+                List<TeamEntity> teamEntityList=JsonEntity.ParsingJsonForTeamList(jsonarr);
+                if(teamEntityList!=null&&(!teamEntityList.isEmpty()))
                 {
-                    WorkItemEntity workItemEntity=new WorkItemEntity();
-                    workItemEntity.BID="BID"+i;
-                    workItemEntity.ID="ID"+i;
-                    workItemEntity.FID="FID"+i;
-                    workItemEntity.Name="Name"+i;
-                    workItemEntity.Description="Des"+i;
-                    workItemEntity.Category=i;
-                    workItemEntity.Status=i;
-                    workItemEntity.Assigned2="Assigned"+i;
-                    workItemEntity.Belong2="Belong"+i;
-                    workItemEntity.Checker="Check"+i;
-                    workItemEntity.Creater="Creater"+i;
-                    workItemEntity.CreateTime="Createtime"+i;
-                    workItemEntity.ClosingTime="ClosingTime"+i;
-                    workItemEntity.Modifier="Modifier"+i;
-                    workItemEntity.ModifyTime="ModifiyTime"+i;
-                    workItemEntity.BusinessValue=i;
-                    workItemEntity.BasicScore=i;
-                    workItemEntity.CheckedScore=i;
-                    workItemEntity.HardScale=i;
-                    workItemEntity.Remark="Remark"+i;
-                    entityList.add(workItemEntity);
-
-                    Log.e(entityList.get(i).Name.toString(), "qq");
+                    TeamID=teamEntityList.get(0).TeamID;
                 }
-                //往缓存中存列表
-                break;
-            case aboutme:
-               //   entityList.clear();
-                break;
-            case undo:
-                //entityList.clear();
-                break;
-            case progress:
-              //  entityList.clear();
-                break;
-            case done:
-             //   entityList.clear();
-                break;
-            case cancel:
-               // entityList.clear();
-                break;
-            default:
-              //  entityList.clear();
-                    break;
+            }catch (Exception e){}
         }
-
-        return  entityList;
+        workItemBusiness.GetWorkItem(threadHander,TeamID,stflag,reflag,1,mCache);
+//原代码已保存
+        return  workItemEntityList;
     }
 }

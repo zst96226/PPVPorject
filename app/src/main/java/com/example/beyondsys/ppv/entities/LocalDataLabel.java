@@ -12,4 +12,10 @@ public class LocalDataLabel{
     public static final String AccAndPwd="AccAndPwd";
     /*个人信息*/
     public static final String PersonalInformation="PersonalInformation";
+    /*价值列表*/
+    public  static final  String WorkValueList="WorkValueList";
+    /*事项列表*/
+    public  static final  String WorkItemList="WorkItemList";
+    /*当前用户信息*/
+    public  static  final  String CurPerson="CurPerson";
 }

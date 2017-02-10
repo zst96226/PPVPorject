@@ -7,12 +7,15 @@ import java.io.Serializable;
  */
 public class UserLoginResultEntity implements Serializable {
 //    用户凭据
-    public String Proof;
+    public String TicketID;
 //    返回结果 0:出错，1：登录成功，2：密码错误，3：账号不存在
-    public int Result;
+    public int LoginResult;
+
+    public String UserID;
 
     public UserLoginResultEntity(){
-        this.Proof=null;
-        this.Result=-1;
+        this.TicketID=null;
+        this.LoginResult=-1;
+        this.UserID=null;
     }
 }

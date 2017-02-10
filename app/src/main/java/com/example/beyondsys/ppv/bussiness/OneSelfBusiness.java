@@ -38,7 +38,7 @@ public class OneSelfBusiness {
     public void GetOneSelf(final Handler handler, ACache mCache) {
         UserLoginResultEntity userLoginResultEntity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
         if (userLoginResultEntity != null) {
-            final String JsonParams = GsonUtil.getGson().toJson(userLoginResultEntity.Proof);
+            final String JsonParams = GsonUtil.getGson().toJson(userLoginResultEntity.TicketID);
             Log.i("提交对象：" + JsonParams, "FHZ");
             new Thread() {
                 public void run() {
@@ -82,7 +82,7 @@ public class OneSelfBusiness {
         UserLoginResultEntity entitys = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
         if (entitys != null) {
             InformationPerson person = new InformationPerson();
-            person.proof = entitys.Proof;
+            person.proof = entitys.TicketID;
             person.Name = entity.Name;
             person.Email = entity.EMail;
             person.IDCard = entity.IDNo;
