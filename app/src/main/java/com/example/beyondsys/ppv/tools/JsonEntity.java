@@ -9,6 +9,8 @@ import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
+import com.example.beyondsys.ppv.entities.WorkItemResultEntity;
+import com.example.beyondsys.ppv.entities.WorkItemResultParams;
 import com.example.beyondsys.ppv.entities.WorkValueEntity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -82,7 +84,29 @@ public class JsonEntity{
             return null;
         }
     }
+ public  static WorkItemResultEntity ParseJsonForWorkItemResult(String result)
+ {
+     WorkItemResultEntity workItemResultEntity=null;
+     workItemResultEntity=GsonUtil.json2T(result, WorkItemResultEntity.class);
+     if(workItemResultEntity!=null)
+     {
+         return  workItemResultEntity;
+     }else{
+         return null;
+     }
+ }
 
+    public static List<WorkItemResultParams> ParseJsonForworkItemResultParamsList(String result)
+    {
+        List<WorkItemResultParams> workItemResultParamsList=null;
+        workItemResultParamsList=GsonUtil.json2Collection(result,WorkItemResultParams.class);
+        if(workItemResultParamsList!=null)
+        {
+            return  workItemResultParamsList;
+        }else{
+            return null;
+        }
+    }
     public  static List<WorkItemEntity> ParsingJsonForWorkItemList(String result)
     {
        List<WorkItemEntity > entityList=null;
@@ -98,7 +122,7 @@ public class JsonEntity{
     public  static List<WorkValueEntity> ParseJsonForWorkValueList(String result)
     {
         List<WorkValueEntity> entityList=null;
-        entityList=GsonUtil.json2Collection(result,WorkValueEntity.class);
+        entityList=GsonUtil.json2Collection(result, WorkValueEntity.class);
         if(entityList!=null)
         {
             return entityList;
@@ -118,13 +142,26 @@ public class JsonEntity{
     public static  PersonInfoEntity ParseJsonForPerson(String result)
     {
         PersonInfoEntity personInfoEntity=null;
-        personInfoEntity=GsonUtil.json2T(result,PersonInfoEntity.class);
+        personInfoEntity=GsonUtil.json2T(result, PersonInfoEntity.class);
         if (personInfoEntity!=null)
         {
             return  personInfoEntity;
         }else {
             return  null;
         }
+    }
+
+    public  static WorkItemEntity ParseJsonForWorkItem(String result)
+    {
+        WorkItemEntity workItemEntity=null;
+        workItemEntity=GsonUtil.json2T(result,WorkItemEntity.class);
+        if(workItemEntity!=null)
+        {
+            return  workItemEntity;
+        }else {
+            return null;
+        }
+
     }
 
     private List<TeamEntity> readDatas(ACache mCache) {

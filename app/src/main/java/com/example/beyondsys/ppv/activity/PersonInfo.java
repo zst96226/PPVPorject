@@ -29,6 +29,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.bussiness.OneSelfBusiness;
 import com.example.beyondsys.ppv.bussiness.UploadImg;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
@@ -63,7 +64,7 @@ public class PersonInfo extends AppCompatActivity {
     private Handler threadHandler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.UploadImg) {
-                Log.i("上传返回值："+msg.obj,"UPIMG");
+                Log.i("上传返回值：" + msg.obj, "UPIMG");
                 if (!msg.obj.toString().equals("") && msg.obj!=null)
                 {
                     Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
@@ -72,8 +73,26 @@ public class PersonInfo extends AppCompatActivity {
                 {
                     Toast.makeText(PersonInfo.this, "修改失败", Toast.LENGTH_SHORT).show();
                 }
-            } else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
+            }else if(msg.what==ThreadAndHandlerLabel.OneselfInf){
+             if(msg.obj!=null)
+             {
+                 int flag=Integer.parseInt(msg.obj.toString().trim());
+                 if(flag==0)
+                 {
+                     Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
+                 }
+                 else
+                 {
+                     Toast.makeText(PersonInfo.this, "修改失败", Toast.LENGTH_SHORT).show();
+                 }
+             }else {
+                 Toast.makeText(PersonInfo.this,"服务端验证出错，请联系管理员",Toast.LENGTH_SHORT).show();
+             }
+            }else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
                 Toast.makeText(PersonInfo.this, "修改失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+            }else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
+                Toast.makeText(PersonInfo.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
+                /*清除其余活动中Activity以及全部缓存显示登录界面*/
             }
         }
     };
@@ -184,8 +203,10 @@ public class PersonInfo extends AppCompatActivity {
             myAdressEdt.setEnabled(false);
             myDesEdt.setEnabled(false);
             editFlag = false;
-            //数据库保存操作
             modifyImg.setImageResource(R.drawable.img_pro);
+            //服务器保存操作
+            OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
+            oneSelfBusiness.ChangeOneSelf(threadHandler,mCache,personInfoEntity);
         }
     }
 

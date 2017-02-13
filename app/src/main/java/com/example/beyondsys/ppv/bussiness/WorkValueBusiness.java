@@ -2,18 +2,14 @@ package com.example.beyondsys.ppv.bussiness;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.APIEntity;
-import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
-import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 
-import org.json.JSONObject;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
@@ -21,13 +17,8 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * Created by zhsht on 2017/2/5.工作价值业务
@@ -38,10 +29,10 @@ public class WorkValueBusiness {
         WorkValueperson person = new WorkValueperson();
         UserLoginResultEntity userLoginResultEntity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
         if (userLoginResultEntity != null) {
-            person.poof = userLoginResultEntity.TicketID;
-            person.teamID = TeamID;
-            person.pagenum = pageNum;
-            person.state = state;
+            person.TicketID = userLoginResultEntity.TicketID;
+            person.TeamID = TeamID;
+            person.PageNum = pageNum;
+            person.Status = state;
             final String JsonParams = GsonUtil.getGson().toJson(person);
             new Thread() {
                 public void run() {
@@ -81,10 +72,10 @@ public class WorkValueBusiness {
 
     /*获取工作价值参数*/
     private class WorkValueperson implements Serializable {
-        public String poof;
-        public String teamID;
-        public int pagenum;
-        public int state;
+        public String TicketID;
+        public String TeamID;
+        public int PageNum;
+        public int Status;
     }
 
     /*获取详细价值*/
@@ -93,11 +84,11 @@ public class WorkValueBusiness {
         UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
         if (entity != null) {
             WorkValueContextPerson person = new WorkValueContextPerson();
-            person.proof = entity.TicketID;
+            person.TicketID = entity.TicketID;
             person.TeamID = TeamID;
             person.UserID = UserID;
-            person.datetime = DateTime;
-            person.pageNum = pagenum;
+            person.Time = DateTime;
+            person.PageNum = pagenum;
             final String JsonParams = GsonUtil.getGson().toJson(person);
             new Thread() {
                 public void run() {
@@ -137,10 +128,10 @@ public class WorkValueBusiness {
 
     /*获取详细价值参数*/
     private class WorkValueContextPerson implements Serializable {
-        public String proof;
+        public String TicketID;
         public String UserID;
         public String TeamID;
-        public String datetime;
-        public int pageNum;
+        public String Time;
+        public int PageNum;
     }
 }

@@ -26,6 +26,8 @@ import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
+import com.example.beyondsys.ppv.entities.WorkItemResultEntity;
+import com.example.beyondsys.ppv.entities.WorkItemResultParams;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 
@@ -70,14 +72,31 @@ public class WorkItemView extends Fragment {
                     /*解析Json*/
                  // UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(jsonStr);
                   try{
-                      List<WorkItemEntity> entityList=JsonEntity.ParsingJsonForWorkItemList(jsonStr);
-                      if(entityList!=null&&(!entityList.isEmpty()))
+                      WorkItemResultEntity entity=JsonEntity.ParseJsonForWorkItemResult(jsonStr);
+                      if(entity!=null)
                       {
-                          //
-                          workItemEntityList=entityList;
-                      }else{
-                          Toast.makeText(WorkItemView.this.getActivity(), "没有当前状态的数据", Toast.LENGTH_SHORT).show();
+                          if(entity.AccessResult==0)
+                          {
+                              String str=entity.WorkItemList;
+                              List<WorkItemResultParams> entityList=JsonEntity.ParseJsonForworkItemResultParamsList(str);
+                              if(entityList!=null&&(!entityList.isEmpty()))
+                              {
+                                      //  //将结果实体类转化成工作项实体类
+                                    //  workItemEntityList     entityList;
+                              }
+                          }else
+                          {
+                              Toast.makeText(WorkItemView.this.getActivity(), "获取返回数据出错！", Toast.LENGTH_SHORT).show();
+                          }
                       }
+//                    List< WorkItemResultEntity> entityList=JsonEntity.ParseJsonForWorkItemListResult(jsonStr);
+//                      if(entityList!=null&&(!entityList.isEmpty()))
+//                      {
+//                          //  //将结果实体类转化成工作项实体类
+//                        //  workItemEntityList     entityList;
+//                      }else{
+//                          Toast.makeText(WorkItemView.this.getActivity(), "没有当前状态的数据", Toast.LENGTH_SHORT).show();
+//                      }
                   }catch (Exception e){}
               }else
               {

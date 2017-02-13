@@ -7,14 +7,12 @@ import android.util.Log;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.APIEntity;
 import com.example.beyondsys.ppv.entities.AccAndPwd;
-import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.MD5;
 
-import org.json.JSONObject;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
@@ -22,16 +20,8 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by zhsht on 2017/2/4.登录业务
@@ -171,10 +161,10 @@ public class LoginBusiness {
         AccAndPwd entity = (AccAndPwd) mCache.getAsObject(LocalDataLabel.AccAndPwd);
         if (entity != null && entitys != null) {
             ChangePWDPerson person = new ChangePWDPerson();
-            person.proof = entitys.TicketID;
-            person.Acc = entity.AccountName;
-            person.oldPwd = entity.Password;
-            person.newPwd = newpwd;
+            person.TicketID = entitys.TicketID;
+            person.AccountName = entity.AccountName;
+            person.OldPassword = entity.Password;
+            person.NewPassword = MD5.getMD5(newpwd);
             final String JsonParams = GsonUtil.getGson().toJson(person);
             Log.i("提交对象：" + JsonParams, "FHZ");
             new Thread() {
@@ -215,10 +205,10 @@ public class LoginBusiness {
 
     /*修改密码参数*/
     private class ChangePWDPerson implements Serializable {
-        public String proof;
-        public String Acc;
-        public String oldPwd;
-        public String newPwd;
+        public String TicketID;
+        public String AccountName;
+        public String OldPassword;
+        public String NewPassword;
     }
 
 }

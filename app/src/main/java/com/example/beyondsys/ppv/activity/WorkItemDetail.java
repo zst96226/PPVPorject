@@ -2,6 +2,8 @@ package com.example.beyondsys.ppv.activity;
 
 import android.content.Intent;
 import android.media.Image;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,12 +22,16 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.bussiness.WorkItemBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
 import com.example.beyondsys.ppv.entities.WorkValueEntity;
+import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.PopupMenuForWorkItem;
 
 import java.util.ArrayList;
@@ -49,6 +55,33 @@ public class WorkItemDetail extends AppCompatActivity {
     private RelativeLayout del_layout;
     private  Button del_ok,del_cancel;
     private boolean isdel=false;
+    private Handler handler=new Handler()
+    {
+        public  void  handleMessage(Message msg)
+        {
+           if(msg.what== ThreadAndHandlerLabel.GetWorkItemContext)
+           {
+               if(msg.obj!=null)
+               {
+                 String jsonStr=msg.obj.toString();
+                   try{
+                       WorkItemEntity workItemEntity= JsonEntity.ParseJsonForWorkItem(jsonStr);
+                       if(workItemEntity!=null){
+                                  /////
+                       }
+                   }catch (Exception e){}
+               }else{
+                   Toast.makeText(WorkItemDetail.this, "没有获取到当前工作项信息", Toast.LENGTH_SHORT).show();
+               }
+            }else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
+                Toast.makeText(WorkItemDetail.this, "修改失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+            }else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
+               Toast.makeText(WorkItemDetail.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
+                /*清除其余活动中Activity以及全部缓存显示登录界面*/
+           }
+        }
+
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -340,12 +373,13 @@ public class WorkItemDetail extends AppCompatActivity {
         String id="";
         Bundle bundle = intent.getExtras();
         //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
-        id=bundle.getString("ItemID");
-
-        WorkItemEntity hasEntity=(WorkItemEntity) mCache.getAsObject(id);
+        id=bundle.getString("ItemID").trim();
+        WorkItemEntity hasEntity=(WorkItemEntity) mCache.getAsObject(LocalDataLabel.WorkItemDetail+id);
         if(hasEntity==null)
         {
            //根据ID从服务器取
+            WorkItemBusiness workItemBusiness=new WorkItemBusiness();
+            workItemBusiness.GetWorkItemContent(handler,mCache,id);
         }else
         {
              name_edt.setText(hasEntity.Name.toString());

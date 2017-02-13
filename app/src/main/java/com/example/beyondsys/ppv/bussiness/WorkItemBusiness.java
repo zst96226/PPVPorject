@@ -6,14 +6,11 @@ import android.util.Log;
 
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.APIEntity;
-import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
-import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 
-import org.json.JSONObject;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
@@ -21,13 +18,8 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * Created by zhsht on 2017/2/5.工作项业务
@@ -39,11 +31,11 @@ public class WorkItemBusiness {
         /*获取缓存中的凭据和团队ID*/
         UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
         if (entity != null) {
-            person.poof = entity.TicketID;
-            person.teamID = TeamID;
-            person.state = state;
-            person.relation = relation;
-            person.pageNum = pageNum;
+            person.TicketID = entity.TicketID;
+            person.TeamID = TeamID;
+            person.Ststus = state;
+            person.RelaTionID = relation;
+            person.PageNum = pageNum;
             final String JsonParams = GsonUtil.getGson().toJson(person);
             Log.i("提交对象：" + JsonParams, "FHZ");
             new Thread() {
@@ -84,11 +76,11 @@ public class WorkItemBusiness {
 
     /*获取工作项所需参数*/
     private class WorkItemperson implements Serializable {
-        public String poof;
-        public String teamID;
-        public int state;
-        public int relation;
-        public int pageNum;
+        public String TicketID;
+        public String TeamID;
+        public int Ststus;
+        public int RelaTionID;
+        public int PageNum;
     }
 
     /*获取工作项详细信息*/

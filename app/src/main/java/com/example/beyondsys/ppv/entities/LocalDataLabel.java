@@ -18,4 +18,6 @@ public class LocalDataLabel{
     public  static final  String WorkItemList="WorkItemList";
     /*当前用户信息*/
     public  static  final  String CurPerson="CurPerson";
+    /*事项详细信息*/
+    public static final String WorkItemDetail="WorkItemDetail";
 }
