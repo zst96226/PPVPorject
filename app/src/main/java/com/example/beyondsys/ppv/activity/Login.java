@@ -21,7 +21,6 @@ import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.LoginBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
-import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
@@ -65,6 +64,7 @@ public class Login extends Activity implements OnClickListener {
             if (msg.what == ThreadAndHandlerLabel.UserLogin) {
 
                 if (msg.obj != null) {
+                    Log.i("返回值：" + msg.obj, "FHZ");
                     Log.i("登录返回值："+msg.obj,"FHZ");
                     String jsonStr = msg.obj.toString();
                     Log.i("登录返回值："+jsonStr.toString(),"FHZ");
@@ -79,6 +79,11 @@ public class Login extends Activity implements OnClickListener {
                                     Toast.makeText(Login.this, "服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 0:
+                                    /*将凭据保存缓存*/
+                                    mCache.put(LocalDataLabel.Proof, entity);
+                                    /*获取运行期间所需的标识*/
+                                    LoginBusiness personnelVerify = new LoginBusiness();
+                                    personnelVerify.UserLogo(threadHandler, mCache);
                                     Toast.makeText(Login.this,entity.TicketID+" "+entity.LoginResult , Toast.LENGTH_SHORT).show();
                                 /*将凭据保存缓存*/
 //                                    mCache.put(LocalDataLabel.Proof, entity);
@@ -95,7 +100,8 @@ public class Login extends Activity implements OnClickListener {
                                     break;
                             }
                         }
-                    }catch (Exception e){}
+                    } catch (Exception e) {
+                    }
                 } else {
                     Toast.makeText(Login.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
                 }

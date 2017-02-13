@@ -19,7 +19,9 @@ import java.io.IOException;
 /**
  * Created by zhsht on 2017/2/7.上传头像
  */
-public class UploadImg {
+public class ImgBusiness
+{
+    /*上传头像*/
     public void uploadImg(final Handler handler,final String img){
         new Thread() {
             public void run() {
@@ -50,5 +52,9 @@ public class UploadImg {
                 }
             }
         }.start();
+    }
+    /*下载头像*/
+    public void downloadImg(final Handler handler,final String path) {
+
     }
 }

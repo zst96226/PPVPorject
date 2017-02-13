@@ -1,10 +1,8 @@
 package com.example.beyondsys.ppv.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -16,11 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,18 +23,14 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
-import com.example.beyondsys.ppv.bussiness.OneSelfBusiness;
-import com.example.beyondsys.ppv.bussiness.UploadImg;
+import com.example.beyondsys.ppv.bussiness.ImgBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.tools.ValidaService;
-import com.example.beyondsys.ppv.tools.SelectPicPopup;
 import com.example.beyondsys.ppv.tools.TakePhotoPopWin;
 import com.example.beyondsys.ppv.tools.Tools;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -300,7 +290,7 @@ public class PersonInfo extends AppCompatActivity {
                         myImg.setImageBitmap(bitmap);
                        takePhotoPopWin.dismiss();
                         /*上传头像，不在这个位置，以后会改*/
-                        UploadImg uploadImg = new UploadImg();
+                        ImgBusiness uploadImg = new ImgBusiness();
                         uploadImg.uploadImg(threadHandler, Tools.bitmap2Base64(bitmap));
                     }
                 }
