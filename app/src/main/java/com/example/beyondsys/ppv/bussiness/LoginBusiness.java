@@ -29,7 +29,7 @@ import java.io.Serializable;
 public class LoginBusiness {
     /*用户登录*/
     public void Login(String Id, String Pwd, final Handler handler) {
-        String str= MD5.getMD5(Pwd);
+        String str= Pwd;
         AccAndPwd person = new AccAndPwd(Id,str );
         final String JsonParams = GsonUtil.getGson().toJson(person);
         Log.i("提交对象：" + JsonParams, "FHZ");
@@ -70,10 +70,12 @@ public class LoginBusiness {
     public void UserLogo(final Handler handler, ACache mCache) {
         /*从缓存中获取凭据*/
         UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+        Log.i("缓存中获取凭据" , "FHZ");
         if (entity != null && !entity.TicketID.equals("")) {
             String _poof = entity.TicketID;
             final String JsonParams = GsonUtil.getGson().toJson(_poof);
             Log.i("提交对象：" + JsonParams, "FHZ");
+            Log.i("提交对象：" , "FHZ");
             new Thread() {
                 public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
@@ -90,7 +92,8 @@ public class LoginBusiness {
                         // 开始调用远程方法
                         httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
                         // 得到远程方法返回的SOAP对象
-                        SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+//                        SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+                        SoapObject result = (SoapObject) envelop.getResponse();
                         Message msg = Message.obtain();
                         msg.what = ThreadAndHandlerLabel.GetIdentifying;
                         msg.obj = result;
@@ -164,7 +167,7 @@ public class LoginBusiness {
             person.TicketID = entitys.TicketID;
             person.AccountName = entity.AccountName;
             person.OldPassword = entity.Password;
-            person.NewPassword = MD5.getMD5(newpwd);
+            person.NewPassword =newpwd;
             final String JsonParams = GsonUtil.getGson().toJson(person);
             Log.i("提交对象：" + JsonParams, "FHZ");
             new Thread() {

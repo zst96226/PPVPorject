@@ -24,9 +24,15 @@ import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.ImgBusiness;
+import com.example.beyondsys.ppv.bussiness.OneSelfBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
+import com.example.beyondsys.ppv.entities.SubmitInfoResult;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UserInfoResultParams;
+import com.example.beyondsys.ppv.tools.GsonUtil;
+import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.ValidaService;
 import com.example.beyondsys.ppv.tools.TakePhotoPopWin;
 import com.example.beyondsys.ppv.tools.Tools;
@@ -50,7 +56,8 @@ public class PersonInfo extends AppCompatActivity {
     private boolean editFlag = false;
     private    TakePhotoPopWin takePhotoPopWin;
     private String IMAGE_FILE_LOCATION = Tools.getSDPath() + File.separator + "photo.jpeg";
-    private PersonInfoEntity personInfoEntity;
+
+    private UserInfoResultParams personInfoEntity, newInfo;
     private Handler threadHandler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.UploadImg) {
@@ -66,15 +73,30 @@ public class PersonInfo extends AppCompatActivity {
             }else if(msg.what==ThreadAndHandlerLabel.OneselfInf){
              if(msg.obj!=null)
              {
-                 int flag=Integer.parseInt(msg.obj.toString().trim());
-                 if(flag==0)
+                 SubmitInfoResult result= JsonEntity.ParseJsonForSubmitResult(msg.obj.toString());
+                 if(result!=null)
+                 {
+                     int flag=result.Result;
+                     if(flag==0)
                  {
                      Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
+                     String json= GsonUtil.t2Json2(newInfo);
+                     mCache.put(LocalDataLabel.CurPerson,json);
                  }
                  else
                  {
                      Toast.makeText(PersonInfo.this, "修改失败", Toast.LENGTH_SHORT).show();
                  }
+                 }
+//                 int flag=Integer.parseInt(msg.obj.toString().trim());
+//                 if(flag==0)
+//                 {
+//                     Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
+//                 }
+//                 else
+//                 {
+//                     Toast.makeText(PersonInfo.this, "修改失败", Toast.LENGTH_SHORT).show();
+//                 }
              }else {
                  Toast.makeText(PersonInfo.this,"服务端验证出错，请联系管理员",Toast.LENGTH_SHORT).show();
              }
@@ -91,7 +113,8 @@ public class PersonInfo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_info);
-        initData();
+        init();
+        setData();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,7 +131,7 @@ public class PersonInfo extends AppCompatActivity {
 
     }
 
-    private void initData() {
+    private void init() {
         infoModify = (LinearLayout) findViewById(R.id.infoModify);
         back = (ImageView) this.findViewById(R.id.dttail_back);
         myImgLayout = (RelativeLayout) findViewById(R.id.myImg_layout);
@@ -126,11 +149,26 @@ public class PersonInfo extends AppCompatActivity {
         myAdressEdt = (EditText) findViewById(R.id.myAddress_edt);
         myDesEdt = (EditText) findViewById(R.id.myDes_edt);
         //实际上要从缓存或服务器中获取
-        personInfoEntity=new PersonInfoEntity();
-        personInfoEntity.BID="BID";
-        personInfoEntity.ID="ID";
+//        personInfoEntity=new PersonInfoEntity();
+//        personInfoEntity.BID="BID";
+//        personInfoEntity.ID="ID";
 
     }
+private  void setData()
+{
+    personInfoEntity=(UserInfoResultParams)mCache.getAsObject(LocalDataLabel.CurPerson);
+    if(personInfoEntity!=null)
+    {
+        //个人头像未完成
+        myImg.setImageResource(R.drawable.person);
+        myNameEdt.setText(personInfoEntity.Name);
+        myPhoneEdt.setText(personInfoEntity.Tel);
+        myEmailEdt.setText(personInfoEntity.EMail);
+        myAdressEdt.setText(personInfoEntity.Address);
+        myIDEdt.setText(personInfoEntity.IDNo);
+        myDesEdt.setText(personInfoEntity.Sign);
+    }
+}
 
     public void isModify(View v) {
         modifyImg = (ImageView) findViewById(R.id.infoModify_img);
@@ -195,8 +233,17 @@ public class PersonInfo extends AppCompatActivity {
             editFlag = false;
             modifyImg.setImageResource(R.drawable.img_pro);
             //服务器保存操作
+            newInfo=new UserInfoResultParams();
+           //图片未完成
+           // newInfo.IMGTarget=myImg.getDrawable().toString();
+            newInfo.Name=myNameEdt.getText().toString().trim();
+            newInfo.Tel=myPhoneEdt.getText().toString().trim();
+            newInfo.EMail=myEmailEdt.getText().toString().trim();
+            newInfo.IDNo=myIDEdt.getText().toString().trim();
+            newInfo.Address=myAdressEdt.getText().toString().trim();
+            newInfo.Sign=myDesEdt.getText().toString().trim();
             OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
-            oneSelfBusiness.ChangeOneSelf(threadHandler,mCache,personInfoEntity);
+            oneSelfBusiness.ChangeOneSelf(threadHandler,mCache,newInfo);
         }
     }
 

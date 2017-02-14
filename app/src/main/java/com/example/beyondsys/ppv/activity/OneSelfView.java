@@ -28,12 +28,16 @@ import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.LoginBusiness;
 import com.example.beyondsys.ppv.bussiness.OneSelfBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.AccAndPwd;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.ModifyPwdResult;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UserInfoResultParams;
 import com.example.beyondsys.ppv.tools.CustomDialog;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
+import com.example.beyondsys.ppv.tools.MD5;
 import com.example.beyondsys.ppv.tools.ValidaService;
 
 import java.util.ArrayList;
@@ -53,7 +57,7 @@ private LinearLayout personInfoLayout;
     private ListView child_list;
     private ImageView show_team;
     private TextView teamName_tex,teamlevel_tex,personname_tex,valuesum_tex,monthsum_tex;
-    private PersonInfoEntity personInfoEntity;
+    private UserInfoResultParams personInfoEntity;
     private Handler handler=new Handler(){
         public void handleMessage(Message msg)
         {
@@ -62,7 +66,8 @@ private LinearLayout personInfoLayout;
                 if(msg.obj!=null)
                 {
                     try{
-                        int flag = Integer.parseInt(msg.obj.toString());
+                        ModifyPwdResult result=JsonEntity.ParseJsonForModifyPwdResult(msg.obj.toString());
+                        int flag = result.Result;
                         if(flag==0)
                         {
                             Toast toast=Toast.makeText(getActivity().getApplicationContext(),"修改成功!",Toast.LENGTH_LONG);
@@ -83,9 +88,16 @@ private LinearLayout personInfoLayout;
                     Log.i("当前用户信息返回值："+msg.obj,"FHZ");
                     String  jsonStr=msg.obj.toString();
                     try{
-                        PersonInfoEntity personInfoEntity= JsonEntity.ParseJsonForPerson(jsonStr);
-                        String curPerson= GsonUtil.t2Json2(personInfoEntity);
-                        mCache.put(LocalDataLabel.CurPerson,curPerson);
+                        UserInfoResultParams userInfoResultParams=JsonEntity.ParseJsonForUserInfoResult(jsonStr);
+                        if(userInfoResultParams!=null)
+                        {
+                            String curPerson=GsonUtil.t2Json2(userInfoResultParams);
+                            mCache.put(LocalDataLabel.CurPerson,curPerson);
+                            personInfoEntity=userInfoResultParams;
+                        }
+//                        PersonInfoEntity personInfoEntity= JsonEntity.ParseJsonForPerson(jsonStr);
+//                        String curPerson= GsonUtil.t2Json2(personInfoEntity);
+//                        mCache.put(LocalDataLabel.CurPerson,curPerson);
                     }catch (Exception e){}
                 }else{
                     Toast.makeText(OneSelfView.this.getActivity(),"没有当前用户的数据",Toast.LENGTH_SHORT).show();
@@ -127,19 +139,19 @@ private LinearLayout personInfoLayout;
     }
     private  void setData()
     {
-        personInfoEntity=(PersonInfoEntity)mCache.getAsObject(LocalDataLabel.CurPerson);
-        if(personInfoEntity==null)
-        {
-            //缓存中未获取到用户个人信息 从服务加载
-            OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
-            oneSelfBusiness.GetOneSelf(handler,mCache);
-        }
-        else
-        {
-            personname_tex.setText(personInfoEntity.Name);
-            valuesum_tex.setText(String.valueOf(personInfoEntity.ScoreCount));
-            monthsum_tex.setText(String.valueOf(personInfoEntity.MonthCount));
-        }
+//        personInfoEntity=(UserInfoResultParams)mCache.getAsObject(LocalDataLabel.CurPerson);
+//        if(personInfoEntity==null)
+//        {
+//            //缓存中未获取到用户个人信息 从服务加载
+//            OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
+//            oneSelfBusiness.GetOneSelf(handler,mCache);
+//        }
+//        else
+//        {
+//            personname_tex.setText(personInfoEntity.Name);
+//            valuesum_tex.setText(String.valueOf(personInfoEntity.TotalScore));
+//            monthsum_tex.setText(String.valueOf(personInfoEntity.TotalMonth));
+//        }
     }
     private void setListener()
     {
@@ -261,10 +273,17 @@ private LinearLayout personInfoLayout;
                     else
                     {
                         //验证原密码 正确则提交更改到服务器
-                        String userPass=personInfoEntity.AccPwd.toString().trim();
+                        String userPass="";
                         String inputPass=dialog.getoldpass().toString().trim();
                         String newPass=dialog.getNewPass().toString().trim();
-                        if(!userPass.equals(inputPass))
+                        String newMD5= MD5.getMD5(newPass);
+                        String inputMD5= MD5.getMD5(inputPass);
+                          AccAndPwd accAndPwd = (AccAndPwd) mCache.getAsObject(LocalDataLabel.AccAndPwd);
+                        if(accAndPwd!=null)
+                        {
+                            userPass=accAndPwd.Password;
+                        }
+                        if(!userPass.equals(inputMD5))
                         {
                             Toast toast=Toast.makeText(getActivity().getApplicationContext(),"原密码不正确!",Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.CENTER,0,0);

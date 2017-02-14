@@ -4,14 +4,20 @@ import android.util.Log;
 
 import com.example.beyondsys.ppv.activity.PersonInfo;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.ModifyPwdResult;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
+import com.example.beyondsys.ppv.entities.SubmitInfoResult;
 import com.example.beyondsys.ppv.entities.TeamEntity;
+import com.example.beyondsys.ppv.entities.UserInfoResultParams;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
 import com.example.beyondsys.ppv.entities.WorkItemResultEntity;
 import com.example.beyondsys.ppv.entities.WorkItemResultParams;
 import com.example.beyondsys.ppv.entities.WorkValueEntity;
+import com.example.beyondsys.ppv.entities.WorkValueResultEntity;
+import com.example.beyondsys.ppv.entities.WorkValueResultParams;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -99,7 +105,7 @@ public class JsonEntity{
     public static List<WorkItemResultParams> ParseJsonForworkItemResultParamsList(String result)
     {
         List<WorkItemResultParams> workItemResultParamsList=null;
-        workItemResultParamsList=GsonUtil.json2Collection(result,WorkItemResultParams.class);
+        workItemResultParamsList=GsonUtil.json2Collection(result, WorkItemResultParams.class);
         if(workItemResultParamsList!=null)
         {
             return  workItemResultParamsList;
@@ -107,6 +113,73 @@ public class JsonEntity{
             return null;
         }
     }
+
+    public  static WorkValueResultEntity ParseJsonForWorkValueResult(String result)
+    {
+        WorkValueResultEntity workValueResultEntity=null;
+        workValueResultEntity=GsonUtil.json2T(result, WorkValueResultEntity.class);
+        if(workValueResultEntity!=null)
+        {
+            return workValueResultEntity;
+        }else{
+            return  null;
+        }
+    }
+    public static List<WorkValueResultParams> ParseJsonForWorkValueParamsList (String result)
+    {
+       List<WorkValueResultParams> entityList=null;
+        entityList=GsonUtil.json2Collection(result, WorkValueResultParams.class);
+        if(entityList!=null)
+        {
+            return entityList;
+        }else{
+            return null;
+        }
+    }
+    public  static UserInfoResultParams ParseJsonForUserInfoResult(String result)
+    {
+        UserInfoResultParams userInfoResultParams=null;
+        userInfoResultParams=GsonUtil.json2T(result, UserInfoResultParams.class);
+        if(userInfoResultParams!=null)
+        {
+            return  userInfoResultParams;
+        }else{
+            return null;
+        }
+    }
+    public  static ModifyPwdResult ParseJsonForModifyPwdResult(String result)
+    {
+        ModifyPwdResult modifyPwdResult=null;
+        modifyPwdResult=GsonUtil.json2T(result, ModifyPwdResult.class);
+        if(modifyPwdResult!=null)
+        {
+            return  modifyPwdResult;
+        }else{
+            return  null;
+        }
+    }
+    public  static IdentifyResult ParseJsonForIdentifyResult(String result)
+    {
+        IdentifyResult identifyResult=null;
+        identifyResult=GsonUtil.json2T(result, IdentifyResult.class);
+        if(identifyResult!=null)
+        {
+            return  identifyResult;
+        }else{
+            return  null;
+        }
+    }
+public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
+{
+    SubmitInfoResult submitInfoResult=null;
+    submitInfoResult=GsonUtil.json2T(result,SubmitInfoResult.class);
+    if(submitInfoResult!=null)
+    {
+        return  submitInfoResult;
+    }else{
+        return  null;
+    }
+}
     public  static List<WorkItemEntity> ParsingJsonForWorkItemList(String result)
     {
        List<WorkItemEntity > entityList=null;

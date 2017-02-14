@@ -51,7 +51,7 @@ public class WorkItemView extends Fragment {
     private LinearLayout wi_s_one,undo_layout,progress_layout,done_layout,cancel_layout;
     private TextView  wi_s_one_txt,undo_tex,proing_tex,done_tex,cancel_tex;
    // private WorkItemEntity workItemEntity;
-    private   List<WorkItemEntity> workItemEntityList;
+    private   List<WorkItemResultParams> workItemEntityList;
     private  final static int aboutme=1;
     private final static int  assignme=0;
     private final static int undo=0;
@@ -69,8 +69,6 @@ public class WorkItemView extends Fragment {
               {
                   Log.i("返回值："+msg.obj,"FHZ");
                   String jsonStr = msg.obj.toString();
-                    /*解析Json*/
-                 // UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(jsonStr);
                   try{
                       WorkItemResultEntity entity=JsonEntity.ParseJsonForWorkItemResult(jsonStr);
                       if(entity!=null)
@@ -81,8 +79,7 @@ public class WorkItemView extends Fragment {
                               List<WorkItemResultParams> entityList=JsonEntity.ParseJsonForworkItemResultParamsList(str);
                               if(entityList!=null&&(!entityList.isEmpty()))
                               {
-                                      //  //将结果实体类转化成工作项实体类
-                                    //  workItemEntityList     entityList;
+                                  workItemEntityList=entityList;
                               }
                           }else
                           {
@@ -237,29 +234,27 @@ public class WorkItemView extends Fragment {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         list.clear();
         Log.e(stflag + reflag + "", "qq");
-       List<WorkItemEntity> entityList=getEntities(reflag,stflag);
+       List<WorkItemResultParams> entityList=getEntities(reflag,stflag);
         if(entityList==null)
         {
             return list;
         }
+        //存缓存
         String workItemArray=GsonUtil.getGson().toJson(entityList);
         mCache.put(LocalDataLabel.WorkItemList+reflag+stflag,workItemArray);
-        for (WorkItemEntity workItemEntity:entityList)
+        for (WorkItemResultParams workItemEntity:entityList)
         {
             Map<String, Object> map = new HashMap<String, Object>();
+            //根据类别不同图片不同
             map.put("workimg", R.drawable.work_item);
-            map.put("workId",workItemEntity.ID);
-            map.put("workName", workItemEntity.Name);
+            map.put("workId",workItemEntity.WorkID);
+            map.put("workName", workItemEntity.WorkName);
+            //根据状态不同图片不同
             map.put("workState", R.drawable.img_done);
-            map.put("endingTime", workItemEntity.ClosingTime);
-            map.put("workValue", workItemEntity.BusinessValue);
-            map.put("strartTime", workItemEntity.CreateTime);
+            map.put("endingTime", workItemEntity.EndTime);
+            map.put("workValue", workItemEntity.Workscore);
+            map.put("strartTime", workItemEntity.StartTime);
             list.add(map);
-//          WorkItemEntity hasEntity=(WorkItemEntity)  mCache.getAsObject(workItemEntity.ID.toString().trim());
-//            if(hasEntity==null)
-//            {
-//                mCache.put(workItemEntity.ID.toString().trim(), workItemEntity);
-//            }
         }
         return list;
     }
@@ -280,7 +275,7 @@ public class WorkItemView extends Fragment {
 //        }
 //       return list;
 //   }
-    private  List<WorkItemEntity> getEntities(int reflag,int stflag)
+    private  List<WorkItemResultParams> getEntities(int reflag,int stflag)
     {
         //根据flag获取各状态事务对象列表
         WorkItemBusiness workItemBusiness=new WorkItemBusiness();

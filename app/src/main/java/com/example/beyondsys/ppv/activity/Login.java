@@ -20,12 +20,16 @@ import android.widget.Toast;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.LoginBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.AccAndPwd;
+import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
+import com.example.beyondsys.ppv.tools.MD5;
 import com.example.beyondsys.ppv.tools.ValidaService;
 
 import java.util.List;
@@ -58,17 +62,16 @@ public class Login extends Activity implements OnClickListener {
     private TextView log_tex;
 
     private PersonInfoEntity personInfoEntity;
+    private  String uPwd;
 
     private Handler threadHandler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.UserLogin) {
 
                 if (msg.obj != null) {
-                    Log.i("返回值：" + msg.obj, "FHZ");
-                    Log.i("登录返回值："+msg.obj,"FHZ");
+                    Log.i("登录返回值：" + msg.obj, "FHZ");
                     String jsonStr = msg.obj.toString();
-                    Log.i("登录返回值："+jsonStr.toString(),"FHZ");
-                    Log.i("xxxx","FHZ");
+                    Log.i("登录返回值：" + jsonStr.toString(), "FHZ");
                     /*解析Json*/
                     try {
                         UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(jsonStr);
@@ -79,18 +82,21 @@ public class Login extends Activity implements OnClickListener {
                                     Toast.makeText(Login.this, "服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 0:
+                                   String  json=GsonUtil.t2Json2(entity);
                                     /*将凭据保存缓存*/
                                     mCache.put(LocalDataLabel.Proof, entity);
+                                    mCache.put("aa",entity);
+                                    mCache.put("bb",json);
                                     /*获取运行期间所需的标识*/
                                     LoginBusiness personnelVerify = new LoginBusiness();
                                     personnelVerify.UserLogo(threadHandler, mCache);
                                     Toast.makeText(Login.this,entity.TicketID+" "+entity.LoginResult , Toast.LENGTH_SHORT).show();
                                 /*将凭据保存缓存*/
 //                                    mCache.put(LocalDataLabel.Proof, entity);
-//                                /*获取运行期间所需的标识*/
-//                                    LoginBusiness personnelVerify = new LoginBusiness();
-//                                    personnelVerify.UserLogo(threadHandler, mCache);
-
+//
+                                /*获取运行期间所需的标识*/
+//                                    LoginBusiness  personnel = new LoginBusiness();
+//                                    personnel.UserLogo(threadHandler, mCache);
                                     break;
                                 case 1:
                                     Toast.makeText(Login.this, "密码错误，请重新输入或选择忘记密码", Toast.LENGTH_SHORT).show();
@@ -108,22 +114,52 @@ public class Login extends Activity implements OnClickListener {
             } else if (msg.what == ThreadAndHandlerLabel.GetIdentifying) {
                 if (msg.obj != null) {
                     String jsonStr = msg.obj.toString();
+                    Log.e("获取标识返回值"+msg.obj,"FHZ");
                     /*解析Json*/
-                    List<TeamEntity> entity = JsonEntity.ParsingJsonForTeamList(jsonStr);
-                    if (entity != null && entity.size() != 0) {
-                    /*缓存*/
-                        String personArray = GsonUtil.getGson().toJson(entity);
-                        mCache.put(LocalDataLabel.Label, personArray);
+                    if(!jsonStr.equals("anyType{}")) {
+                        IdentifyResult result = JsonEntity.ParseJsonForIdentifyResult(jsonStr);
+                        Log.i("获取标识返回值: AccessResult:" + result.AccessResult, "FHZ");
+                        if (result != null) {
+                            if (result.AccessResult == 0) {
+                                String jsonArr = result.Team;
+                                String uID = result.UID;
+                                AccAndPwd user = new AccAndPwd(uID, uPwd);
+                                String userJson = GsonUtil.t2Json2(user);
+                                mCache.put(LocalDataLabel.AccAndPwd, userJson);
+                                List<TeamEntity> entityList = JsonEntity.ParsingJsonForTeamList(jsonArr);
+                                if (entityList != null && entityList.size() != 0) {
+                            /*缓存*/
+                                    String teamArray = GsonUtil.getGson().toJson(entityList);
+                                    mCache.put(LocalDataLabel.Label, teamArray);
+                                    Log.i("缓存", "FHZ");
+                                 /*跳转主Activity*/
+                                    startActivity(new Intent(Login.this, MainPPVActivity.class));
+                                    Login.this.finish();
+                                }
+
+                            }
+                        }
                     }
-                    /*跳转主Activity*/
-                    startActivity(new Intent(Login.this, MainPPVActivity.class));
-                    Login.this.finish();
+                    else
+                    {
+                        Toast.makeText(Login.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+                    }
+//                    List<TeamEntity> entity = JsonEntity.ParsingJsonForTeamList(jsonStr);
+//                    if (entity != null && entity.size() != 0) {
+//                    /*缓存*/
+//                        String personArray = GsonUtil.getGson().toJson(entity);
+//                        mCache.put(LocalDataLabel.Label, personArray);
+//                    }
+//                    /*跳转主Activity*/
+//                    startActivity(new Intent(Login.this, MainPPVActivity.class));
+//                    Login.this.finish();
                 } else {
                     Toast.makeText(Login.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
                 }
             } else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
                 Toast.makeText(Login.this, "请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
             } else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
+                Log.i("读取缓存失败","FHZ");
                 Toast.makeText(Login.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
                 /*清除其余活动中Activity以及全部缓存显示登录界面*/
             }
@@ -252,11 +288,12 @@ public class Login extends Activity implements OnClickListener {
 //        log_tex.setText("");
 //
         LoginBusiness loginBusiness = new LoginBusiness();
-        loginBusiness.Login(et_name.getText().toString(), et_pass.getText().toString(), threadHandler);
-        Log.e("登陆成功", "qqww");
+        uPwd= MD5.getMD5(et_pass.getText().toString().trim());
+        loginBusiness.Login(et_name.getText().toString().trim(), uPwd, threadHandler);
 
-        startActivity(new Intent(Login.this, MainPPVActivity.class));
-        Login.this.finish();
+//        Log.e("登陆成功", "qqww");
+//        startActivity(new Intent(Login.this, MainPPVActivity.class));
+//        Login.this.finish();
     }
 
     /**

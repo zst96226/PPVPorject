@@ -11,13 +11,15 @@ public class WorkValueResultParams implements Serializable {
         IMGTarget = null;
         Name=null;
         UserID = null;
-        AccumulateScore = 0;
+        CheckedScore = 0;
+        BasicScore = 0;
         Month = 0;
     }
 
     public String IMGTarget;
     public String Name ;
     public String UserID;
-    public double AccumulateScore ;
+    public double CheckedScore;
+    public double BasicScore;
     public int Month;
 }

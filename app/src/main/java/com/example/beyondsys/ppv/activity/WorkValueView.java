@@ -28,8 +28,12 @@ import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UserInfoResultParams;
 import com.example.beyondsys.ppv.entities.ValueDetailEntity;
+import com.example.beyondsys.ppv.entities.WorkItemResultEntity;
 import com.example.beyondsys.ppv.entities.WorkValueEntity;
+import com.example.beyondsys.ppv.entities.WorkValueResultEntity;
+import com.example.beyondsys.ppv.entities.WorkValueResultParams;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 
@@ -58,8 +62,8 @@ public class WorkValueView extends Fragment {
     private CheckBox topme_che;
     private ImageView sort_img;
     private TextView sort_tex,filter_tex;
-    private  List<WorkValueEntity> valueEntityList=null;
-    private PersonInfoEntity curPersonEntity=null;
+    private  List<WorkValueResultParams> valueEntityList=null;
+    private UserInfoResultParams curPersonEntity=null;
     private final  static int sortup=1;
     private  final  static  int sortdown=0;
     private  final  static  int curmonth=0;
@@ -76,13 +80,28 @@ public class WorkValueView extends Fragment {
                     Log.i("价值返回值;"+msg.obj,"FHZ");
                     String jsonStr=msg.obj.toString();
                     try{
-                      List<WorkValueEntity> entityList= JsonEntity.ParseJsonForWorkValueList(jsonStr);
-                        if(entityList!=null&&(!entityList.isEmpty()))
+                        WorkValueResultEntity entity=JsonEntity.ParseJsonForWorkValueResult(jsonStr);
+                        if(entity!=null)
                         {
-                            valueEntityList=entityList;
-                        }else {
-                            Toast.makeText(WorkValueView.this.getActivity(),"没有当前状态的数据",Toast.LENGTH_SHORT).show();
+                            if(entity.AccessResult==0)
+                            {
+                                String jsonArr=entity.Score;
+                                List<WorkValueResultParams> entityList=JsonEntity.ParseJsonForWorkValueParamsList(jsonArr);
+                                if(entityList!=null)
+                                {
+                                    valueEntityList=entityList;
+                                }
+                            }else{
+                                Toast.makeText(WorkValueView.this.getActivity(), "获取返回数据出错！", Toast.LENGTH_SHORT).show();
+                            }
                         }
+//                      List<WorkValueEntity> entityList= JsonEntity.ParseJsonForWorkValueList(jsonStr);
+//                        if(entityList!=null&&(!entityList.isEmpty()))
+//                        {
+//                            valueEntityList=entityList;
+//                        }else {
+//                            Toast.makeText(WorkValueView.this.getActivity(),"没有当前状态的数据",Toast.LENGTH_SHORT).show();
+//                        }
                     }catch (Exception e){}
                 }else{
                     Toast.makeText(WorkValueView.this.getActivity(),"服务端验证出错，请联系管理员",Toast.LENGTH_SHORT).show();
@@ -93,8 +112,15 @@ public class WorkValueView extends Fragment {
                     Log.i("当前用户信息返回值："+msg.obj,"FHZ");
                     String  jsonStr=msg.obj.toString();
                     try{
-                        PersonInfoEntity personInfoEntity=JsonEntity.ParseJsonForPerson(jsonStr);
-                         curPersonEntity=personInfoEntity;
+                        UserInfoResultParams userInfoResultParams=JsonEntity.ParseJsonForUserInfoResult(jsonStr);
+                        if(userInfoResultParams!=null)
+                        {
+                            String curPerson=GsonUtil.t2Json2(userInfoResultParams);
+                            mCache.put(LocalDataLabel.CurPerson,curPerson);
+                            curPersonEntity=userInfoResultParams;
+                        }
+//                        PersonInfoEntity personInfoEntity=JsonEntity.ParseJsonForPerson(jsonStr);
+//                         curPersonEntity=personInfoEntity;
                     }catch (Exception e){}
                 }else{
                     Toast.makeText(WorkValueView.this.getActivity(),"没有当前用户的数据",Toast.LENGTH_SHORT).show();
@@ -163,9 +189,11 @@ public class WorkValueView extends Fragment {
                 if (filter_tex.getText().toString().equals(getResources().getString(R.string.filter_by_currentmonth))) {
                     Log.e("qqww5", "qqww");
                     filter_tex.setText(R.string.filter_by_all);
+                    setAdapter();
                     staFlag=hismonth;
                 } else {
                     filter_tex.setText(R.string.filter_by_currentmonth);
+                    setAdapter();
                     staFlag=curmonth;
                 }
             }
@@ -215,24 +243,25 @@ public class WorkValueView extends Fragment {
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         list.clear();
-        List<WorkValueEntity> entityList=getEntities(sortFlag);
+        List<WorkValueResultParams> entityList=getEntities(sortFlag,staFlag);
         if(entityList==null||entityList.isEmpty())
         {
             return list;
         }
         String  valueArray= GsonUtil.getGson().toJson(entityList);
-        mCache.put(LocalDataLabel.WorkValueList,valueArray);
+        mCache.put(LocalDataLabel.WorkValueList+sortFlag+staFlag,valueArray);
         OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
         oneSelfBusiness.GetOneSelf(handler, mCache);
         if(curPersonEntity==null)
         {
-            for (WorkValueEntity valueEntity:entityList) {
+            for (WorkValueResultParams valueEntity:entityList) {
                 Map<String, Object> map = new HashMap<String, Object>();
+                //个人图片
                 map.put("personImg",  R.drawable.person );
-                map.put("personId", valueEntity.ID);
+                map.put("personId", valueEntity.UserID);
                 map.put("personName", valueEntity.Name);
-                map.put("valueSum",  valueEntity.ScoreCount);
-                map.put("monthSum", valueEntity.MonthCount+"个月");
+                map.put("valueSum",  String.valueOf(valueEntity.BasicScore+valueEntity.CheckedScore));
+                map.put("monthSum", valueEntity.Month+"个月");
                 list.add(map);
             }
             return list;
@@ -248,38 +277,38 @@ public class WorkValueView extends Fragment {
         {
             for (int i=0;i<entityList.size();i++)
             {
-                if(entityList.get(i).BID.equals(curPersonEntity.BID)&&entityList.get(i).ID.equals(curPersonEntity.ID))
+                if(entityList.get(i).UserID.equals(curPersonEntity.UserID))
                 {
                     Map<String, Object> map = new HashMap<String, Object>();
                     map.put("personImg",  R.drawable.person );
-                    map.put("personId",entityList.get(i).ID);
+                    map.put("personId",entityList.get(i).UserID);
                     map.put("personName", entityList.get(i).Name);
-                    map.put("valueSum", entityList.get(i).ScoreCount);
-                    map.put("monthSum", entityList.get(i).MonthCount + "个月");
+                    map.put("valueSum", String.valueOf(entityList.get(i).BasicScore+entityList.get(i).CheckedScore));
+                    map.put("monthSum", entityList.get(i).Month + "个月");
                     list.add(map);
                     entityList.remove(i);
                 }
             }
-            for (WorkValueEntity valueEntity:entityList) {
+            for (WorkValueResultParams valueEntity:entityList) {
                 Log.e(valueEntity.Name.toString(),"ee");
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("personImg",  R.drawable.person );
-                map.put("personId", valueEntity.ID);
+                map.put("personId", valueEntity.UserID);
                 map.put("personName", valueEntity.Name);
-                map.put("valueSum",  valueEntity.ScoreCount);
-                map.put("monthSum",  valueEntity.MonthCount+"个月");
+                map.put("valueSum", String.valueOf(valueEntity.BasicScore+valueEntity.CheckedScore));
+                map.put("monthSum",  valueEntity.Month+"个月");
                 list.add(map);
             }
         }
         else
         {
-            for (WorkValueEntity valueEntity:entityList) {
+            for (WorkValueResultParams valueEntity:entityList) {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("personImg",  R.drawable.person );
-                map.put("personId", valueEntity.ID);
+                map.put("personId", valueEntity.UserID);
                 map.put("personName", valueEntity.Name);
-                map.put("valueSum",  valueEntity.ScoreCount);
-                map.put("monthSum", valueEntity.MonthCount+"个月");
+                map.put("valueSum", String.valueOf(valueEntity.BasicScore+valueEntity.CheckedScore));
+                map.put("monthSum", valueEntity.Month+"个月");
                 list.add(map);
             }
         }
@@ -292,7 +321,7 @@ public class WorkValueView extends Fragment {
 //
 //        return list;
 //    }
-    private  List<WorkValueEntity> getEntities(int sort)
+    private  List<WorkValueResultParams> getEntities(int sort,int status)
     {
         WorkValueBusiness workValueBusiness=new WorkValueBusiness();
         //从缓存中取TeamID
@@ -308,7 +337,7 @@ public class WorkValueView extends Fragment {
                 }
             }catch (Exception e){}
         }
-        workValueBusiness.GetWorkValue(handler,TeamID,staFlag,1,mCache);
+        workValueBusiness.GetWorkValue(handler,TeamID,status,1,mCache);
 //
 //        valueEntityList=new ArrayList<WorkValueEntity>();
 //        for (int i=0;i<10;i++) {

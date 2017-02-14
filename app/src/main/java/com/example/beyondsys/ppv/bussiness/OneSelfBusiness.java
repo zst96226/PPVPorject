@@ -4,17 +4,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.example.beyondsys.ppv.activity.PersonInfo;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.APIEntity;
-import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UserInfoResultParams;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 
-import org.json.JSONObject;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
@@ -22,13 +20,8 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * Created by zhsht on 2017/2/5.个人信息业务逻辑
@@ -77,17 +70,18 @@ public class OneSelfBusiness {
     }
 
     /*修改个人信息*/
-    public void ChangeOneSelf(final Handler handler, ACache mCache, PersonInfoEntity entity) {
+    public void ChangeOneSelf(final Handler handler, ACache mCache, UserInfoResultParams entity) {
         /*获取缓存*/
         UserLoginResultEntity entitys = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
         if (entitys != null) {
             InformationPerson person = new InformationPerson();
-            person.proof = entitys.TicketID;
+            person.TicketID = entitys.TicketID;
             person.Name = entity.Name;
-            person.Email = entity.EMail;
-            person.IDCard = entity.IDNo;
+            person.EMail = entity.EMail;
+            person.IDNo = entity.IDNo;
+            person.Tel=entity.Tel;
             person.Address = entity.Address;
-            person.Remark = entity.Remark;
+            person.Sign = entity.Sign;
             final String JsonParams = GsonUtil.getGson().toJson(person);
             Log.i("提交对象：" + JsonParams, "FHZ");
             new Thread() {
@@ -128,11 +122,12 @@ public class OneSelfBusiness {
 
     /*修改个人信息参数*/
     private class InformationPerson implements Serializable {
-        public String proof;
+        public String TicketID;
         public String Name;
-        public String Email;
-        public String IDCard;
+        public String EMail;
+        public String IDNo;
+        public String Tel;
         public String Address;
-        public String Remark;
+        public String Sign;
     }
 }
