@@ -11,6 +11,7 @@ import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
+import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.MD5;
 
 import org.ksoap2.SoapEnvelope;
@@ -69,7 +70,8 @@ public class LoginBusiness {
     /*获取程序运行期间的标识*/
     public void UserLogo(final Handler handler, ACache mCache) {
         /*从缓存中获取凭据*/
-        UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+//        UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+        UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
         Log.i("缓存中获取凭据" , "FHZ");
         if (entity != null && !entity.TicketID.equals("")) {
             String _poof = entity.TicketID;

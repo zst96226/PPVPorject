@@ -32,6 +32,8 @@ import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.MD5;
 import com.example.beyondsys.ppv.tools.ValidaService;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 import static android.view.ViewGroup.*;
@@ -84,12 +86,22 @@ public class Login extends Activity implements OnClickListener {
                                 case 0:
                                    String  json=GsonUtil.t2Json2(entity);
                                     /*将凭据保存缓存*/
-                                    mCache.put(LocalDataLabel.Proof,entity);
+                                   mCache.put(LocalDataLabel.Proof, json);
+//                                    mCache.put("aa",entity);
+//                                    mCache.put("bb", json);
+//                                    Log.i("缓存凭据", "FHZ");
+////                                    JSONObject js= mCache.getAsJSONObject("aa");
+////                                    UserLoginResultEntity test=JsonEntity.ParsingJsonForUserLoginResult(js.toString());
+////                                    Log.i("读取aa"+test.TicketID.toString(),"FHZ");
+//                                    Log.i("读取bb" + mCache.getAsString("bb"), "FHZ");
+//                                    UserLoginResultEntity bbtest =JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString("bb"));
+//
+//                                    Log.i("读取bb转对象" +bbtest.TicketID , "FHZ");
+//                                    mCache.put(LocalDataLabel.Proof,entity);
 //                                    mCache.put("aa",entity);
 //                                    mCache.put("bb",json);
                                     /*获取运行期间所需的标识*/
                                     LoginBusiness personnelVerify = new LoginBusiness();
-                                    ACache mCache = ACache.get(Login.this);
                                     personnelVerify.UserLogo(threadHandler, mCache);
 //                                    Toast.makeText(Login.this,entity.TicketID+" "+entity.LoginResult , Toast.LENGTH_SHORT).show();
                                 /*将凭据保存缓存*/

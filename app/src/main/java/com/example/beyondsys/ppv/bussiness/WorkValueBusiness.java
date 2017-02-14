@@ -9,6 +9,7 @@ import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
+import com.example.beyondsys.ppv.tools.JsonEntity;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -27,7 +28,8 @@ public class WorkValueBusiness {
     /*获取工作价值*/
     public void GetWorkValue(final Handler handler, String TeamID, int state, int pageNum, ACache mCache) {
         WorkValueperson person = new WorkValueperson();
-        UserLoginResultEntity userLoginResultEntity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+       // UserLoginResultEntity userLoginResultEntity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+        UserLoginResultEntity userLoginResultEntity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
         if (userLoginResultEntity != null) {
             person.TicketID = userLoginResultEntity.TicketID;
             person.TeamID = TeamID;

@@ -12,6 +12,7 @@ import com.example.beyondsys.ppv.entities.SubmitInfoResult;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.UserInfoResultParams;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
+import com.example.beyondsys.ppv.entities.WorkDetailResult;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
 import com.example.beyondsys.ppv.entities.WorkItemResultEntity;
 import com.example.beyondsys.ppv.entities.WorkItemResultParams;
@@ -180,6 +181,17 @@ public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
         return  null;
     }
 }
+    public static WorkDetailResult ParseJsonForWorkDetailResult(String result)
+    {
+        WorkDetailResult workDetailResult=null;
+        workDetailResult=GsonUtil.json2T(result,WorkDetailResult.class);
+        if(workDetailResult!=null)
+        {
+            return workDetailResult;
+        }else{
+            return null;
+        }
+    }
     public  static List<WorkItemEntity> ParsingJsonForWorkItemList(String result)
     {
        List<WorkItemEntity > entityList=null;

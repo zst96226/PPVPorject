@@ -10,6 +10,7 @@ import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
+import com.example.beyondsys.ppv.tools.JsonEntity;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -29,7 +30,8 @@ public class WorkItemBusiness {
     public void GetWorkItem(final Handler handler, String TeamID, int state, int relation, int pageNum, ACache mCache) {
         WorkItemperson person = new WorkItemperson();
         /*获取缓存中的凭据和团队ID*/
-        UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+      //  UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+        UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
         if (entity != null) {
             person.TicketID = entity.TicketID;
             person.TeamID = TeamID;
@@ -86,11 +88,12 @@ public class WorkItemBusiness {
     /*获取工作项详细信息*/
     public void GetWorkItemContent(final Handler handler, ACache mCache, String WorkItemID) {
         /*获取缓存*/
-        UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+       // UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+        UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
         if (entity != null) {
             GetWorkItemContentPerson person = new GetWorkItemContentPerson();
-            person.proof = entity.TicketID;
-            person.WorkItemid = WorkItemID;
+            person.TicketID = entity.TicketID;
+            person.WorkItemID = WorkItemID;
             final String JsonParams = GsonUtil.getGson().toJson(person);
             Log.i("提交对象：" + JsonParams, "FHZ");
             new Thread() {
@@ -132,8 +135,8 @@ public class WorkItemBusiness {
 
     /*获取工作项详细信息参数*/
     private class GetWorkItemContentPerson implements Serializable {
-        public String proof;
-        public String WorkItemid;
+        public String TicketID;
+        public String WorkItemID;
     }
 
     /*获取子工作项*/

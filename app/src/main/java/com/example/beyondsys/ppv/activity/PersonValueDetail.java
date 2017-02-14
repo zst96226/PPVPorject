@@ -18,6 +18,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.tools.DateUtil;
 import com.example.beyondsys.ppv.tools.MonPickerDialog;
 //import com.google.android.gms.appindexing.Action;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PersonValueDetail extends AppCompatActivity {
+    ACache mCache=null;
     private ListView listView;
     private TextView textView,monthSum,valueSum,personName;
     private ImageView back,lastone,nextone,lastmonth,nextmonth;
