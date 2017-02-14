@@ -84,13 +84,14 @@ public class Login extends Activity implements OnClickListener {
                                 case 0:
                                    String  json=GsonUtil.t2Json2(entity);
                                     /*将凭据保存缓存*/
-                                    mCache.put(LocalDataLabel.Proof, entity);
-                                    mCache.put("aa",entity);
-                                    mCache.put("bb",json);
+                                    mCache.put(LocalDataLabel.Proof,entity);
+//                                    mCache.put("aa",entity);
+//                                    mCache.put("bb",json);
                                     /*获取运行期间所需的标识*/
                                     LoginBusiness personnelVerify = new LoginBusiness();
+                                    ACache mCache = ACache.get(Login.this);
                                     personnelVerify.UserLogo(threadHandler, mCache);
-                                    Toast.makeText(Login.this,entity.TicketID+" "+entity.LoginResult , Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(Login.this,entity.TicketID+" "+entity.LoginResult , Toast.LENGTH_SHORT).show();
                                 /*将凭据保存缓存*/
 //                                    mCache.put(LocalDataLabel.Proof, entity);
 //

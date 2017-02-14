@@ -35,7 +35,7 @@ public class OneSelfBusiness {
             Log.i("提交对象：" + JsonParams, "FHZ");
             new Thread() {
                 public void run() {
-                /*根据命名空间和方法得到SoapObject对象*/
+                    /*根据命名空间和方法得到SoapObject对象*/
                     SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
                     soapObject.addProperty("actionid", APIEntity.GETUSERMES);
                     soapObject.addProperty("jsonvalue", JsonParams);
