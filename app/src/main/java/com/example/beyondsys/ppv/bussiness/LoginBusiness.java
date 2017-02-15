@@ -83,6 +83,7 @@ public class LoginBusiness {
                 public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
                     try {
+                        Log.i("rr","FHZ");
                         SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
                         soapObject.addProperty("actionid", APIEntity.GETLOGO);
                         soapObject.addProperty("jsonvalue", JsonParams);
@@ -95,8 +96,10 @@ public class LoginBusiness {
                         // 开始调用远程方法
                         httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
                         // 得到远程方法返回的SOAP对象
-//                        SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
-                        SoapObject result = (SoapObject) envelop.getResponse();
+                        SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+                        Log.i("rrr","FHZ");
+            //            SoapObject result = (SoapObject) envelop.getResponse();
+                        Log.i("reeee","FHZ");
                         Message msg = Message.obtain();
                         msg.what = ThreadAndHandlerLabel.GetIdentifying;
                         msg.obj = result;
