@@ -13,6 +13,8 @@ import com.example.beyondsys.ppv.entities.SubmitInfoResult;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.UserInfoResultParams;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
+import com.example.beyondsys.ppv.entities.ValueDetailResult;
+import com.example.beyondsys.ppv.entities.ValueDetailResultParam;
 import com.example.beyondsys.ppv.entities.WorkDetailResult;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
 import com.example.beyondsys.ppv.entities.WorkItemResultEntity;
@@ -204,6 +206,31 @@ public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
             return  null;
         }
     }
+    public  static ValueDetailResult ParseJsonForValueDetail(String str)
+    {
+        ValueDetailResult valueDetailResult=null;
+        valueDetailResult=GsonUtil.json2T(str, ValueDetailResult.class);
+        if(valueDetailResult!=null)
+        {
+            return  valueDetailResult;
+        }else{
+            return null;
+        }
+    }
+
+    public  static ValueDetailResultParam ParseJsonForValueDetailParam(String str)
+    {
+        ValueDetailResultParam valueDetailResultParam=null;
+        valueDetailResultParam=GsonUtil.json2T(str,ValueDetailResultParam.class);
+        if(valueDetailResultParam!=null)
+        {
+            return  valueDetailResultParam;
+        }else{
+            return  null;
+        }
+    }
+
+
     public  static List<WorkItemEntity> ParsingJsonForWorkItemList(String result)
     {
        List<WorkItemEntity > entityList=null;

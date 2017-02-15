@@ -26,12 +26,18 @@ import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.ValueDetailResult;
+import com.example.beyondsys.ppv.entities.ValueDetailResultParam;
 import com.example.beyondsys.ppv.tools.DateUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.MonPickerDialog;
 //import com.google.android.gms.appindexing.Action;
 //import com.google.android.gms.appindexing.AppIndex;
 //import com.google.android.gms.common.api.GoogleApiClient;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,6 +53,9 @@ public class PersonValueDetail extends AppCompatActivity {
     private ListView listView;
     private TextView textView,monthSum,valueSum,personName;
     private ImageView back,lastone,nextone,lastmonth,nextmonth;
+    private  List<ValueDetailResultParam> valueDetailList;
+     private SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
+    private  String  nowTime=sdf.format(new  java.util.Date());
     private Handler handler=new Handler()
     {
         public void handleMessage(Message msg)
@@ -55,8 +64,38 @@ public class PersonValueDetail extends AppCompatActivity {
             {
                 if(msg.obj!=null)
                 {
+                    try{
+                        ValueDetailResult valueDetailResult=JsonEntity.ParseJsonForValueDetail(msg.obj.toString());
+                        if(valueDetailResult!=null)
+                        {
+                            if(valueDetailResult.AccessResult==0)
+                            {
+                                JSONArray jsonArr=(JSONArray)valueDetailResult.ScoredetailsList;
+                                if(jsonArr!=null&&jsonArr.length()!=0)
+                                {
+                                    for(int i=0;i<jsonArr.length();i++)
+                                    {
+                                        try {
+                                            JSONObject json=(JSONObject)jsonArr.get(i);
+                                            ValueDetailResultParam entity=JsonEntity.ParseJsonForValueDetailParam(json.toString());
+                                            if(entity!=null)
+                                            {
+                                                valueDetailList.add(entity);
+                                            }
 
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
 
+                                    }
+                                    if(valueDetailList!=null&&valueDetailList.size()!=0)
+                                    {
+                                        //存缓存
+                                    }
+                                }
+                            }
+                        }
+                    }catch (Exception e){}
                 } else {
                 Toast.makeText(PersonValueDetail.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
             }
@@ -73,10 +112,8 @@ public class PersonValueDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_value_detail);
-        SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
-        String nowTime=sdf.format(new  java.util.Date());
         init();
-        setData(nowTime);
+        setListData(nowTime);
         setListener();
     }
 
@@ -94,33 +131,27 @@ public class PersonValueDetail extends AppCompatActivity {
         valueSum=(TextView)findViewById(R.id.valuesum_tex);
         personName=(TextView)findViewById(R.id.personname_tex);
     }
-    private void setData(String data)
+    private void setListData(String date)
     {
-        String id="";
-        Intent intent=getIntent();
-        Bundle bundle=intent.getExtras();
-        id=bundle.getString("personId");
-        WorkValueBusiness workValueBusiness=new WorkValueBusiness();
-        String TeamID="";
-        String jsonarr=mCache.getAsString(LocalDataLabel.Label);
-        if(jsonarr!=null)
-        {
-            try {
-                List<TeamEntity> teamEntityList= JsonEntity.ParsingJsonForTeamList(jsonarr);
-                if(teamEntityList!=null&&(!teamEntityList.isEmpty()))
-                {
-                    TeamID=teamEntityList.get(0).TeamID;
-                }
-            }catch (Exception e){}
-        }
-        workValueBusiness.GetWorkValueContext(handler, mCache,id,TeamID,data,1);
+        SimpleAdapter adapter = new SimpleAdapter(this, getData(date), R.layout.valuedetailstyle, new String[]{"itemImg","itemId", "itemName", "planValue", "trueValue"},
+                new int[]{R.id.Item_img,R.id.ItemId_tex, R.id.ItemName_tex, R.id.planValue, R.id.trueValue});
+        listView.setAdapter(adapter);
+
     }
+ private  void setPersonData(String  personid)
+ {
+
+ }
+
 
     private void setListener()
     {
-        SimpleAdapter adapter = new SimpleAdapter(this, getData(), R.layout.valuedetailstyle, new String[]{"itemImg", "itemName", "planValue", "trueValue"},
-                new int[]{R.id.Item_img, R.id.ItemName_tex, R.id.planValue, R.id.trueValue});
-        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //跳转 工作项详细信息
+            }
+        });
         textView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -149,7 +180,6 @@ public class PersonValueDetail extends AppCompatActivity {
          @Override
          public void onClick(View v) {
              //判断是否为最初月份，否则减一
-             SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
              String month=monthSum.getText().toString();
              String  oldTime=textView.getText().toString();
              String newTime="";
@@ -166,7 +196,7 @@ public class PersonValueDetail extends AppCompatActivity {
              } catch (ParseException e) {
                  e.printStackTrace();
              }
-             Log.e("time3","qq");
+             Log.e("time3", "qq");
              if(oldDate.getTime()<minDate.getTime()||oldDate.getTime()==minDate.getTime())
              {
                  newTime=oldTime;
@@ -176,7 +206,7 @@ public class PersonValueDetail extends AppCompatActivity {
 
              }
              textView.setText(newTime);
-             setData(newTime);
+             setListData(newTime);
          }
      });
         lastone.setOnClickListener(new View.OnClickListener() {
@@ -191,7 +221,7 @@ public class PersonValueDetail extends AppCompatActivity {
                 //判断是否为当前月份，否则加一
                 String  oldTime=textView.getText().toString();
                 String newTime="";
-            SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
+        //    SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
                 Date oldDate=null;
                 Date nowDate=null;
                 Log.e("time","qq");
@@ -203,7 +233,7 @@ public class PersonValueDetail extends AppCompatActivity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                Log.e("time3","qq");
+                Log.e("time3", "qq");
                 if(oldDate.getTime()>nowDate.getTime()||oldDate.getTime()==nowDate.getTime())
                 {
                     newTime=oldTime;
@@ -213,81 +243,59 @@ public class PersonValueDetail extends AppCompatActivity {
                     newTime=dateFormat(oldTime, +1);
                 }
                 textView.setText(newTime);
-                setData(newTime);
+                setListData(newTime);
             }
         });
         nextone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            //下一个人
+                //下一个人
             }
         });
     }
-    private List<Map<String, Object>> getData() {
+    private List<Map<String, Object>> getData(String date) {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("itemImg", R.drawable.work_item);
-        map.put("itemName", "任务B");
-        map.put("planValue", "13分");
-        map.put("trueValue", "8分");
-        list.add(map);
-
-        map = new HashMap<String, Object>();
-        map.put("itemImg",R.drawable.work_item);
-        map.put("itemName", "事务1");
-        map.put("planValue", "10分");
-        map.put("trueValue", "7分");
-        list.add(map);
-
-        map = new HashMap<String, Object>();
-        map.put("itemImg",R.drawable.work_item);
-        map.put("itemName", "任务A");
-        map.put("planValue", "10分");
-        map.put("trueValue", "5分");
-        list.add(map);
-        map = new HashMap<String, Object>();
-        map.put("itemImg",R.drawable.work_item);
-        map.put("itemName", "任务B");
-        map.put("planValue", "13分");
-        map.put("trueValue", "8分");
-        list.add(map);
-
-        map = new HashMap<String, Object>();
-        map.put("itemImg",R.drawable.work_item);
-        map.put("itemName", "事务1");
-        map.put("planValue", "10分");
-        map.put("trueValue", "7分");
-        list.add(map);
-
-        map = new HashMap<String, Object>();
-        map.put("itemImg",R.drawable.work_item);
-        map.put("itemName", "任务A");
-        map.put("planValue", "10分");
-        map.put("trueValue", "5分");
-        list.add(map);
-        map = new HashMap<String, Object>();
-        map.put("itemImg",R.drawable.work_item);
-        map.put("itemName", "任务B");
-        map.put("planValue", "13分");
-        map.put("trueValue", "8分");
-        list.add(map);
-
-        map = new HashMap<String, Object>();
-        map.put("itemImg", R.drawable.work_item);
-        map.put("itemName", "事务1");
-        map.put("planValue", "10分");
-        map.put("trueValue", "7分");
-        list.add(map);
-
-        map = new HashMap<String, Object>();
-        map.put("itemImg", R.drawable.work_item);
-        map.put("itemName", "任务A");
-        map.put("planValue", "10分");
-        map.put("trueValue", "5分");
-        list.add(map);
+        List<ValueDetailResultParam> entityList=getEntities(date);
+        if(entityList==null||entityList.size()==0)
+        {
+            return  list;
+        }
+        for ( ValueDetailResultParam entity:entityList)
+        {
+            Map<String, Object> map = new HashMap<String, Object>();
+            //图片未处理
+            map.put("itemImg", R.drawable.work_item);
+            map.put("itemId",entity.WorkID);
+            map.put("itemName", entity.WorkName);
+            map.put("planValue", String.valueOf(entity.IdealScore));
+            map.put("trueValue", String.valueOf(entity.BasicScore+entity.CheckedScore));
+            list.add(map);
+        }
         return list;
     }
+private  List<ValueDetailResultParam> getEntities(String date)
+{
+    WorkValueBusiness workValueBusiness=new WorkValueBusiness();
+    String id="";
+    Intent intent=getIntent();
+    Bundle bundle=intent.getExtras();
+    id=bundle.getString("personId");
+    String TeamID="";
+    String jsonarr=mCache.getAsString(LocalDataLabel.Label);
+    if(jsonarr!=null)
+    {
+        try {
+            List<TeamEntity> teamEntityList= JsonEntity.ParsingJsonForTeamList(jsonarr);
+            if(teamEntityList!=null&&(!teamEntityList.isEmpty()))
+            {
+                TeamID=teamEntityList.get(0).TeamID;
+            }
+        }catch (Exception e){}
+    }
+    workValueBusiness.GetWorkValueContext(handler, mCache,id,TeamID,date,1);
+    return  valueDetailList;
 
+}
 
     private void selectMonthTime() {
        final Calendar calendar = Calendar.getInstance();

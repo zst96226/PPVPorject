@@ -1,7 +1,9 @@
 package com.example.beyondsys.ppv.bussiness;
 
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.example.beyondsys.ppv.entities.APIEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
@@ -14,7 +16,12 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by zhsht on 2017/2/7.上传头像
@@ -54,7 +61,58 @@ public class ImgBusiness
         }.start();
     }
     /*下载头像*/
-    public void downloadImg(final Handler handler,final String path) {
+    public void downloadImg(final String picurl,final String name) {
+        new Thread() {
+            public void run() {
+                File fileDir;
+                String path = Environment.getExternalStorageDirectory()
+                        + "/listviewImg/";// 文件目录
+                /**
+                 * 文件目录如果不存在，则创建
+                 */
+                fileDir = new File(path);
+                if (!fileDir.exists()) {
+                    Log.i("exit  ee", "qq");
+                    fileDir.mkdirs();
+                }
+                Log.i("exit  out", "qq");
+                FileOutputStream fos = null;
+                InputStream in = null;
 
+                // 创建文件
+                File file = new File(fileDir, name);
+                Log.i("creat", "qq");
+                try {
+
+                    fos = new FileOutputStream(file);
+
+                    URL url = new URL(picurl);
+                    in = url.openStream();
+                    Log.i("in ee", "qq");
+                    int len = -1;
+                    byte[] b = new byte[1024];
+                    while ((len = in.read(b)) != -1) {
+                        fos.write(b, 0, len);
+                    }
+                    Log.i("exit   eeeeeee","qq");
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (fos != null) {
+                            fos.close();
+                        }
+                        if (in != null) {
+                            in.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
     }
+
 }
