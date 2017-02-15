@@ -32,8 +32,7 @@ import java.util.List;
 public class LoginBusiness {
     /*用户登录*/
     public void Login(String Id, String Pwd, final Handler handler) {
-        String str = Pwd;
-        AccAndPwd person = new AccAndPwd(Id, str);
+        AccAndPwd person = new AccAndPwd(Id, Pwd);
         final String JsonParams = GsonUtil.getGson().toJson(person);
         Log.i("提交对象：" + JsonParams, "FHZ");
         new Thread() {

@@ -272,8 +272,7 @@ public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
 
     }
 
-    private List<TeamEntity> readDatas(ACache mCache) {
-        JSONArray result = mCache.getAsJSONArray(LocalDataLabel.Label);
+    public static List<TeamEntity> readDatasForTeamEntity(JSONArray result) {
 
         Type mType = new TypeToken<List<TeamEntity>>(){}.getType();
 

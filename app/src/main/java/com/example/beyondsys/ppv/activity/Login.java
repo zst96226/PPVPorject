@@ -94,7 +94,6 @@ public class Login extends Activity implements OnClickListener {
                                             LoginBusiness personnelVerify = new LoginBusiness();
                                             personnelVerify.UserLogo(threadHandler, mCache);
                                         }
-
                                         @Override
                                         public void onFailure(Exception e) {
                                             e.printStackTrace();
@@ -124,39 +123,43 @@ public class Login extends Activity implements OnClickListener {
                         IdentifyResult result = JsonEntity.ParseJsonForIdentifyResult(jsonStr);
                         Log.i("获取标识返回值: AccessResult:" + result.AccessResult, "FHZ");
                         if (result != null) {
-                            if (result.AccessResult == 0) {
-                                JSONArray jsonArr = (JSONArray) result.Team;
-                                List<TeamEntity> entityList = null;
-                                AccAndPwd user = new AccAndPwd(uName, uPwd);
-                                String userJson = GsonUtil.t2Json2(user);
-                                mCache.put(LocalDataLabel.AccAndPwd, userJson);
-                                if (jsonArr != null && jsonArr.length() != 0) {
-                                    for (int i = 0; i < jsonArr.length(); i++) {
-                                        try {
-                                            JSONObject json = (JSONObject) jsonArr.get(i);
-                                            TeamEntity teamEntity = JsonEntity.ParsingJsonForTeamResult(json.toString());
-                                            if (teamEntity != null) {
-                                                entityList.add(teamEntity);
-                                            }
+                            switch (result.AccessResult)
+                            {
+                                case 0:
+                                    /*存储账号和密码*/
+                                    AccAndPwd user = new AccAndPwd(result.UID, uPwd);
+                                    Reservoir.putAsync(LocalDataLabel.AccAndPwd, user, new ReservoirPutCallback() {
+                                        @Override
+                                        public void onSuccess() {
 
-                                        } catch (JSONException e) {
+                                        }
+                                        @Override
+                                        public void onFailure(Exception e) {
                                             e.printStackTrace();
                                         }
-
-                                    }
-
-                                }
-                                //   List<TeamEntity> entityList = JsonEntity.ParsingJsonForTeamList(jsonArr);
-                                if (entityList != null && entityList.size() != 0) {
-                                    /*缓存*/
-                                    String teamArray = GsonUtil.getGson().toJson(entityList);
-                                    mCache.put(LocalDataLabel.Label, teamArray);
-                                    Log.i("缓存", "FHZ");
-                                    /*跳转主Activity*/
-                                    startActivity(new Intent(Login.this, MainPPVActivity.class));
-                                    Login.this.finish();
-                                }
-
+                                    });
+                                    /*解析团队信息并存储*/
+                                    JSONArray jsonArr = (JSONArray) result.Team;
+                                    List<TeamEntity> entityList=JsonEntity.readDatasForTeamEntity(jsonArr);
+                                    Reservoir.putAsync(LocalDataLabel.Label, entityList, new ReservoirPutCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            /*跳转主Activity*/
+                                            startActivity(new Intent(Login.this, MainPPVActivity.class));
+                                            Login.this.finish();
+                                        }
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    });
+                                    break;
+                                case 1:
+                                    Toast.makeText(Login.this, "请求失败，请重新尝试", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case -3:
+                                    Toast.makeText(Login.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+                                    break;
                             }
                         }
                     } else {
@@ -168,9 +171,7 @@ public class Login extends Activity implements OnClickListener {
             } else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
                 Toast.makeText(Login.this, "请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
             } else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
-                Log.i("读取缓存失败", "FHZ");
                 Toast.makeText(Login.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
-                /*清除其余活动中Activity以及全部缓存显示登录界面*/
             }
         }
     };
@@ -337,16 +338,4 @@ public class Login extends Activity implements OnClickListener {
         }
     }
 
-    private void GetUserLogo(UserLoginResultEntity json) {
-        if (mCache.getAsObject(LocalDataLabel.Proof) != null) {
-            Log.i("缓存不为空", "FHZ");
-            /*获取运行期间所需的标识*/
-            LoginBusiness personnelVerify = new LoginBusiness();
-            personnelVerify.UserLogo(threadHandler, mCache);
-        } else {
-            Log.i("缓存为空", "FHZ");
-            mCache.put(LocalDataLabel.Proof, json);
-            GetUserLogo(json);
-        }
-    }
 }
