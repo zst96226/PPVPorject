@@ -74,7 +74,8 @@ public class LoginBusiness {
         UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
         Log.i("缓存中获取凭据" , "FHZ");
         if (entity != null && !entity.TicketID.equals("")) {
-            String _poof = entity.TicketID;
+           String _poof = entity.TicketID;
+          //  String _poof = "9a7eb43f-4c7a-409e-a71b-2ab3149acfa4";
             final String JsonParams = GsonUtil.getGson().toJson(_poof);
             Log.i("提交对象：" + JsonParams, "FHZ");
             Log.i("提交对象：" , "FHZ");

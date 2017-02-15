@@ -14,7 +14,7 @@ public class IdentifyResult implements Serializable {
         UID = null;
     }
 
-    public String  Team;
+    public Object  Team;
     public int AccessResult;
     public String UID;
 }

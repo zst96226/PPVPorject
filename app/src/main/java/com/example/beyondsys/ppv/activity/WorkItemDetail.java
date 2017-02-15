@@ -129,6 +129,10 @@ public class WorkItemDetail extends AppCompatActivity {
         del_layout=(RelativeLayout)findViewById(R.id.del_choose_layout);
         del_ok=(Button)findViewById(R.id.del_ok);
         del_cancel=(Button)findViewById(R.id.del_cancel);
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
+        id=bundle.getString("ItemID").trim();
 //       workItemEntity=new WorkItemEntity();
 //        workItemEntity.BID="BID";
 //        workItemEntity.ID="ID";
@@ -164,7 +168,7 @@ public class WorkItemDetail extends AppCompatActivity {
             public void onClick(View v) {
                 if (child_list.getVisibility() == View.GONE) {
                     child_list.setVisibility(View.VISIBLE);
-                    SetList();
+                    SetList(id);
                     wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                 } else {
                     child_list.setVisibility(View.GONE);
@@ -192,7 +196,7 @@ public class WorkItemDetail extends AppCompatActivity {
                 //检测是否有选中项，则删除
                 if (child_list.getVisibility() == View.GONE) {
                     child_list.setVisibility(View.VISIBLE);
-                    SetList();
+                    SetList(id);
                     wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                 }
                 for (int i=0;i<child_list.getCount();i++)
@@ -212,7 +216,7 @@ public class WorkItemDetail extends AppCompatActivity {
             public void onClick(View v) {
                 if (child_list.getVisibility() == View.GONE) {
                     child_list.setVisibility(View.VISIBLE);
-                    SetList();
+                    SetList(id);
                     wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                 }
                 for (int i = 0; i < child_list.getCount(); i++) {
@@ -261,7 +265,7 @@ public class WorkItemDetail extends AppCompatActivity {
                             del_layout.setVisibility(View.GONE);
                             if (child_list.getVisibility() == View.GONE) {
                                 child_list.setVisibility(View.VISIBLE);
-                                SetList();
+                                SetList(id);
                                 wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                             }
                             for (int i=0;i<child_list.getCount();i++)
@@ -280,7 +284,7 @@ public class WorkItemDetail extends AppCompatActivity {
                         if (child_list.getVisibility() == View.GONE) {
                             Log.e("list gone","aa");
                             child_list.setVisibility(View.VISIBLE);
-                            SetList();
+                            SetList(id);
                             wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                         }
                         Log.e("list for", "aa");
@@ -337,14 +341,14 @@ public class WorkItemDetail extends AppCompatActivity {
 
     }
 
-    private void SetList() {
+    private void SetList(String  id) {
 
-            SimpleAdapter adapter = new SimpleAdapter(this, getData(), R.layout.child_list_item, new String[]{"workName", "workValue", "workState", "strartTime", "endingTime"},
+            SimpleAdapter adapter = new SimpleAdapter(this, getData(id), R.layout.child_list_item, new String[]{"workName", "workValue", "workState", "strartTime", "endingTime"},
                     new int[]{R.id.workname_tex, R.id.workvalue_tex, R.id.work_state_img, R.id.strarttime_tex, R.id.endtime_tex});
             child_list.setAdapter(adapter);
     }
 
-    private List<Map<String, Object>> getData() {
+    private List<Map<String, Object>> getData(String id) {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         Map<String, Object> map = new HashMap<String, Object>();
 

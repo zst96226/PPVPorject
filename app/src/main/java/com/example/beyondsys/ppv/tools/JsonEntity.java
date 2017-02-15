@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.beyondsys.ppv.activity.PersonInfo;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.AccAndPwd;
 import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.ModifyPwdResult;
@@ -84,7 +85,7 @@ public class JsonEntity{
 
     public static UserLoginResultEntity ParsingJsonForUserLoginResult(String result){
         UserLoginResultEntity entity=null;
-        entity =GsonUtil.json2T(result,UserLoginResultEntity.class);
+        entity =GsonUtil.json2T(result, UserLoginResultEntity.class);
         if (entity!=null){
             return entity;
         }else{
@@ -173,7 +174,7 @@ public class JsonEntity{
 public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
 {
     SubmitInfoResult submitInfoResult=null;
-    submitInfoResult=GsonUtil.json2T(result,SubmitInfoResult.class);
+    submitInfoResult=GsonUtil.json2T(result, SubmitInfoResult.class);
     if(submitInfoResult!=null)
     {
         return  submitInfoResult;
@@ -184,12 +185,23 @@ public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
     public static WorkDetailResult ParseJsonForWorkDetailResult(String result)
     {
         WorkDetailResult workDetailResult=null;
-        workDetailResult=GsonUtil.json2T(result,WorkDetailResult.class);
+        workDetailResult=GsonUtil.json2T(result, WorkDetailResult.class);
         if(workDetailResult!=null)
         {
             return workDetailResult;
         }else{
             return null;
+        }
+    }
+    public static AccAndPwd ParseJsonForAccAndPwd(String str)
+    {
+        AccAndPwd accAndPwd=null;
+        accAndPwd=GsonUtil.json2T(str,AccAndPwd.class);
+        if(accAndPwd!=null)
+        {
+            return accAndPwd;
+        }else{
+            return  null;
         }
     }
     public  static List<WorkItemEntity> ParsingJsonForWorkItemList(String result)
@@ -220,6 +232,17 @@ public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
         entity =GsonUtil.json2Collection(result, TeamEntity.class);
         if (entity!=null){
             return entity;
+        }else{
+            return null;
+        }
+    }
+    public  static  TeamEntity ParsingJsonForTeamResult(String result)
+    {
+        TeamEntity teamEntity=null;
+        teamEntity=GsonUtil.json2T(result,TeamEntity.class);
+        if(teamEntity!=null)
+        {
+            return teamEntity;
         }else{
             return null;
         }

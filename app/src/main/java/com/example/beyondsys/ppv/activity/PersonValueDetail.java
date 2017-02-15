@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,10 +18,16 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.bussiness.WorkValueBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.TeamEntity;
+import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.tools.DateUtil;
+import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.MonPickerDialog;
 //import com.google.android.gms.appindexing.Action;
 //import com.google.android.gms.appindexing.AppIndex;
@@ -39,18 +47,42 @@ public class PersonValueDetail extends AppCompatActivity {
     private ListView listView;
     private TextView textView,monthSum,valueSum,personName;
     private ImageView back,lastone,nextone,lastmonth,nextmonth;
+    private Handler handler=new Handler()
+    {
+        public void handleMessage(Message msg)
+        {
+            if(msg.what== ThreadAndHandlerLabel.GetWorkValueContext)
+            {
+                if(msg.obj!=null)
+                {
+
+
+                } else {
+                Toast.makeText(PersonValueDetail.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+            }
+
+            }else if(msg.what==ThreadAndHandlerLabel.CallAPIError){
+                Toast.makeText(PersonValueDetail.this, "请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+            }else  if(msg.what==ThreadAndHandlerLabel.LocalNotdata){
+                Toast.makeText(PersonValueDetail.this,"读取缓存失败，请检查内存重新登录",Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_value_detail);
+        SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
+        String nowTime=sdf.format(new  java.util.Date());
         init();
-        setData();
+        setData(nowTime);
         setListener();
     }
 
     private void  init()
     {
+        mCache=ACache.get(this);
         listView = (ListView) findViewById(R.id.MonthDeatil_list);
         back = (ImageView) this.findViewById(R.id.dttail_back);
         textView = (TextView) findViewById(R.id.selectTime_tex);
@@ -62,13 +94,26 @@ public class PersonValueDetail extends AppCompatActivity {
         valueSum=(TextView)findViewById(R.id.valuesum_tex);
         personName=(TextView)findViewById(R.id.personname_tex);
     }
-    private void setData()
+    private void setData(String data)
     {
-        String name="";
+        String id="";
         Intent intent=getIntent();
         Bundle bundle=intent.getExtras();
-        name=bundle.getString("personName");
-        personName.setText(name);
+        id=bundle.getString("personId");
+        WorkValueBusiness workValueBusiness=new WorkValueBusiness();
+        String TeamID="";
+        String jsonarr=mCache.getAsString(LocalDataLabel.Label);
+        if(jsonarr!=null)
+        {
+            try {
+                List<TeamEntity> teamEntityList= JsonEntity.ParsingJsonForTeamList(jsonarr);
+                if(teamEntityList!=null&&(!teamEntityList.isEmpty()))
+                {
+                    TeamID=teamEntityList.get(0).TeamID;
+                }
+            }catch (Exception e){}
+        }
+        workValueBusiness.GetWorkValueContext(handler, mCache,id,TeamID,data,1);
     }
 
     private void setListener()
@@ -128,8 +173,10 @@ public class PersonValueDetail extends AppCompatActivity {
              }
              else {
                   newTime = dateFormat(oldTime, -1);
+
              }
              textView.setText(newTime);
+             setData(newTime);
          }
      });
         lastone.setOnClickListener(new View.OnClickListener() {
@@ -166,6 +213,7 @@ public class PersonValueDetail extends AppCompatActivity {
                     newTime=dateFormat(oldTime, +1);
                 }
                 textView.setText(newTime);
+                setData(newTime);
             }
         });
         nextone.setOnClickListener(new View.OnClickListener() {

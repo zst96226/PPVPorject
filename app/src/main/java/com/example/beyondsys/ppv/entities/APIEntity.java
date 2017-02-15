@@ -22,9 +22,9 @@ public class APIEntity {
     /*登录接口标识*/
     public static final int LOGIN = 100;
     /*获取标识接口标识*/
-    public static final int GETLOGO = 8;
+    public static final int GETLOGO =104;
     /*登出接口标识*/
-    public static final int LOGOUT = 2;
+    public static final int LOGOUT = 200;
     /*获取工作项接口标识*/
     public static final int GETWORKITEM = 3;
     /*获取工作价值接口标识*/

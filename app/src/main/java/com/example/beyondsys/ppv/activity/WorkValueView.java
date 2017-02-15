@@ -24,6 +24,8 @@ import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.OneSelfBusiness;
 import com.example.beyondsys.ppv.bussiness.WorkValueBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.AccAndPwd;
+import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
@@ -223,14 +225,13 @@ public class WorkValueView extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String personName = "";
-                Intent intent = new Intent(getActivity(), PersonValueDetail.class);
-                TextView person = (TextView) view.findViewById(R.id.personname_tex);
-                personName = person.getText().toString();
-                intent.putExtra("personName", personName);
-                //传递ID
-                intent.putExtra("ID", "");
-                startActivity(intent);
+                String personId = "";
+                    Intent intent = new Intent(getActivity(), PersonValueDetail.class);
+                    TextView person = (TextView) view.findViewById(R.id.personid_tex);
+                    personId = person.getText().toString();
+                    intent.putExtra("personId", personId);
+                    startActivity(intent);
+
             }
         });
     }
