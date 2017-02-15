@@ -64,7 +64,7 @@ public class Login extends Activity implements OnClickListener {
     private TextView log_tex;
 
     private PersonInfoEntity personInfoEntity;
-    private  String uPwd;
+    private String uPwd;
 
     private Handler threadHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -77,39 +77,21 @@ public class Login extends Activity implements OnClickListener {
                     /*解析Json*/
                     try {
                         UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(jsonStr);
-                        Log.i("凭据："+entity.TicketID+"； 返回值"+entity.LoginResult,"FHZ");
+                        Log.i("凭据：" + entity.TicketID + "； 返回值" + entity.LoginResult, "FHZ");
                         if (entity != null) {
                             switch (entity.LoginResult) {
                                 case -1:
                                     Toast.makeText(Login.this, "服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 0:
-                                   String  json=GsonUtil.t2Json2(entity);
+                                    String json = GsonUtil.t2Json2(entity);
                                     /*将凭据保存缓存*/
-                                   mCache.put(LocalDataLabel.Proof, json);
-//                                    mCache.put("aa",entity);
-//                                    mCache.put("bb", json);
-//                                    Log.i("缓存凭据", "FHZ");
-////                                    JSONObject js= mCache.getAsJSONObject("aa");
-////                                    UserLoginResultEntity test=JsonEntity.ParsingJsonForUserLoginResult(js.toString());
-////                                    Log.i("读取aa"+test.TicketID.toString(),"FHZ");
-//                                    Log.i("读取bb" + mCache.getAsString("bb"), "FHZ");
-//                                    UserLoginResultEntity bbtest =JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString("bb"));
-//
-//                                    Log.i("读取bb转对象" +bbtest.TicketID , "FHZ");
-//                                    mCache.put(LocalDataLabel.Proof,entity);
-//                                    mCache.put("aa",entity);
-//                                    mCache.put("bb",json);
+                                    mCache.put(LocalDataLabel.Proof, json);
+                                    if (mCache.getAsObject(LocalDataLabel.Proof) != null) {
                                     /*获取运行期间所需的标识*/
-                                    LoginBusiness personnelVerify = new LoginBusiness();
-                                    personnelVerify.UserLogo(threadHandler, mCache);
-//                                    Toast.makeText(Login.this,entity.TicketID+" "+entity.LoginResult , Toast.LENGTH_SHORT).show();
-                                /*将凭据保存缓存*/
-//                                    mCache.put(LocalDataLabel.Proof, entity);
-//
-                                /*获取运行期间所需的标识*/
-//                                    LoginBusiness  personnel = new LoginBusiness();
-//                                    personnel.UserLogo(threadHandler, mCache);
+                                        LoginBusiness personnelVerify = new LoginBusiness();
+                                        personnelVerify.UserLogo(threadHandler, mCache);
+                                    }
                                     break;
                                 case 1:
                                     Toast.makeText(Login.this, "密码错误，请重新输入或选择忘记密码", Toast.LENGTH_SHORT).show();
@@ -127,9 +109,9 @@ public class Login extends Activity implements OnClickListener {
             } else if (msg.what == ThreadAndHandlerLabel.GetIdentifying) {
                 if (msg.obj != null) {
                     String jsonStr = msg.obj.toString();
-                    Log.e("获取标识返回值"+msg.obj,"FHZ");
+                    Log.e("获取标识返回值" + msg.obj, "FHZ");
                     /*解析Json*/
-                    if(!jsonStr.equals("anyType{}")) {
+                    if (!jsonStr.equals("anyType{}")) {
                         IdentifyResult result = JsonEntity.ParseJsonForIdentifyResult(jsonStr);
                         Log.i("获取标识返回值: AccessResult:" + result.AccessResult, "FHZ");
                         if (result != null) {
@@ -152,9 +134,7 @@ public class Login extends Activity implements OnClickListener {
 
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         Toast.makeText(Login.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
                     }
 //                    List<TeamEntity> entity = JsonEntity.ParsingJsonForTeamList(jsonStr);
@@ -172,7 +152,7 @@ public class Login extends Activity implements OnClickListener {
             } else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
                 Toast.makeText(Login.this, "请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
             } else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
-                Log.i("读取缓存失败","FHZ");
+                Log.i("读取缓存失败", "FHZ");
                 Toast.makeText(Login.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
                 /*清除其余活动中Activity以及全部缓存显示登录界面*/
             }
@@ -301,7 +281,7 @@ public class Login extends Activity implements OnClickListener {
 //        log_tex.setText("");
 //
         LoginBusiness loginBusiness = new LoginBusiness();
-        uPwd= MD5.getMD5(et_pass.getText().toString().trim());
+        uPwd = MD5.getMD5(et_pass.getText().toString().trim());
         loginBusiness.Login(et_name.getText().toString().trim(), uPwd, threadHandler);
 
 //        Log.e("登陆成功", "qqww");
