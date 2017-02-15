@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.anupcowkur.reservoir.Reservoir;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.APIEntity;
 import com.example.beyondsys.ppv.entities.AccAndPwd;
@@ -23,6 +24,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by zhsht on 2017/2/4.登录业务
@@ -30,8 +32,8 @@ import java.io.Serializable;
 public class LoginBusiness {
     /*用户登录*/
     public void Login(String Id, String Pwd, final Handler handler) {
-        String str= Pwd;
-        AccAndPwd person = new AccAndPwd(Id,str );
+        String str = Pwd;
+        AccAndPwd person = new AccAndPwd(Id, str);
         final String JsonParams = GsonUtil.getGson().toJson(person);
         Log.i("提交对象：" + JsonParams, "FHZ");
         new Thread() {
@@ -52,7 +54,6 @@ public class LoginBusiness {
                     // 得到远程方法返回的SOAP对象
                     SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
 //                    SoapObject result = (SoapObject) envelop.getResponse();
-                    Log.i("SOAP对象：" + result, "FHZ");
                     Message msg = Message.obtain();
                     msg.what = ThreadAndHandlerLabel.UserLogin;
                     msg.obj = result;
@@ -70,20 +71,24 @@ public class LoginBusiness {
     /*获取程序运行期间的标识*/
     public void UserLogo(final Handler handler, ACache mCache) {
         /*从缓存中获取凭据*/
-//        UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
-        UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
-        Log.i("缓存中获取凭据" , "FHZ");
+//        UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
+        UserLoginResultEntity entity = null;
+        try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                entity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (entity != null && !entity.TicketID.equals("")) {
-           String _poof = entity.TicketID;
-          //  String _poof = "9a7eb43f-4c7a-409e-a71b-2ab3149acfa4";
-            final String JsonParams = GsonUtil.getGson().toJson(_poof);
-            Log.i("提交对象：" + JsonParams, "FHZ");
-            Log.i("提交对象：" , "FHZ");
+            UserLogoPerson person=new UserLogoPerson();
+            person.TicketID= entity.TicketID;
+            final String JsonParams = GsonUtil.getGson().toJson(person);
+            Log.i("提交参数：actionid:"+APIEntity.GETLOGO+ " jsonvalue:"+ JsonParams, "FHZ");
             new Thread() {
                 public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
                     try {
-                        Log.i("rr","FHZ");
                         SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
                         soapObject.addProperty("actionid", APIEntity.GETLOGO);
                         soapObject.addProperty("jsonvalue", JsonParams);
@@ -97,9 +102,7 @@ public class LoginBusiness {
                         httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
                         // 得到远程方法返回的SOAP对象
                         SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
-                        Log.i("rrr","FHZ");
-            //            SoapObject result = (SoapObject) envelop.getResponse();
-                        Log.i("reeee","FHZ");
+//                        SoapObject result = (SoapObject) envelop.getResponse();
                         Message msg = Message.obtain();
                         msg.what = ThreadAndHandlerLabel.GetIdentifying;
                         msg.obj = result;
@@ -173,7 +176,7 @@ public class LoginBusiness {
             person.TicketID = entitys.TicketID;
             person.AccountName = entity.AccountName;
             person.OldPassword = entity.Password;
-            person.NewPassword =newpwd;
+            person.NewPassword = newpwd;
             final String JsonParams = GsonUtil.getGson().toJson(person);
             Log.i("提交对象：" + JsonParams, "FHZ");
             new Thread() {
@@ -220,4 +223,7 @@ public class LoginBusiness {
         public String NewPassword;
     }
 
+    private class UserLogoPerson implements Serializable{
+        public String TicketID;
+    }
 }
