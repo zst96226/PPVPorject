@@ -7,7 +7,7 @@ import java.util.List;
  * Created by s on 2017/2/13.
  */
 public class WorkItemResultEntity implements Serializable {
-    public String WorkItemList;
+    public List<WorkItemResultParams> WorkItemList;
     public int AccessResult;
     public WorkItemResultEntity()
     {

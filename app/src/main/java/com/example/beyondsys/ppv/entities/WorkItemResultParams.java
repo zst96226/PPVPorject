@@ -1,6 +1,7 @@
 package com.example.beyondsys.ppv.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -15,8 +16,12 @@ public   class WorkItemResultParams implements Serializable {
         StartTime = null;
         EndTime = null;
         Status = 0;
+        BID=null;
+        FID=null;
     }
 
+    public String BID;
+    public String FID;
     public String WorkName;
     public int Category;
     public String WorkID;

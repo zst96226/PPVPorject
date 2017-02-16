@@ -97,7 +97,10 @@ public class JsonEntity{
  public  static WorkItemResultEntity ParseJsonForWorkItemResult(String result)
  {
      WorkItemResultEntity workItemResultEntity=null;
-     workItemResultEntity=GsonUtil.json2T(result, WorkItemResultEntity.class);
+     Gson gson = new Gson();
+     java.lang.reflect.Type type = new TypeToken<WorkItemResultEntity>() {}.getType();
+     workItemResultEntity = gson.fromJson(result, type);
+     //workItemResultEntity=GsonUtil.json2T(result, WorkItemResultEntity.class);
      if(workItemResultEntity!=null)
      {
          return  workItemResultEntity;

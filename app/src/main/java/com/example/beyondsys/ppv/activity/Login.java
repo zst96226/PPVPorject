@@ -55,7 +55,7 @@ public class Login extends Activity implements OnClickListener {
     private TextWatcher username_watcher;
     private TextWatcher password_watcher;
     private TextView log_tex;
-    private String uPwd;
+    private String UAcc,uPwd;
 
     private Handler threadHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -73,7 +73,6 @@ public class Login extends Activity implements OnClickListener {
                                     Toast.makeText(Login.this, "服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 0:
-                                    String json = GsonUtil.t2Json2(entity);
                                     /*将凭据保存缓存*/
                                     Reservoir.putAsync(LocalDataLabel.Proof, entity, new ReservoirPutCallback() {
                                         @Override
@@ -87,7 +86,6 @@ public class Login extends Activity implements OnClickListener {
                                             e.printStackTrace();
                                         }
                                     });
-                                    //GetUserLogo(entity);
                                     break;
                                 case 1:
                                     Toast.makeText(Login.this, "密码错误，请重新输入或选择忘记密码", Toast.LENGTH_SHORT).show();
@@ -107,30 +105,44 @@ public class Login extends Activity implements OnClickListener {
                     String jsonStr = msg.obj.toString();
                     /*解析Json*/
                     if (!jsonStr.equals("anyType{}")) {
-                        IdentifyResult result = JsonEntity.ParseJsonForIdentifyResult(jsonStr);
+                        final IdentifyResult result = JsonEntity.ParseJsonForIdentifyResult(jsonStr);
                         if (result != null) {
                             switch (result.AccessResult)
                             {
                                 case 0:
                                     /*存储账号和密码*/
-                                    AccAndPwd user = new AccAndPwd(result.UID, uPwd);
+                                    AccAndPwd user = new AccAndPwd(UAcc, uPwd);
+                                    final String UID=result.UID;
                                     Reservoir.putAsync(LocalDataLabel.AccAndPwd, user, new ReservoirPutCallback() {
                                         @Override
                                         public void onSuccess() {
+                                            /*存用户ID*/
+                                            PersonInfoEntity entity =new PersonInfoEntity();
+                                            entity.ID=UID;
+                                            Reservoir.putAsync(LocalDataLabel.UserID, entity, new ReservoirPutCallback() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    /*存储团队信息*/
+                                                    Reservoir.putAsync(LocalDataLabel.Label, result.Team, new ReservoirPutCallback() {
+                                                        @Override
+                                                        public void onSuccess() {
+                                                            /*跳转主Activity*/
+                                                            startActivity(new Intent(Login.this, MainPPVActivity.class));
+                                                            Login.this.finish();
+                                                        }
 
-                                        }
-                                        @Override
-                                        public void onFailure(Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    });
-                                    /*存储团队信息*/
-                                    Reservoir.putAsync(LocalDataLabel.Label, result.Team, new ReservoirPutCallback() {
-                                        @Override
-                                        public void onSuccess() {
-                                            /*跳转主Activity*/
-                                            startActivity(new Intent(Login.this, MainPPVActivity.class));
-                                            Login.this.finish();
+                                                        @Override
+                                                        public void onFailure(Exception e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    });
+                                                }
+
+                                                @Override
+                                                public void onFailure(Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            });
                                         }
                                         @Override
                                         public void onFailure(Exception e) {
@@ -166,8 +178,6 @@ public class Login extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
 
-
-        mCache = ACache.get(this);
         et_name = (EditText) findViewById(R.id.username);
         et_pass = (EditText) findViewById(R.id.password);
         log_tex = (TextView) findViewById(R.id.log_tex);
@@ -286,7 +296,7 @@ public class Login extends Activity implements OnClickListener {
 //        }
 //        log_tex.setVisibility(View.GONE);
 //        log_tex.setText("");
-//
+        UAcc=et_name.getText().toString().trim();
         LoginBusiness loginBusiness = new LoginBusiness();
         uPwd = MD5.getMD5(et_pass.getText().toString().trim());
         loginBusiness.Login(et_name.getText().toString().trim(), uPwd, threadHandler);
