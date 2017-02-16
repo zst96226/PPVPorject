@@ -299,7 +299,10 @@ public class Login extends Activity implements OnClickListener {
         UAcc=et_name.getText().toString().trim();
         LoginBusiness loginBusiness = new LoginBusiness();
         uPwd = MD5.getMD5(et_pass.getText().toString().trim());
-        loginBusiness.Login(et_name.getText().toString().trim(), uPwd, threadHandler);
+       loginBusiness.Login(et_name.getText().toString().trim(), uPwd, threadHandler);
+             /*跳转主Activity*/
+//        startActivity(new Intent(Login.this, MainPPVActivity.class));
+//        Login.this.finish();
     }
 
     /**
