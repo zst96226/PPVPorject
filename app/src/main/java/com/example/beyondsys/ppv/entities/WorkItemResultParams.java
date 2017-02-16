@@ -26,7 +26,7 @@ public   class WorkItemResultParams implements Serializable {
     public int Category;
     public String WorkID;
     public double Workscore;
-    public Date StartTime;
-    public Date EndTime;
+    public String StartTime;
+    public String EndTime;
     public int Status;
 }

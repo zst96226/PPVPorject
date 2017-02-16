@@ -28,6 +28,7 @@ import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UIDEntity;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
@@ -77,9 +78,10 @@ public class Login extends Activity implements OnClickListener {
                                     Reservoir.putAsync(LocalDataLabel.Proof, entity, new ReservoirPutCallback() {
                                         @Override
                                             public void onSuccess() {
+                                            Log.i("凭据保存完成","FHZ");
                                             /*获取运行期间所需的标识*/
                                             LoginBusiness personnelVerify = new LoginBusiness();
-                                            personnelVerify.UserLogo(threadHandler, mCache);
+                                            personnelVerify.UserLogo(threadHandler);
                                         }
                                         @Override
                                         public void onFailure(Exception e) {
@@ -116,16 +118,18 @@ public class Login extends Activity implements OnClickListener {
                                     Reservoir.putAsync(LocalDataLabel.AccAndPwd, user, new ReservoirPutCallback() {
                                         @Override
                                         public void onSuccess() {
+                                            Log.i("账号密码保存完毕","FHZ");
                                             /*存用户ID*/
-                                            PersonInfoEntity entity =new PersonInfoEntity();
-                                            entity.ID=UID;
+                                            UIDEntity entity =new UIDEntity(UID);
                                             Reservoir.putAsync(LocalDataLabel.UserID, entity, new ReservoirPutCallback() {
                                                 @Override
                                                 public void onSuccess() {
+                                                    Log.i("UID保存完毕","FHZ");
                                                     /*存储团队信息*/
                                                     Reservoir.putAsync(LocalDataLabel.Label, result.Team, new ReservoirPutCallback() {
                                                         @Override
                                                         public void onSuccess() {
+                                                            Log.i("团队信息保存完毕","FHZ");
                                                             /*跳转主Activity*/
                                                             startActivity(new Intent(Login.this, MainPPVActivity.class));
                                                             Login.this.finish();
@@ -201,6 +205,19 @@ public class Login extends Activity implements OnClickListener {
 
         try {
             Reservoir.init(this, 2048);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        GetCache();
+    }
+
+    private void GetCache()
+    {
+        try {
+            if (Reservoir.contains(LocalDataLabel.AccAndPwd)) {
+                AccAndPwd entity = Reservoir.get(LocalDataLabel.AccAndPwd, AccAndPwd.class);
+                et_name.setText(entity.AccountName);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -299,10 +316,7 @@ public class Login extends Activity implements OnClickListener {
         UAcc=et_name.getText().toString().trim();
         LoginBusiness loginBusiness = new LoginBusiness();
         uPwd = MD5.getMD5(et_pass.getText().toString().trim());
-       loginBusiness.Login(et_name.getText().toString().trim(), uPwd, threadHandler);
-             /*跳转主Activity*/
-//        startActivity(new Intent(Login.this, MainPPVActivity.class));
-//        Login.this.finish();
+        loginBusiness.Login(et_name.getText().toString().trim(), uPwd, threadHandler);
     }
 
     /**

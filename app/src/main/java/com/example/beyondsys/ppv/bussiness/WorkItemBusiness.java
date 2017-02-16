@@ -30,14 +30,16 @@ public class WorkItemBusiness {
     /*获取对应工作项*/
     public void GetWorkItem(final Handler handler, String TeamID, int state, int relation, int pageNum, String TicketID) {
         WorkItemperson person = new WorkItemperson();
-
         person.TicketID = TicketID;
         person.TeamID = TeamID;
-        person.Ststus = state;
-        person.RelaTionID = relation;
+        person.Status = state;
+        person.RelationID = relation;
         person.PageNum = pageNum;
         final String JsonParams = GsonUtil.getGson().toJson(person);
-        Log.i("工作项提交对象：" + JsonParams, "FHZ");
+        Log.i("TicketID:"+TicketID,"FHZ");
+        Log.i("TeamID:"+TeamID,"FHZ");
+        Log.i("Status:"+state,"FHZ");
+        Log.i("RelationID:"+relation,"FHZ");
         new Thread() {
             public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
@@ -73,9 +75,9 @@ public class WorkItemBusiness {
     private class WorkItemperson implements Serializable {
         public String TicketID;
         public String TeamID;
-        public int Ststus;
-        public int RelaTionID;
         public int PageNum;
+        public int Status;
+        public int RelationID;
     }
 
     /*获取工作项详细信息*/

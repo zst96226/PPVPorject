@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.GetChars;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,14 +49,14 @@ import java.util.logging.LogRecord;
  * Created by zhsht on 2017/1/12.工作项页面
  */
 public class WorkItemView extends Fragment {
-    /*本地缓存操作对象*/
-    ACache mCache = null;
-   private ListView listView;
+
+
+    private ListView listView;
     private View rootView;
     private LinearLayout wi_s_one, undo_layout, progress_layout, done_layout, cancel_layout;
     private TextView wi_s_one_txt, undo_tex, proing_tex, done_tex, cancel_tex;
     // private WorkItemEntity workItemEntity;
-    private List<WorkItemResultParams> workItemEntityList=null;
+    private List<WorkItemResultParams> workItemEntityList = null;
     private final static int aboutme = 1;
     private final static int assignme = 0;
     private final static int undo = 0;
@@ -65,21 +66,24 @@ public class WorkItemView extends Fragment {
     private int reflag = 0, stflag = 0;
     SimpleAdapter adapter;
 
+    private String TKID ="";
+    private String TeamID = "";
+
     private Handler threadHander = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.GetWorkItem) {
                 if (msg.obj != null) {
                     Log.i("返回值：" + msg.obj, "FHZ");
                     String jsonStr = msg.obj.toString();
-                    if (!jsonStr.equals("anyType{}"))
-                    {
-                        WorkItemResultEntity entity=JsonEntity.ParseJsonForWorkItemResult(jsonStr);
-                        switch (entity.AccessResult)
-                        {
+                    if (!jsonStr.equals("anyType{}")) {
+                        WorkItemResultEntity entity = JsonEntity.ParseJsonForWorkItemResult(jsonStr);
+                        switch (entity.AccessResult) {
                             case 0:
-                                Log.i("获取工作项成功","FHZ");
-                                workItemEntityList=entity.WorkItemList;
-                                adapter.notifyDataSetChanged();
+                                Log.i("获取工作项成功", "FHZ");
+                                workItemEntityList = entity.WorkItemList;
+                                if (workItemEntityList != null) {
+                                    SetList();
+                                }
                                 break;
                             case 1:
                                 Toast.makeText(WorkItemView.this.getActivity(), "请求失败，请重新尝试", Toast.LENGTH_SHORT).show();
@@ -88,9 +92,7 @@ public class WorkItemView extends Fragment {
                                 Toast.makeText(WorkItemView.this.getActivity(), "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
                                 break;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         Toast.makeText(WorkItemView.this.getActivity(), "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -105,32 +107,26 @@ public class WorkItemView extends Fragment {
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.workitem_view, container, false);
 
-        try {
-            Reservoir.init(getActivity(), 2048);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         IninView();
-
-        SetList();
 
         Listener();
 
-//        SetList();
+        GetDataForCache();
 
-        GetCacheOrService();
-
+        GetDataForService();
+        try {
+            Reservoir.init(WorkItemView.this.getActivity(), 4096);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return rootView;
     }
 
     private void IninView() {
-        mCache = ACache.get(getActivity());
         listView = (ListView) rootView.findViewById(R.id.workitem_list);
         wi_s_one = (LinearLayout) rootView.findViewById(R.id.wi_s_one);
         wi_s_one_txt = (TextView) rootView.findViewById(R.id.wi_s_one_txt);
@@ -179,13 +175,11 @@ public class WorkItemView extends Fragment {
                 if (assignme == reflag) {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt_2);
                     reflag = aboutme;
-//                    SetList();
-                    GetCacheOrService();
+                    GetDataForService();
                 } else {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt);
                     reflag = assignme;
-//                    SetList();
-                    GetCacheOrService();
+                    GetDataForService();
                 }
             }
         });
@@ -197,8 +191,7 @@ public class WorkItemView extends Fragment {
                 setdefault();
                 undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
                 stflag = undo;
-//                SetList();
-                GetCacheOrService();
+                GetDataForService();
             }
         });
 
@@ -208,8 +201,7 @@ public class WorkItemView extends Fragment {
                 setdefault();
                 proing_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
                 stflag = progress;
-//                SetList();
-                GetCacheOrService();
+                GetDataForService();
             }
         });
 
@@ -219,8 +211,7 @@ public class WorkItemView extends Fragment {
                 setdefault();
                 done_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
                 stflag = done;
-//                SetList();
-                GetCacheOrService();
+                GetDataForService();
             }
         });
 
@@ -230,92 +221,44 @@ public class WorkItemView extends Fragment {
                 setdefault();
                 cancel_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
                 stflag = cancel;
+                GetDataForService();
             }
         });
     }
 
-    private void GetCacheOrService() {
-        /*判断缓存是否存在*/
+    private void GetDataForService() {
+        if (TKID.equals("")) {
+            Toast.makeText(WorkItemView.this.getActivity(), "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(WorkItemView.this.getContext(), Login.class);
+            startActivity(intent);
+            this.getActivity().finish();
+        }
+        else {
+            WorkItemBusiness workItemBusiness = new WorkItemBusiness();
+            workItemBusiness.GetWorkItem(threadHander, TeamID, stflag, reflag, 1, TKID);
+        }
+    }
+
+    private void GetDataForCache() {
         try {
-            if (Reservoir.contains(LocalDataLabel.WorkItemList + reflag + stflag)) {
-                Type resultType = new TypeToken<List<WorkItemResultParams>>() {
-                }.getType();
-                try {
-                    workItemEntityList = Reservoir.get(LocalDataLabel.WorkItemList + reflag + stflag, resultType);
-                } catch (Exception e) {
-                    //failure
-                }
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                UserLoginResultEntity userLoginResultEntity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+                TKID = userLoginResultEntity.TicketID;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (workItemEntityList!=null) {
-            /*本地有缓存，先显示缓存，然后读取网络数据，刷新*/
-            SetList();
-            workItemEntityList.clear();
-            List<TeamEntity> entity = null;
-            String TeamID= null;
-            try {
-                if (Reservoir.contains(LocalDataLabel.Label)) {
-                    Type resultType = new TypeToken<List<TeamEntity>>() {}.getType();
-                    entity = Reservoir.get(LocalDataLabel.Label, resultType);
-                    TeamID = entity.get(0).TeamID;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            if (Reservoir.contains(LocalDataLabel.Label)) {
+                Type resultType = new TypeToken<List<TeamEntity>>() {
+                }.getType();
+                List<TeamEntity> entity = Reservoir.get(LocalDataLabel.Label, resultType);
+                TeamID = entity.get(0).TeamID;
             }
-            UserLoginResultEntity userLoginResultEntity = null;
-            try {
-                if (Reservoir.contains(LocalDataLabel.Proof)) {
-                    userLoginResultEntity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (userLoginResultEntity!=null) {
-                WorkItemBusiness workItemBusiness = new WorkItemBusiness();
-                workItemBusiness.GetWorkItem(threadHander, TeamID, stflag, reflag, 1, userLoginResultEntity.TicketID);
-            }
-            else{
-                Toast.makeText(WorkItemView.this.getActivity(), "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            /*本地无缓存，读取网络数据，显示*/
-            List<TeamEntity> entity = null;
-            String TeamID= null;
-            try {
-                if (Reservoir.contains(LocalDataLabel.Label)) {
-                    Type resultType = new TypeToken<List<TeamEntity>>() {}.getType();
-                    entity = Reservoir.get(LocalDataLabel.Label, resultType);
-                    TeamID = entity.get(0).TeamID;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            UserLoginResultEntity userLoginResultEntity = null;
-            try {
-                if (Reservoir.contains(LocalDataLabel.Proof)) {
-                    userLoginResultEntity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (userLoginResultEntity!=null) {
-                WorkItemBusiness workItemBusiness = new WorkItemBusiness();
-                workItemBusiness.GetWorkItem(threadHander, TeamID, stflag, reflag, 1, userLoginResultEntity.TicketID);
-            }
-            else{
-                Toast.makeText(WorkItemView.this.getActivity(), "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    }
 
-    private void RefUI()
-    {
-        if (workItemEntityList.size()>0)
-        {
-            SetList();
-        }
     }
 
     @Override
@@ -340,9 +283,9 @@ public class WorkItemView extends Fragment {
             map.put("workName", workItemEntity.WorkName);
             //根据状态不同图片不同
             map.put("workState", R.drawable.img_done);
-            map.put("endingTime", workItemEntity.EndTime);
+            map.put("endingTime", workItemEntity.EndTime.substring(0,10));
             map.put("workValue", workItemEntity.Workscore);
-            map.put("strartTime", workItemEntity.StartTime);
+            map.put("strartTime", workItemEntity.StartTime.substring(0,10));
             list.add(map);
         }
         return list;

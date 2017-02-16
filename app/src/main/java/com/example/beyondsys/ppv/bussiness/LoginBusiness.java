@@ -68,7 +68,7 @@ public class LoginBusiness {
     }
 
     /*获取程序运行期间的标识*/
-    public void UserLogo(final Handler handler, ACache mCache) {
+    public void UserLogo(final Handler handler) {
         /*从缓存中获取凭据*/
 //        UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
         UserLoginResultEntity entity = null;
@@ -101,7 +101,7 @@ public class LoginBusiness {
                         httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
                         // 得到远程方法返回的SOAP对象
                         SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
-//                        SoapObject result = (SoapObject) envelop.getResponse();
+//                        SoapObject result = (SoapObject) envelop
                         Message msg = Message.obtain();
                         msg.what = ThreadAndHandlerLabel.GetIdentifying;
                         msg.obj = result;
