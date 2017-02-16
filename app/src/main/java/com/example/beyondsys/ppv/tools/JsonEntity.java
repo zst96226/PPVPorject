@@ -164,8 +164,11 @@ public class JsonEntity{
     }
     public  static IdentifyResult ParseJsonForIdentifyResult(String result)
     {
+        Gson gson = new Gson();
         IdentifyResult identifyResult=null;
-        identifyResult=GsonUtil.json2T(result, IdentifyResult.class);
+        java.lang.reflect.Type type = new TypeToken<IdentifyResult>() {}.getType();
+        identifyResult = gson.fromJson(result, type);
+        //identifyResult=GsonUtil.json2T(result, IdentifyResult.class);
         if(identifyResult!=null)
         {
             return  identifyResult;

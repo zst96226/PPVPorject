@@ -46,18 +46,8 @@ public class Login extends Activity implements OnClickListener {
     ACache mCache = null;
     // 声明控件对象
     private EditText et_name, et_pass;
-    private Button mLoginButton, mLoginError, mRegister, ONLYTEST;
-    int selectIndex = 1;
-    int tempSelect = selectIndex;
+    private Button mLoginButton, mLoginError, mRegister;
     boolean isReLogin = false;
-    private int SERVER_FLAG = 0;
-    private RelativeLayout countryselect;
-    private TextView coutry_phone_sn, coutryName;//
-    // private String [] coutry_phone_sn_array,coutry_name_array;
-    public final static int LOGIN_ENABLE = 0x01;    //注册完毕了
-    public final static int LOGIN_UNABLE = 0x02;    //注册完毕了
-    public final static int PASS_ERROR = 0x03;      //注册完毕了
-    public final static int NAME_ERROR = 0x04;      //注册完毕了
 
     private Button bt_username_clear;
     private Button bt_pwd_clear;
@@ -65,9 +55,7 @@ public class Login extends Activity implements OnClickListener {
     private TextWatcher username_watcher;
     private TextWatcher password_watcher;
     private TextView log_tex;
-
-    private PersonInfoEntity personInfoEntity;
-    private String uPwd, uName;
+    private String uPwd;
 
     private Handler threadHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -117,11 +105,9 @@ public class Login extends Activity implements OnClickListener {
             } else if (msg.what == ThreadAndHandlerLabel.GetIdentifying) {
                 if (msg.obj != null) {
                     String jsonStr = msg.obj.toString();
-                    Log.i("获取标识返回值" + msg.obj, "FHZ");
                     /*解析Json*/
                     if (!jsonStr.equals("anyType{}")) {
                         IdentifyResult result = JsonEntity.ParseJsonForIdentifyResult(jsonStr);
-                        Log.i("获取标识返回值: AccessResult:" + result.AccessResult, "FHZ");
                         if (result != null) {
                             switch (result.AccessResult)
                             {
@@ -138,10 +124,8 @@ public class Login extends Activity implements OnClickListener {
                                             e.printStackTrace();
                                         }
                                     });
-                                    /*解析团队信息并存储*/
-                                    JSONArray jsonArr = (JSONArray) result.Team;
-                                    List<TeamEntity> entityList=JsonEntity.readDatasForTeamEntity(jsonArr);
-                                    Reservoir.putAsync(LocalDataLabel.Label, entityList, new ReservoirPutCallback() {
+                                    /*存储团队信息*/
+                                    Reservoir.putAsync(LocalDataLabel.Label, result.Team, new ReservoirPutCallback() {
                                         @Override
                                         public void onSuccess() {
                                             /*跳转主Activity*/
@@ -291,7 +275,6 @@ public class Login extends Activity implements OnClickListener {
      * 登陆
      */
     private void login() {
-//        Log.e("登陆啦", "qqww");
 //        boolean nameCheck= ValidaService.isNameLength(et_name.getText().toString());
 //        boolean passCheck=ValidaService.isPasswLength(et_pass.getText().toString())&&ValidaService.isPassword(et_pass.getText().toString());
 //        if(!(nameCheck&&passCheck))
@@ -307,10 +290,6 @@ public class Login extends Activity implements OnClickListener {
         LoginBusiness loginBusiness = new LoginBusiness();
         uPwd = MD5.getMD5(et_pass.getText().toString().trim());
         loginBusiness.Login(et_name.getText().toString().trim(), uPwd, threadHandler);
-
-//        Log.e("登陆成功", "qqww");
-//        startActivity(new Intent(Login.this, MainPPVActivity.class));
-//        Login.this.finish();
     }
 
     /**
