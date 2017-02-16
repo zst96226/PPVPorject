@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.anupcowkur.reservoir.Reservoir;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.APIEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
@@ -31,7 +32,15 @@ public class WorkItemBusiness {
         WorkItemperson person = new WorkItemperson();
         /*获取缓存中的凭据和团队ID*/
       //  UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
-        UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
+      //  UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
+        UserLoginResultEntity entity = null;
+        try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                entity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (entity != null) {
             person.TicketID = entity.TicketID;
             person.TeamID = TeamID;
@@ -39,7 +48,7 @@ public class WorkItemBusiness {
             person.RelaTionID = relation;
             person.PageNum = pageNum;
             final String JsonParams = GsonUtil.getGson().toJson(person);
-            Log.i("提交对象：" + JsonParams, "FHZ");
+            Log.i("获取对应工作项 提交对象：" + JsonParams, "FHZ");
             new Thread() {
                 public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
@@ -58,6 +67,7 @@ public class WorkItemBusiness {
                         // 得到远程方法返回的SOAP对象
                         SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
                         Message msg = Message.obtain();
+                        Log.i("获取对应工作项 提交对象：", "FHZ");
                         msg.what = ThreadAndHandlerLabel.GetWorkItem;
                         msg.obj = result;
                         handler.sendMessage(msg);
@@ -89,7 +99,15 @@ public class WorkItemBusiness {
     public void GetWorkItemContent(final Handler handler, ACache mCache, String WorkItemID) {
         /*获取缓存*/
        // UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
-        UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
+  //      UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
+        UserLoginResultEntity entity = null;
+        try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                entity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (entity != null) {
             GetWorkItemContentPerson person = new GetWorkItemContentPerson();
             person.TicketID = entity.TicketID;

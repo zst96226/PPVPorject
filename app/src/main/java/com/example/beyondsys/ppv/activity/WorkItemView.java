@@ -2,7 +2,10 @@ package com.example.beyondsys.ppv.activity;
 
 import android.app.Notification;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -12,15 +15,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anupcowkur.reservoir.Reservoir;
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.bussiness.ImgBusiness;
 import com.example.beyondsys.ppv.bussiness.WorkItemBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.AccAndPwd;
+import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
@@ -31,6 +39,7 @@ import com.example.beyondsys.ppv.entities.WorkItemResultParams;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -59,7 +68,7 @@ public class WorkItemView extends Fragment {
     private final static int done=2;
     private final static int  cancel=3;
     private  int reflag=0,stflag=0;
-
+    private  File file;
     private Handler threadHander=new Handler(){
         public void handleMessage(Message msg)
         {
@@ -119,7 +128,59 @@ public class WorkItemView extends Fragment {
         SetList();
 
         Listener();
+        try {
+            Reservoir.init(this.getActivity(), 2048);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        UserLoginResultEntity  proof = null;
+        AccAndPwd user=null;
+        IdentifyResult label=null;
+        try {
+            Log.i("proof try","FHZ");
+            if (Reservoir.contains(LocalDataLabel.Proof))
+            {
+                Log.i("proof","FHZ");
+                proof = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+                Log.i("proof","FHZ");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try{
+            Log.i("USER try","FHZ");
+            if(Reservoir.contains(LocalDataLabel.AccAndPwd))
+            {
+                Log.i("USER","FHZ");
+                user=Reservoir.get(LocalDataLabel.AccAndPwd, AccAndPwd.class);
+                Log.i("USER","FHZ");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        try{
+            Log.i("label try", "FHZ");
+            if(Reservoir.contains(LocalDataLabel.Label))
+            {
+                Log.i("label","FHZ");
+                label=Reservoir.get(LocalDataLabel.Label,IdentifyResult.class);
+                Log.i("label","FHZ");
+            }
+        }catch (Exception e)
+        {
+            Log.i("label excep","FHZ");
+            e.printStackTrace();
+        }
 
+
+        if(proof==null||user==null||label==null)
+        {
+
+            Log.i("login", "FHZ");
+        }else{
+
+            Log.i("main", "FHZ");
+        }
         return rootView;
     }
 
@@ -136,6 +197,39 @@ public class WorkItemView extends Fragment {
         proing_tex=(TextView)rootView.findViewById(R.id.proing_tex);
         done_tex=(TextView)rootView.findViewById(R.id.done_tex);
         cancel_tex=(TextView)rootView.findViewById(R.id.cancel_tex);
+    }
+
+    private  void setImg( ImageView test_img)
+    {
+        /**
+         * 文件目录如果不存在，则创建
+         */
+        File fileDir;
+        String path = Environment.getExternalStorageDirectory()
+                + "/listviewImg/";// 文件目录
+        fileDir = new File(path);
+        if (!fileDir.exists()) {
+            Log.i("exit","qq");
+            fileDir.mkdirs();
+        }
+        /**
+         * 创建图片文件
+         */
+        String picurl="http://120.26.37.247:8181/File/123.png";
+        String      name="123.png";
+        file = new File(fileDir, name);
+        if (!file.exists()) {// 如果本地图片不存在则从网上下载
+            Log.i("wwwwwwwww","qq");
+            ImgBusiness imgBusiness=new ImgBusiness();
+            imgBusiness.downloadImg(picurl,name);
+            Log.i("end", "qq");
+            // downloadPic(picNames[position], picUrls[position]);
+        } else {// 图片存在则填充到view上
+            Log.i("ttttt","qq");
+            Bitmap bitmap = BitmapFactory
+                    .decodeFile(file.getAbsolutePath());
+            test_img.setImageBitmap(bitmap);
+        }
     }
 
     private void SetList(){
@@ -233,29 +327,29 @@ public class WorkItemView extends Fragment {
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         list.clear();
-        Log.e(stflag + reflag + "", "qq");
-       List<WorkItemResultParams> entityList=getEntities(reflag,stflag);
-        if(entityList==null)
-        {
-            return list;
-        }
-        //存缓存
-        String workItemArray=GsonUtil.getGson().toJson(entityList);
-        mCache.put(LocalDataLabel.WorkItemList+reflag+stflag,workItemArray);
-        for (WorkItemResultParams workItemEntity:entityList)
-        {
-            Map<String, Object> map = new HashMap<String, Object>();
-            //根据类别不同图片不同
-            map.put("workimg", R.drawable.work_item);
-            map.put("workId",workItemEntity.WorkID);
-            map.put("workName", workItemEntity.WorkName);
-            //根据状态不同图片不同
-            map.put("workState", R.drawable.img_done);
-            map.put("endingTime", workItemEntity.EndTime);
-            map.put("workValue", workItemEntity.Workscore);
-            map.put("strartTime", workItemEntity.StartTime);
-            list.add(map);
-        }
+//        Log.e(stflag + reflag + "", "qq");
+//       List<WorkItemResultParams> entityList=getEntities(reflag,stflag);
+//        if(entityList==null)
+//        {
+//            return list;
+//        }
+//        //存缓存
+//        String workItemArray=GsonUtil.getGson().toJson(entityList);
+//        mCache.put(LocalDataLabel.WorkItemList+reflag+stflag,workItemArray);
+//        for (WorkItemResultParams workItemEntity:entityList)
+//        {
+//            Map<String, Object> map = new HashMap<String, Object>();
+//            //根据类别不同图片不同
+//            map.put("workimg", R.drawable.work_item);
+//            map.put("workId",workItemEntity.WorkID);
+//            map.put("workName", workItemEntity.WorkName);
+//            //根据状态不同图片不同
+//            map.put("workState", R.drawable.img_done);
+//            map.put("endingTime", workItemEntity.EndTime);
+//            map.put("workValue", workItemEntity.Workscore);
+//            map.put("strartTime", workItemEntity.StartTime);
+//            list.add(map);
+//        }
         return list;
     }
 //    private  List<Map<String, Object>> entities2maps( List<WorkItemEntity> entityList)

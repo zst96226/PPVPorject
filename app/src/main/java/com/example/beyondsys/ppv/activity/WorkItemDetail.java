@@ -57,7 +57,7 @@ public class WorkItemDetail extends AppCompatActivity {
     private RelativeLayout del_layout;
     private  Button del_ok,del_cancel;
     private boolean isdel=false;
-    private  String id="";
+    private  String CurItemId="";
     private Handler handler=new Handler()
     {
         public  void  handleMessage(Message msg)
@@ -73,7 +73,7 @@ public class WorkItemDetail extends AppCompatActivity {
                           if(workDetailResult.AccessResult==0)
                           {
                              String json= GsonUtil.t2Json2(workDetailResult);
-                              mCache.put(LocalDataLabel.WorkItemDetail+id,json);
+                              mCache.put(LocalDataLabel.WorkItemDetail+CurItemId,json);
                           }
                        }
                    }catch (Exception e){}
@@ -98,7 +98,7 @@ public class WorkItemDetail extends AppCompatActivity {
 
         Listener();
 
-        SetData();
+        SetData(CurItemId);
     }
 
     private void initView() {
@@ -132,7 +132,7 @@ public class WorkItemDetail extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
-        id=bundle.getString("ItemID").trim();
+        CurItemId=bundle.getString("ItemID").trim();
 //       workItemEntity=new WorkItemEntity();
 //        workItemEntity.BID="BID";
 //        workItemEntity.ID="ID";
@@ -168,7 +168,7 @@ public class WorkItemDetail extends AppCompatActivity {
             public void onClick(View v) {
                 if (child_list.getVisibility() == View.GONE) {
                     child_list.setVisibility(View.VISIBLE);
-                    SetList(id);
+                    SetList(CurItemId);
                     wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                 } else {
                     child_list.setVisibility(View.GONE);
@@ -179,24 +179,39 @@ public class WorkItemDetail extends AppCompatActivity {
         child_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //有子项则  可展开 点击进入详情
+                //有子项则  可点击切换数据
                 Log.e("dianji", "tag");
-                setChildData();
+                TextView itemId=(TextView)view.findViewById(R.id.workid_tex);
+                if(itemId!=null)
+                {
+                    CurItemId=itemId.getText().toString().trim();
+                }
+                SetData(CurItemId);
                 if (isdel == true) {
                     //判断选择框是否可见 选中
+                    CheckBox  checkBox=(CheckBox)view.findViewById(R.id.child_che);
+                    if(checkBox!=null)
+                    {
+                        if(checkBox.isChecked())
+                        {
+                            checkBox.setChecked(false);
+                        }else{
+                            checkBox.setChecked(true);
+                        }
+                    }
                     return;
                 }
-                //正常操作
-
             }
         });
         del_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //检测是否有选中项，则删除
+
                 if (child_list.getVisibility() == View.GONE) {
                     child_list.setVisibility(View.VISIBLE);
-                    SetList(id);
+                    SetList(CurItemId);
                     wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                 }
                 for (int i=0;i<child_list.getCount();i++)
@@ -216,7 +231,7 @@ public class WorkItemDetail extends AppCompatActivity {
             public void onClick(View v) {
                 if (child_list.getVisibility() == View.GONE) {
                     child_list.setVisibility(View.VISIBLE);
-                    SetList(id);
+                    SetList(CurItemId);
                     wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                 }
                 for (int i = 0; i < child_list.getCount(); i++) {
@@ -234,7 +249,9 @@ public class WorkItemDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //有父项则
-                SetData();
+                //从缓存中取当前对象，若FID不为空，则显示父项内容
+                CurItemId="父项ID";
+                SetData(CurItemId);
             }
         });
         menu.setOnClickListener(new View.OnClickListener() {
@@ -265,7 +282,7 @@ public class WorkItemDetail extends AppCompatActivity {
                             del_layout.setVisibility(View.GONE);
                             if (child_list.getVisibility() == View.GONE) {
                                 child_list.setVisibility(View.VISIBLE);
-                                SetList(id);
+                                SetList(CurItemId);
                                 wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                             }
                             for (int i=0;i<child_list.getCount();i++)
@@ -284,7 +301,7 @@ public class WorkItemDetail extends AppCompatActivity {
                         if (child_list.getVisibility() == View.GONE) {
                             Log.e("list gone","aa");
                             child_list.setVisibility(View.VISIBLE);
-                            SetList(id);
+                            SetList(CurItemId);
                             wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                         }
                         Log.e("list for", "aa");
@@ -341,14 +358,14 @@ public class WorkItemDetail extends AppCompatActivity {
 
     }
 
-    private void SetList(String  id) {
+    private void SetList(String  CurItemId) {
 
-            SimpleAdapter adapter = new SimpleAdapter(this, getData(id), R.layout.child_list_item, new String[]{"workName", "workValue", "workState", "strartTime", "endingTime"},
+            SimpleAdapter adapter = new SimpleAdapter(this, getData(CurItemId), R.layout.child_list_item, new String[]{"workName", "workValue", "workState", "strartTime", "endingTime"},
                     new int[]{R.id.workname_tex, R.id.workvalue_tex, R.id.work_state_img, R.id.strarttime_tex, R.id.endtime_tex});
             child_list.setAdapter(adapter);
     }
 
-    private List<Map<String, Object>> getData(String id) {
+    private List<Map<String, Object>> getData(String CurItemId) {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -378,17 +395,14 @@ public class WorkItemDetail extends AppCompatActivity {
         return list;
     }
 
-    private void SetData() {
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
-        id=bundle.getString("ItemID").trim();
-        WorkDetailResult hasEntity=JsonEntity.ParseJsonForWorkDetailResult(mCache.getAsString(LocalDataLabel.WorkItemDetail+id));//(WorkItemEntity) mCache.getAsObject(LocalDataLabel.WorkItemDetail+id);
+    private void SetData( String CurItemId) {
+        //传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
+        WorkDetailResult hasEntity=JsonEntity.ParseJsonForWorkDetailResult(mCache.getAsString(LocalDataLabel.WorkItemDetail+CurItemId));//(WorkItemEntity) mCache.getAsObject(LocalDataLabel.WorkItemDetail+id);
         if(hasEntity==null)
         {
            //根据ID从服务器取 并存缓存
             WorkItemBusiness workItemBusiness=new WorkItemBusiness();
-            workItemBusiness.GetWorkItemContent(handler,mCache,id);
+            workItemBusiness.GetWorkItemContent(handler,mCache,CurItemId);
         }else
         {
              name_edt.setText(hasEntity.WorkName.toString());

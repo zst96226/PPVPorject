@@ -9,5 +9,10 @@ import java.util.List;
 public class WorkItemResultEntity implements Serializable {
     public String WorkItemList;
     public int AccessResult;
+    public WorkItemResultEntity()
+    {
+        WorkItemList = null;
+        AccessResult = -3;
+    }
 
 }
