@@ -56,7 +56,7 @@ public class PersonInfo extends AppCompatActivity {
     private boolean editFlag = false;
     private    TakePhotoPopWin takePhotoPopWin;
     private String IMAGE_FILE_LOCATION = Tools.getSDPath() + File.separator + "photo.jpeg";
-
+    File file;
     private UserInfoResultParams personInfoEntity, newInfo;
     private Handler threadHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -160,7 +160,8 @@ private  void setData()
     if(personInfoEntity!=null)
     {
         //个人头像未完成
-        myImg.setImageResource(R.drawable.person);
+        setImg(myImg);
+     //   myImg.setImageResource(R.drawable.person);
         myNameEdt.setText(personInfoEntity.Name);
         myPhoneEdt.setText(personInfoEntity.Tel);
         myEmailEdt.setText(personInfoEntity.EMail);
@@ -169,7 +170,38 @@ private  void setData()
         myDesEdt.setText(personInfoEntity.Sign);
     }
 }
-
+    private  void setImg( ImageView test_img)
+    {
+        /**
+         * 文件目录如果不存在，则创建
+         */
+        File fileDir;
+        String path = Environment.getExternalStorageDirectory()
+                + "/listviewImg/";// 文件目录
+        fileDir = new File(path);
+        if (!fileDir.exists()) {
+            Log.i("exit","qq");
+            fileDir.mkdirs();
+        }
+        /**
+         * 创建图片文件
+         */
+        String picurl="http://120.26.37.247:8181/File/123.png";
+        String      name="123.png";
+        file = new File(fileDir, name);
+        if (!file.exists()) {// 如果本地图片不存在则从网上下载
+            Log.i("wwwwwwwww","qq");
+            ImgBusiness imgBusiness=new ImgBusiness();
+            imgBusiness.downloadImg(picurl,name);
+            Log.i("end", "qq");
+            // downloadPic(picNames[position], picUrls[position]);
+        } else {// 图片存在则填充到view上
+            Log.i("ttttt", "qq");
+            Bitmap bitmap = BitmapFactory
+                    .decodeFile(file.getAbsolutePath());
+            test_img.setImageBitmap(bitmap);
+        }
+    }
     public void isModify(View v) {
         modifyImg = (ImageView) findViewById(R.id.infoModify_img);
         if (!editFlag) {

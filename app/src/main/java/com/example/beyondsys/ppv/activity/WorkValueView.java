@@ -1,7 +1,12 @@
 package com.example.beyondsys.ppv.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -21,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.bussiness.ImgBusiness;
 import com.example.beyondsys.ppv.bussiness.OneSelfBusiness;
 import com.example.beyondsys.ppv.bussiness.WorkValueBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
@@ -41,6 +47,7 @@ import com.example.beyondsys.ppv.tools.JsonEntity;
 
 import org.json.JSONArray;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,6 +73,7 @@ public class WorkValueView extends Fragment {
     private TextView sort_tex,filter_tex;
     private  List<WorkValueResultParams> valueEntityList=null;
     private UserInfoResultParams curPersonEntity=null;
+    File file;
     private final  static int sortup=1;
     private  final  static  int sortdown=0;
     private  final  static  int curmonth=0;
@@ -87,7 +95,9 @@ public class WorkValueView extends Fragment {
                         {
                             if(entity.AccessResult==0)
                             {
-                                String jsonArr=entity.Score;
+                              //  String jsonArr=entity.Score;
+                              // entity.Score是List<WorkValueResultParams>
+                                String jsonArr="";
                                 List<WorkValueResultParams> entityList=JsonEntity.ParseJsonForWorkValueParamsList(jsonArr);
                                 if(entityList!=null)
                                 {
@@ -177,6 +187,7 @@ public class WorkValueView extends Fragment {
             else
               {
                   sort_img.setImageResource(R.drawable.sort_up);
+              //  sort_img.setImageDrawable(setImg("123"));
                   sort_tex.setText(R.string.sortup);
                   //升排序函数；
                   sortFlag=sortup;
@@ -219,18 +230,30 @@ public class WorkValueView extends Fragment {
     }
     private void setAdapter()
     {
-        SimpleAdapter adapter =new SimpleAdapter(this.getActivity(),getData() ,R.layout.valueliststyle ,  new String[]{"personImg","personId","personName","valueSum","monthSum"},
+        SimpleAdapter adapter =new SimpleAdapter(this.getActivity(),getData() ,R.layout.valueliststyle ,
+                new String[]{"personImg","personId","personName","valueSum","monthSum"},
                 new int[]{R.id.person_img ,R.id.personid_tex ,R.id.personname_tex  ,R.id.valuesum_tex ,R.id .monthsum_tex  }) ;
+        adapter.setViewBinder(new SimpleAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Object data, String textRepresentation) {
+                if(view instanceof ImageView && data instanceof Bitmap){
+                    ImageView i = (ImageView)view;
+                    i.setImageBitmap((Bitmap) data);
+                    return true;
+                }
+                return false;
+            }
+        });
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String personId = "";
-                    Intent intent = new Intent(getActivity(), PersonValueDetail.class);
-                    TextView person = (TextView) view.findViewById(R.id.personid_tex);
-                    personId = person.getText().toString();
-                    intent.putExtra("personId", personId);
-                    startActivity(intent);
+                Intent intent = new Intent(getActivity(), PersonValueDetail.class);
+                TextView person = (TextView) view.findViewById(R.id.personid_tex);
+                personId = person.getText().toString();
+                intent.putExtra("personId", personId);
+                startActivity(intent);
 
             }
         });
@@ -239,6 +262,36 @@ public class WorkValueView extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
+    }
+
+    private Bitmap setImg(String id)
+    {
+        File fileDir;
+        Bitmap bitmap=null;
+       // Drawable drawable=null;
+        String path = Environment.getExternalStorageDirectory()
+                + "/listviewImg/";// 文件目录
+        fileDir = new File(path);
+        if (!fileDir.exists()) {
+            Log.i("exit","qq");
+            fileDir.mkdirs();
+        }
+        String picurl="http://120.26.37.247:8181/File/"+id+".png";
+        String      name=id+".png";
+        file = new File(fileDir, name);
+        if (!file.exists())
+        {// 如果本地图片不存在则从网上下载
+            Log.i("wwwwwwwww","qq");
+            ImgBusiness imgBusiness=new ImgBusiness();
+            imgBusiness.downloadImg(picurl,name);
+            Log.i("end", "qq");
+        } else {// 图片存在则填充到view上
+            Log.i("ttttt", "qq");
+            bitmap = BitmapFactory
+                    .decodeFile(file.getAbsolutePath());
+          // drawable =new BitmapDrawable(bitmap);
+        }
+        return bitmap;
     }
 
     private List<Map<String, Object>> getData() {
@@ -257,8 +310,12 @@ public class WorkValueView extends Fragment {
         {
             for (WorkValueResultParams valueEntity:entityList) {
                 Map<String, Object> map = new HashMap<String, Object>();
-                //个人图片
-                map.put("personImg",  R.drawable.person );
+                //个人图片 图片用ID命名
+                // map.put("personImg", setImg(valueEntity.UserID));
+                Bitmap bitmap=setImg("123");
+                map.put("personImg",bitmap );
+
+               // map.put("personImg",  R.drawable.person );
                 map.put("personId", valueEntity.UserID);
                 map.put("personName", valueEntity.Name);
                 map.put("valueSum",  String.valueOf(valueEntity.BasicScore+valueEntity.CheckedScore));
@@ -281,7 +338,11 @@ public class WorkValueView extends Fragment {
                 if(entityList.get(i).UserID.equals(curPersonEntity.UserID))
                 {
                     Map<String, Object> map = new HashMap<String, Object>();
-                    map.put("personImg",  R.drawable.person );
+                    // map.put("personImg", setImg(valueEntity.UserID));
+                    Bitmap bitmap=setImg("123");
+                    map.put("personImg",bitmap );
+
+                    // map.put("personImg",  R.drawable.person );
                     map.put("personId",entityList.get(i).UserID);
                     map.put("personName", entityList.get(i).Name);
                     map.put("valueSum", String.valueOf(entityList.get(i).BasicScore+entityList.get(i).CheckedScore));
@@ -293,7 +354,11 @@ public class WorkValueView extends Fragment {
             for (WorkValueResultParams valueEntity:entityList) {
                 Log.e(valueEntity.Name.toString(),"ee");
                 Map<String, Object> map = new HashMap<String, Object>();
-                map.put("personImg",  R.drawable.person );
+                // map.put("personImg", setImg(valueEntity.UserID));
+                Bitmap bitmap=setImg("123");
+                map.put("personImg",bitmap );
+
+                // map.put("personImg",  R.drawable.person );
                 map.put("personId", valueEntity.UserID);
                 map.put("personName", valueEntity.Name);
                 map.put("valueSum", String.valueOf(valueEntity.BasicScore+valueEntity.CheckedScore));
@@ -305,7 +370,10 @@ public class WorkValueView extends Fragment {
         {
             for (WorkValueResultParams valueEntity:entityList) {
                 Map<String, Object> map = new HashMap<String, Object>();
-                map.put("personImg",  R.drawable.person );
+                // map.put("personImg", setImg(valueEntity.UserID));
+                Bitmap bitmap=setImg("123");
+                map.put("personImg",bitmap );
+                // map.put("personImg",  R.drawable.person );
                 map.put("personId", valueEntity.UserID);
                 map.put("personName", valueEntity.Name);
                 map.put("valueSum", String.valueOf(valueEntity.BasicScore+valueEntity.CheckedScore));
@@ -324,34 +392,34 @@ public class WorkValueView extends Fragment {
 //    }
     private  List<WorkValueResultParams> getEntities(int sort,int status)
     {
-        WorkValueBusiness workValueBusiness=new WorkValueBusiness();
-        //从缓存中取TeamID
-        String TeamID="";
-        String jsonarr=mCache.getAsString(LocalDataLabel.Label);
-        if(jsonarr!=null)
-        {
-            try {
-                List<TeamEntity> teamEntityList=JsonEntity.ParsingJsonForTeamList(jsonarr);
-                if(teamEntityList!=null&&(!teamEntityList.isEmpty()))
-                {
-                    TeamID=teamEntityList.get(0).TeamID;
-                }
-            }catch (Exception e){}
-        }
-        workValueBusiness.GetWorkValue(handler,TeamID,status,1,mCache);
-//
-//        valueEntityList=new ArrayList<WorkValueEntity>();
-//        for (int i=0;i<10;i++) {
-//            WorkValueEntity    valueEntity = new WorkValueEntity();
-//            // valueEntity.IMGTarget="";
-//            valueEntity.BID = "BID" + i;
-//            valueEntity.ID = "ID" + i;
-//            valueEntity.Name = "Name" + i;
-//            valueEntity.Status = i;
-//            valueEntity.ScoreCount = (5-i) * 100;
-//            valueEntity.MonthCount = i;
-//            valueEntityList.add(valueEntity);
+//        WorkValueBusiness workValueBusiness=new WorkValueBusiness();
+//        //从缓存中取TeamID
+//        String TeamID="";
+//        String jsonarr=mCache.getAsString(LocalDataLabel.Label);
+//        if(jsonarr!=null)
+//        {
+//            try {
+//                List<TeamEntity> teamEntityList=JsonEntity.ParsingJsonForTeamList(jsonarr);
+//                if(teamEntityList!=null&&(!teamEntityList.isEmpty()))
+//                {
+//                    TeamID=teamEntityList.get(0).TeamID;
+//                }
+//            }catch (Exception e){}
 //        }
+//        workValueBusiness.GetWorkValue(handler,TeamID,status,1,mCache);
+//
+        valueEntityList=new ArrayList<WorkValueResultParams>();
+        for (int i=0;i<10;i++) {
+            WorkValueResultParams    valueEntity = new WorkValueResultParams();
+            // valueEntity.IMGTarget="";
+            valueEntity.UserID = "BID" + i;
+            valueEntity.Name = "Name" + i;
+         //   valueEntity.IMGTarget = "";//图片在list中处理
+            valueEntity.CheckedScore = (5-i) * 100;
+            valueEntity.BasicScore=i;
+            valueEntity.Month = i;
+            valueEntityList.add(valueEntity);
+        }
         if(valueEntityList!=null)
         {
             if(sort==sortdown)
@@ -370,9 +438,9 @@ public class WorkValueView extends Fragment {
     // 自定义比较器：按价值排序
     static class ValueComparator implements Comparator {
         public int compare(Object object1, Object object2) {// 实现接口中的方法
-           WorkValueEntity p1 = (WorkValueEntity) object1; // 强制转换
-            WorkValueEntity p2 = (WorkValueEntity) object2;
-            return new Double(p1.ScoreCount).compareTo(new Double(p2.ScoreCount));
+            WorkValueResultParams p1 = ( WorkValueResultParams ) object1; // 强制转换
+            WorkValueResultParams  p2 = ( WorkValueResultParams ) object2;
+            return new Double(p1.BasicScore+p1.CheckedScore).compareTo(new Double(p2.BasicScore+p2.CheckedScore));
         }
     }
 
