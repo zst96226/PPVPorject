@@ -28,6 +28,7 @@ import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.WorkItemBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.SubWorkItemParams;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.WorkDetailResult;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
@@ -57,7 +58,9 @@ public class WorkItemDetail extends AppCompatActivity {
     private RelativeLayout del_layout;
     private  Button del_ok,del_cancel;
     private boolean isdel=false;
-    private  String CurItemId="";
+    String[]  typeList=new String[]{"事项","任务"};
+    private  String CurItemId="",CurItemType=typeList[0];
+    private  List<SubWorkItemParams> SubItemList=null;
     private Handler handler=new Handler()
     {
         public  void  handleMessage(Message msg)
@@ -250,8 +253,14 @@ public class WorkItemDetail extends AppCompatActivity {
             public void onClick(View v) {
                 //有父项则
                 //从缓存中取当前对象，若FID不为空，则显示父项内容
-                CurItemId="父项ID";
-                SetData(CurItemId);
+                WorkDetailResult hasEntity=JsonEntity.ParseJsonForWorkDetailResult(mCache.getAsString(LocalDataLabel.WorkItemDetail+CurItemId));//(WorkItemEntity) mCache.getAsObject(LocalDataLabel.WorkItemDetail+id);
+                if(hasEntity!=null)
+                {
+                    if(hasEntity.FID!=null)
+                    CurItemId=hasEntity.FID;
+                    SetData(CurItemId);
+                }
+
             }
         });
         menu.setOnClickListener(new View.OnClickListener() {
@@ -267,6 +276,8 @@ public class WorkItemDetail extends AppCompatActivity {
                         //跳转添加子项界面
                         Intent intent = new Intent(WorkItemDetail.this, AddNewWorkItem.class);
                         startActivity(intent);
+                        intent.putExtra("FatherID", CurItemId);
+                        intent.putExtra("FatherType", "");
                         popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
                     }
                 });
@@ -276,52 +287,49 @@ public class WorkItemDetail extends AppCompatActivity {
                     public void onClick(View arg0) {
                         // do something before signing out
                         //删除选中的子项
-                        if(isdel!=false)
-                        {
-                            isdel=false;
+                        if (isdel != false) {
+                            isdel = false;
                             del_layout.setVisibility(View.GONE);
                             if (child_list.getVisibility() == View.GONE) {
                                 child_list.setVisibility(View.VISIBLE);
                                 SetList(CurItemId);
                                 wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                             }
-                            for (int i=0;i<child_list.getCount();i++)
-                            {
-                                View view=child_list.getChildAt(i);
-                                CheckBox checkBox=(CheckBox)view.findViewById(R.id.child_che);
-                                ImageView img=(ImageView)view.findViewById(R.id.child_img);
+                            for (int i = 0; i < child_list.getCount(); i++) {
+                                View view = child_list.getChildAt(i);
+                                CheckBox checkBox = (CheckBox) view.findViewById(R.id.child_che);
+                                ImageView img = (ImageView) view.findViewById(R.id.child_img);
                                 img.setVisibility(View.VISIBLE);
                                 checkBox.setVisibility(View.GONE);
                             }
                             popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
                             return;
                         }
-                        Log.e("isdel=false","aa");
-                        isdel=true;
+                        Log.e("isdel=false", "aa");
+                        isdel = true;
                         if (child_list.getVisibility() == View.GONE) {
-                            Log.e("list gone","aa");
+                            Log.e("list gone", "aa");
                             child_list.setVisibility(View.VISIBLE);
                             SetList(CurItemId);
                             wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                         }
                         Log.e("list for", "aa");
                         child_list.setVisibility(View.VISIBLE);
-                        for (int i=0;i<child_list.getCount();i++)
-                        {
-                            View view=child_list.getChildAt(i);
+                        for (int i = 0; i < child_list.getCount(); i++) {
+                            View view = child_list.getChildAt(i);
                             Log.e("list view i", "aa");
-                                CheckBox checkBox=(CheckBox)view.findViewById(R.id.child_che);
-                                Log.e("list che i", "aa");
-                                ImageView img=(ImageView)view.findViewById(R.id.child_img);
-                                Log.e("list img i", "aa");
-                                img.setVisibility(View.GONE);
-                                checkBox.setVisibility(View.VISIBLE);
-                                Log.e("list for i", "aa");
+                            CheckBox checkBox = (CheckBox) view.findViewById(R.id.child_che);
+                            Log.e("list che i", "aa");
+                            ImageView img = (ImageView) view.findViewById(R.id.child_img);
+                            Log.e("list img i", "aa");
+                            img.setVisibility(View.GONE);
+                            checkBox.setVisibility(View.VISIBLE);
+                            Log.e("list for i", "aa");
                         }
                         Log.e("list for end", "aa");
                         del_layout.setVisibility(View.VISIBLE);
                         Log.e("dellayout", "aa");
-                       popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
+                        popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
 
                     }
                 });
@@ -360,38 +368,65 @@ public class WorkItemDetail extends AppCompatActivity {
 
     private void SetList(String  CurItemId) {
 
-            SimpleAdapter adapter = new SimpleAdapter(this, getData(CurItemId), R.layout.child_list_item, new String[]{"workName", "workValue", "workState", "strartTime", "endingTime"},
-                    new int[]{R.id.workname_tex, R.id.workvalue_tex, R.id.work_state_img, R.id.strarttime_tex, R.id.endtime_tex});
+            SimpleAdapter adapter = new SimpleAdapter(this, getData(CurItemId), R.layout.child_list_item, new String[]{"workImg","workId","workName", "workValue", "workState", "strartTime", "endingTime"},
+                    new int[]{R.id.work_img,R.id.workid_tex,R.id.workname_tex, R.id.workvalue_tex, R.id.work_state_img, R.id.strarttime_tex, R.id.endtime_tex});
             child_list.setAdapter(adapter);
     }
 
     private List<Map<String, Object>> getData(String CurItemId) {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         Map<String, Object> map = new HashMap<String, Object>();
+    List<SubWorkItemParams> subWorkItemParamses=SubItemList;
+        if(subWorkItemParamses!=null&&subWorkItemParamses.size()!=0)
+        {
+            for (SubWorkItemParams subItem:subWorkItemParamses)
+            {
+                if(workItemEntity.Category==0)
+                {
+                    map.put("workimg", R.drawable.b);
+                }else{
+                    map.put("workimg", R.drawable.t);
+                }
+                //根据状态不同图片不同
+                switch (workItemEntity.Status)
+                {
+                    case 0:
+                        map.put("workState", R.drawable.status0);
+                        break;
+                    case 1:
+                        map.put("workState", R.drawable.status1);
+                        break;
+                    case 2:
+                        map.put("workState", R.drawable.status2);
+                        break;
+                    case 3:
+                        map.put("workState", R.drawable.status3);
+                        break;
+                    case 4:
+                        map.put("workState", R.drawable.status4);
+                        break;
+                    case 5:
+                        map.put("workState", R.drawable.status5);
+                        break;
+                    case 6:
+                        map.put("workState", R.drawable.status6);
+                        break;
+                    case 7:
+                        map.put("workState", R.drawable.status7);
+                        break;
+                    default:
+                        map.put("workState", R.drawable.status0);
+                        break;
+                }
+                map.put("workId",subItem.WorkID);
+                map.put("workName", subItem.WorkName);
+                map.put("endingTime", subItem.EndTime);
+                map.put("workValue", subItem.Score);
+                map.put("strartTime",subItem.StartTime);
+                list.add(map);
+            }
 
-        map.put("workName", "事务1");
-        map.put("workState", R.drawable.img_done);
-        map.put("endingTime", "17-11-22");
-        map.put("workValue", "100");
-        map.put("strartTime", "17-11-22");
-        list.add(map);
-
-        map = new HashMap<String, Object>();
-        map.put("workName", "事务2");
-        map.put("workState", R.drawable.img_pro);
-        map.put("endingTime", "17-11-22");
-        map.put("workValue", "100");
-        map.put("strartTime", "17-11-22");
-        list.add(map);
-
-        map = new HashMap<String, Object>();
-        map.put("workName", "事务3");
-        map.put("workState", R.drawable.img_proing);
-        map.put("endingTime", "17-11-22");
-        map.put("workValue", "100");
-        map.put("strartTime", "17-11-22");
-        list.add(map);
-
+        }
         return list;
     }
 
@@ -423,6 +458,8 @@ public class WorkItemDetail extends AppCompatActivity {
             //work_status.setImageDrawable(??);
             starttime_tex.setText(hasEntity.CreateTime.toString());
           //  endingtime_tex.setText(hasEntity.ClosingTime.toString());
+
+            CurItemType=typeList[0];
         }
     }
     private  void setChildData()

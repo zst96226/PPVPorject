@@ -138,6 +138,7 @@ public class WorkItemView extends Fragment {
         proing_tex = (TextView) rootView.findViewById(R.id.proing_tex);
         done_tex = (TextView) rootView.findViewById(R.id.done_tex);
         cancel_tex = (TextView) rootView.findViewById(R.id.cancel_tex);
+        undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
     }
 
     private void SetList() {
@@ -278,11 +279,47 @@ public class WorkItemView extends Fragment {
         for (WorkItemResultParams workItemEntity : entityList) {
             Map<String, Object> map = new HashMap<String, Object>();
             //根据类别不同图片不同
-            map.put("workimg", R.drawable.work_item);
+            if(workItemEntity.Category==0)
+            {
+                map.put("workimg", R.drawable.b);
+            }else{
+                map.put("workimg", R.drawable.t);
+            }
             map.put("workId", workItemEntity.WorkID);
             map.put("workName", workItemEntity.WorkName);
             //根据状态不同图片不同
-            map.put("workState", R.drawable.img_done);
+            switch (workItemEntity.Status)
+            {
+                case 0:
+                    map.put("workState", R.drawable.status0);
+                    break;
+                case 1:
+                    map.put("workState", R.drawable.status1);
+                    break;
+                case 2:
+                    map.put("workState", R.drawable.status2);
+                    break;
+                case 3:
+                    map.put("workState", R.drawable.status3);
+                    break;
+                case 4:
+                    map.put("workState", R.drawable.status4);
+                     break;
+                case 5:
+                    map.put("workState", R.drawable.status5);
+                    break;
+                case 6:
+                    map.put("workState", R.drawable.status6);
+                    break;
+                case 7:
+                    map.put("workState", R.drawable.status7);
+                    break;
+               default:
+                   map.put("workState", R.drawable.status0);
+                   break;
+            }
+            map.put("endingTime", workItemEntity.EndTime);
+           // map.put("workState", R.drawable.img_done);
             map.put("endingTime", workItemEntity.EndTime.substring(0,10));
             map.put("workValue", workItemEntity.Workscore);
             map.put("strartTime", workItemEntity.StartTime.substring(0,10));

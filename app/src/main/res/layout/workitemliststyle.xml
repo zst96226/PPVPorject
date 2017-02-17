@@ -46,8 +46,8 @@
                 android:layout_marginTop="15sp"/>
             <ImageView
                 android:id="@+id/work_value_img"
-                android:layout_width="18sp"
-                android:layout_height="18sp"
+                android:layout_width="24sp"
+                android:layout_height="24sp"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="10sp"
                 android:src="@drawable/work_value"/>
@@ -73,8 +73,8 @@
                 android:layout_marginLeft="10sp"/>
             <ImageView
                 android:id="@+id/work_state_img"
-                android:layout_width="18sp"
-                android:layout_height="18sp"
+                android:layout_width="24sp"
+                android:layout_height="24sp"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="10sp"
                 android:src="@drawable/img_pro"

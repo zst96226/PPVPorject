@@ -95,6 +95,8 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
             @Override
             public void onClick(View v) {
                 Intent intent =new Intent(MainPPVActivity.this,AddNewWorkItem.class);
+                intent.putExtra("FatherID","");
+                intent.putExtra("FatherType","");
                 startActivity(intent);
             }
         });

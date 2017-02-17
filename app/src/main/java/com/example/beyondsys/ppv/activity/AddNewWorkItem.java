@@ -36,7 +36,7 @@ public class AddNewWorkItem extends Activity {
     ImageView back;
     private LinearLayout inputScore_layout;
     private InputScoreDialog dialog;
-    private TextView input_score;
+    private TextView input_score,show_score;
     String[] list = new String[]{"空","张三", "李四", "王五", "赵六"};
     String[]  typeList=new String[]{"事项","任务"};
     EditText input_AssignedTo, input_Head, input_Checker,input_CloseTime,input_type;
@@ -59,11 +59,13 @@ public class AddNewWorkItem extends Activity {
         back = (ImageView) this.findViewById(R.id.anwi_back);
         inputScore_layout = (LinearLayout) findViewById(R.id.inputScore_layout);
         input_score = (TextView) findViewById(R.id.input_score);
+        show_score = (TextView) findViewById(R.id.showScore_tex);
         input_AssignedTo = (EditText) findViewById(R.id.input_AssignedTo);
         input_Head = (EditText) findViewById(R.id.input_Head);
         input_Checker = (EditText) findViewById(R.id.input_Checker);
         input_CloseTime=(EditText)findViewById(R.id.input_endtime);
         input_type=(EditText)findViewById(R.id.input_Type);
+
     }
 
     protected void showDatePickDlg() {
@@ -122,22 +124,38 @@ public class AddNewWorkItem extends Activity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                String inputstr = input_type.getText().toString();
-                int strlen = inputstr.length();
-                for (int i = 0; i < typeList.length; i++) {
-                    if (typeList[i].length() >strlen) {
-                        String str = typeList[i].substring(0, strlen);
-                        if (str.equals(inputstr)) {
-                            input_type.setText(typeList[i]);
-                            input_type.setSelection(typeList[i].length());
+                Intent intent = getIntent();
+                Bundle bundle = intent.getExtras();
+                //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
+                String FID=bundle.getString("FatherID").trim();
+                String FType=bundle.getString("FatherType").trim();
+                if(FID==null)
+                {
+                    input_type.setText(typeList[0]);
+                }
+                else{
+                    if(FType==typeList[1])
+                    {
+                        input_type.setText(typeList[1]);
+                    }else{
+                        String inputstr = input_type.getText().toString();
+                        int strlen = inputstr.length();
+                        for (int i = 0; i < typeList.length; i++) {
+                            if (typeList[i].length() >strlen) {
+                                String str = typeList[i].substring(0, strlen);
+                                if (str.equals(inputstr)) {
+                                    input_type.setText(typeList[i]);
+                                    input_type.setSelection(typeList[i].length());
+                                }
+                            }
                         }
                     }
                 }
+
             }
         });
         input_AssignedTo.setOnTouchListener(new View.OnTouchListener() {
@@ -372,8 +390,9 @@ private  void setPopWinForType()
         switch (requestCode) {
             case 1:
                 if (resultCode == 1) {
-                    input_score.setText(data.getStringExtra("stepDetail"));
-
+                     input_score.setText(data.getStringExtra("stepDetail"));
+                    //分值计算接口
+                     show_score.setText("1000分");
                 } else {
                     input_score.setText("未估算分值");
                 }
