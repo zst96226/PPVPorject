@@ -25,11 +25,14 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anupcowkur.reservoir.Reservoir;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.ImgBusiness;
 import com.example.beyondsys.ppv.bussiness.OneSelfBusiness;
+import com.example.beyondsys.ppv.bussiness.WorkItemBusiness;
 import com.example.beyondsys.ppv.bussiness.WorkValueBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.APIEntity;
 import com.example.beyondsys.ppv.entities.AccAndPwd;
 import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
@@ -37,6 +40,7 @@ import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserInfoResultParams;
+import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.entities.ValueDetailEntity;
 import com.example.beyondsys.ppv.entities.WorkItemResultEntity;
 import com.example.beyondsys.ppv.entities.WorkValueEntity;
@@ -44,10 +48,13 @@ import com.example.beyondsys.ppv.entities.WorkValueResultEntity;
 import com.example.beyondsys.ppv.entities.WorkValueResultParams;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
+import com.example.beyondsys.ppv.tools.ListSort;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,182 +69,167 @@ import java.util.Map;
  * Created by zhsht on 2017/1/13.工作价值
  */
 public class WorkValueView extends Fragment {
-    //
-    ACache mCache=null;
-    private  ListView listView ;
+    private String TKID = "";
+    private String TeamID = "";
+    private ListView listView;
     private View rootView;
-    private  LinearLayout sort_layout,filter_layout;
+    private LinearLayout sort_layout, filter_layout;
     private RelativeLayout topme_layout;
     private CheckBox topme_che;
     private ImageView sort_img;
-    private TextView sort_tex,filter_tex;
-    private  List<WorkValueResultParams> valueEntityList=null;
-    private UserInfoResultParams curPersonEntity=null;
+    private TextView sort_tex, filter_tex;
+    private List<WorkValueResultParams> valueEntityList = null;
+    private UserInfoResultParams curPersonEntity = null;
     File file;
-    private final  static int sortup=1;
-    private  final  static  int sortdown=0;
-    private  final  static  int curmonth=0;
-    private  final  static int  hismonth=1;
-    private  int sortFlag=1,staFlag=0;//默认升序排列，当前月
-    private Handler handler=new Handler()
-    {
-        public void handleMessage(Message msg)
-        {
-            if(msg.what== ThreadAndHandlerLabel.GetWorkValue)
-            {
-                if(msg.obj!=null)
-                {
-                    Log.i("价值返回值;"+msg.obj,"FHZ");
-                    String jsonStr=msg.obj.toString();
-                    try{
-                        WorkValueResultEntity entity=JsonEntity.ParseJsonForWorkValueResult(jsonStr);
-                        if(entity!=null)
-                        {
-                            if(entity.AccessResult==0)
-                            {
-                              //  String jsonArr=entity.Score;
-                              // entity.Score是List<WorkValueResultParams>
-                                String jsonArr="";
-                                List<WorkValueResultParams> entityList=JsonEntity.ParseJsonForWorkValueParamsList(jsonArr);
-                                if(entityList!=null)
-                                {
-                                    valueEntityList=entityList;
+    private final static int sortup = 1;
+    private final static int sortdown = 0;
+    private final static int curmonth = 0;
+    private final static int hismonth = 1;
+    private int sortFlag = 1, staFlag = 0;//默认升序排列，当前月
+    private Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            if (msg.what == ThreadAndHandlerLabel.GetWorkValue) {
+                String jsonStr = msg.obj.toString();
+                if (msg.obj != null && !jsonStr.equals("anyType{}")) {
+                    Log.i("价值返回值;" + msg.obj, "FHZ");
+                    WorkValueResultEntity entity = JsonEntity.ParseJsonForWorkValueResult(jsonStr);
+                    if (entity != null) {
+                        switch (entity.AccessResult) {
+                            case 0:
+                                if (entity.Score != null) {
+                                    valueEntityList = entity.Score;
+                                    setAdapter();
                                 }
-                            }else{
-                                Toast.makeText(WorkValueView.this.getActivity(), "获取返回数据出错！", Toast.LENGTH_SHORT).show();
-                            }
+                                break;
+                            case 1:
+                                Toast.makeText(WorkValueView.this.getActivity(), "请求失败，请重新尝试", Toast.LENGTH_SHORT).show();
+                                break;
+                            case -3:
+                                Toast.makeText(WorkValueView.this.getActivity(), "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+                                break;
                         }
-//                      List<WorkValueEntity> entityList= JsonEntity.ParseJsonForWorkValueList(jsonStr);
-//                        if(entityList!=null&&(!entityList.isEmpty()))
-//                        {
-//                            valueEntityList=entityList;
-//                        }else {
-//                            Toast.makeText(WorkValueView.this.getActivity(),"没有当前状态的数据",Toast.LENGTH_SHORT).show();
-//                        }
-                    }catch (Exception e){}
-                }else{
-                    Toast.makeText(WorkValueView.this.getActivity(),"服务端验证出错，请联系管理员",Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(WorkValueView.this.getActivity(), "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
                 }
-            }else if(msg.what==ThreadAndHandlerLabel.GetOneSelf){
-                if(msg.obj!=null)
-                {
-                    Log.i("当前用户信息返回值："+msg.obj,"FHZ");
-                    String  jsonStr=msg.obj.toString();
-                    try{
-                        UserInfoResultParams userInfoResultParams=JsonEntity.ParseJsonForUserInfoResult(jsonStr);
-                        if(userInfoResultParams!=null)
-                        {
-                            String curPerson=GsonUtil.t2Json2(userInfoResultParams);
-                            mCache.put(LocalDataLabel.CurPerson,curPerson);
-                            curPersonEntity=userInfoResultParams;
+            } else if (msg.what == ThreadAndHandlerLabel.GetOneSelf) {
+                if (msg.obj != null) {
+                    Log.i("当前用户信息返回值：" + msg.obj, "FHZ");
+                    String jsonStr = msg.obj.toString();
+                    try {
+                        UserInfoResultParams userInfoResultParams = JsonEntity.ParseJsonForUserInfoResult(jsonStr);
+                        if (userInfoResultParams != null) {
+                            String curPerson = GsonUtil.t2Json2(userInfoResultParams);
+
+                            curPersonEntity = userInfoResultParams;
                         }
 //                        PersonInfoEntity personInfoEntity=JsonEntity.ParseJsonForPerson(jsonStr);
 //                         curPersonEntity=personInfoEntity;
-                    }catch (Exception e){}
-                }else{
-                    Toast.makeText(WorkValueView.this.getActivity(),"没有当前用户的数据",Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                    }
+                } else {
+                    Toast.makeText(WorkValueView.this.getActivity(), "没有当前用户的数据", Toast.LENGTH_SHORT).show();
                 }
-            }else if(msg.what==ThreadAndHandlerLabel.CallAPIError){
-                Toast.makeText(WorkValueView.this.getActivity(),"请求失败，请检查网络连接",Toast.LENGTH_SHORT).show();
-            }else  if(msg.what==ThreadAndHandlerLabel.LocalNotdata){
-                Toast.makeText(WorkValueView.this.getActivity(),"读取缓存失败，请检查内存重新登录",Toast.LENGTH_SHORT).show();
+            } else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
+                Toast.makeText(WorkValueView.this.getActivity(), "请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+            } else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
+                Toast.makeText(WorkValueView.this.getActivity(), "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
             }
         }
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-         rootView = inflater.inflate(R.layout.workvalue_view, container, false);
-         init();
-        setAdapter();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.workvalue_view, container, false);
+        try {
+            Reservoir.init(WorkValueView.this.getActivity(), 4096);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        init();
+        //setAdapter();
         setListenter();
+
+        GetDataForCache();
+
+        GetDataForService();
+
         return rootView;
     }
-    private void init()
-    {
-        mCache=ACache.get(this.getActivity());
-        listView=(ListView)rootView.findViewById(R.id.value_list );
-        sort_layout=(LinearLayout)rootView.findViewById(R.id.wv_sort);
-        filter_layout=(LinearLayout)rootView.findViewById(R.id.wv_filter);
-        topme_layout=(RelativeLayout)rootView.findViewById(R.id.topme_layout);
-        topme_che=(CheckBox)rootView.findViewById(R.id.topme_che);
-        sort_img=(ImageView)rootView.findViewById(R.id.sort_img);
-        sort_tex=(TextView)rootView.findViewById(R.id.wv_sort_txt);
-        filter_tex=(TextView)rootView.findViewById(R.id.wv_filter_txt);
 
-
+    private void init() {
+        listView = (ListView) rootView.findViewById(R.id.value_list);
+        sort_layout = (LinearLayout) rootView.findViewById(R.id.wv_sort);
+        filter_layout = (LinearLayout) rootView.findViewById(R.id.wv_filter);
+        topme_layout = (RelativeLayout) rootView.findViewById(R.id.topme_layout);
+        topme_che = (CheckBox) rootView.findViewById(R.id.topme_che);
+        sort_img = (ImageView) rootView.findViewById(R.id.sort_img);
+        sort_tex = (TextView) rootView.findViewById(R.id.wv_sort_txt);
+        filter_tex = (TextView) rootView.findViewById(R.id.wv_filter_txt);
     }
-    private void setListenter()
-    {
-        Log.e("qqww1","qqww");
-      sort_layout.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View v) {
-              Log.e("qqww2","qqww");
-              if(sort_tex.getText().toString().equals(getResources().getString(R.string.sortup)))
-              {
-                  Log.e("qqww3","qqww");
-                  sort_img.setImageResource(R.drawable.sort_down);
-                  sort_tex.setText(R.string.sortdown);
-                  //降排序函数；
-                  sortFlag=sortdown;
-                  setAdapter();
-              }
-            else
-              {
-                  sort_img.setImageResource(R.drawable.sort_up);
-              //  sort_img.setImageDrawable(setImg("123"));
-                  sort_tex.setText(R.string.sortup);
-                  //升排序函数；
-                  sortFlag=sortup;
-                  setAdapter();
-              }
-          }
-      });
+
+    private void setListenter() {
+        Log.e("qqww1", "qqww");
+        sort_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("qqww2", "qqww");
+                if (sort_tex.getText().toString().equals(getResources().getString(R.string.sortup))) {
+                    Log.e("qqww3", "qqww");
+                    sort_img.setImageResource(R.drawable.sort_down);
+                    sort_tex.setText(R.string.sortdown);
+                    //降排序函数；
+                    sortFlag = sortdown;
+                    setAdapter();
+                } else {
+                    sort_img.setImageResource(R.drawable.sort_up);
+                    //  sort_img.setImageDrawable(setImg("123"));
+                    sort_tex.setText(R.string.sortup);
+                    //升排序函数；
+                    sortFlag = sortup;
+                    setAdapter();
+                }
+            }
+        });
         filter_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("qqww4", "qqww");
+
                 if (filter_tex.getText().toString().equals(getResources().getString(R.string.filter_by_currentmonth))) {
-                    Log.e("qqww5", "qqww");
                     filter_tex.setText(R.string.filter_by_all);
-                    setAdapter();
-                    staFlag=hismonth;
+                    staFlag = hismonth;
+                    GetDataForService();
                 } else {
                     filter_tex.setText(R.string.filter_by_currentmonth);
-                    setAdapter();
-                    staFlag=curmonth;
+                    staFlag = curmonth;
+                    GetDataForService();
                 }
             }
         });
         topme_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (topme_che.isChecked())
-                {
+                if (topme_che.isChecked()) {
                     topme_che.setChecked(false);
-                    Log.e("setAdapter();false","ee");
                     setAdapter();
                 } else {
                     topme_che.setChecked(true);
-                    Log.e("setAdapter();true", "ee");
                     setAdapter();
                 }
 
             }
         });
     }
-    private void setAdapter()
-    {
-        SimpleAdapter adapter =new SimpleAdapter(this.getActivity(),getData() ,R.layout.valueliststyle ,
-                new String[]{"personImg","personId","personName","valueSum","monthSum"},
-                new int[]{R.id.person_img ,R.id.personid_tex ,R.id.personname_tex  ,R.id.valuesum_tex ,R.id .monthsum_tex  }) ;
+
+    private void setAdapter() {
+        SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), getData(), R.layout.valueliststyle,
+                new String[]{"personImg", "personId", "personName", "valueSum", "monthSum"},
+                new int[]{R.id.person_img, R.id.personid_tex, R.id.personname_tex, R.id.valuesum_tex, R.id.monthsum_tex});
         adapter.setViewBinder(new SimpleAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Object data, String textRepresentation) {
-                if(view instanceof ImageView && data instanceof Bitmap){
-                    ImageView i = (ImageView)view;
+                if (view instanceof ImageView && data instanceof Bitmap) {
+                    ImageView i = (ImageView) view;
                     i.setImageBitmap((Bitmap) data);
                     return true;
                 }
@@ -258,38 +250,66 @@ public class WorkValueView extends Fragment {
             }
         });
     }
+
+    private void GetDataForCache() {
+        try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                UserLoginResultEntity userLoginResultEntity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+                TKID = userLoginResultEntity.TicketID;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            if (Reservoir.contains(LocalDataLabel.Label)) {
+                Type resultType = new TypeToken<List<TeamEntity>>() {
+                }.getType();
+                List<TeamEntity> entity = Reservoir.get(LocalDataLabel.Label, resultType);
+                TeamID = entity.get(0).TeamID;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void GetDataForService() {
+        if (TKID.equals("")) {
+            Toast.makeText(WorkValueView.this.getActivity(), "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(WorkValueView.this.getContext(), Login.class);
+            startActivity(intent);
+            this.getActivity().finish();
+        } else {
+            WorkValueBusiness workValueBusiness = new WorkValueBusiness();
+            workValueBusiness.GetWorkValue(handler, TeamID, staFlag, 1, TKID);
+        }
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
     }
 
-    private Bitmap setImg(String id)
-    {
+    private Bitmap setImg(String ImageName) {
         File fileDir;
-        Bitmap bitmap=null;
-       // Drawable drawable=null;
+        Bitmap bitmap = null;
+        // Drawable drawable=null;
         String path = Environment.getExternalStorageDirectory()
                 + "/listviewImg/";// 文件目录
         fileDir = new File(path);
         if (!fileDir.exists()) {
-            Log.i("exit","qq");
+            Log.i("exit", "qq");
             fileDir.mkdirs();
         }
-        String picurl="http://120.26.37.247:8181/File/"+id+".png";
-        String      name=id+".png";
-        file = new File(fileDir, name);
-        if (!file.exists())
-        {// 如果本地图片不存在则从网上下载
-            Log.i("wwwwwwwww","qq");
-            ImgBusiness imgBusiness=new ImgBusiness();
-            imgBusiness.downloadImg(picurl,name);
-            Log.i("end", "qq");
+        String picurl = APIEntity.ImagePath + ImageName;
+        file = new File(fileDir, ImageName);
+        if (!file.exists()) {// 如果本地图片不存在则从网上下载
+            ImgBusiness imgBusiness = new ImgBusiness();
+            imgBusiness.downloadImg(picurl, ImageName);
         } else {// 图片存在则填充到view上
-            Log.i("ttttt", "qq");
-            bitmap = BitmapFactory
-                    .decodeFile(file.getAbsolutePath());
-          // drawable =new BitmapDrawable(bitmap);
+            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            // drawable =new BitmapDrawable(bitmap);
         }
         return bitmap;
     }
@@ -297,152 +317,50 @@ public class WorkValueView extends Fragment {
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         list.clear();
-        List<WorkValueResultParams> entityList=getEntities(sortFlag,staFlag);
-        if(entityList==null||entityList.isEmpty())
-        {
+        List<WorkValueResultParams> entityList = valueEntityList;
+        if (entityList == null || entityList.isEmpty()) {
             return list;
         }
-        String  valueArray= GsonUtil.getGson().toJson(entityList);
-        mCache.put(LocalDataLabel.WorkValueList+sortFlag+staFlag,valueArray);
-        OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
-        oneSelfBusiness.GetOneSelf(handler, mCache);
-        if(curPersonEntity==null)
-        {
-            for (WorkValueResultParams valueEntity:entityList) {
-                Map<String, Object> map = new HashMap<String, Object>();
-                //个人图片 图片用ID命名
-                // map.put("personImg", setImg(valueEntity.UserID));
-                Bitmap bitmap=setImg("123");
-                map.put("personImg",bitmap );
+        if (topme_che.isChecked()) {
+            /*从List中找到当前用户*/
 
-               // map.put("personImg",  R.drawable.person );
-                map.put("personId", valueEntity.UserID);
-                map.put("personName", valueEntity.Name);
-                map.put("valueSum",  String.valueOf(valueEntity.BasicScore+valueEntity.CheckedScore));
-                map.put("monthSum", valueEntity.Month+"个月");
-                list.add(map);
+            /*在List中对剩下的数据排序*/
+
+            /*把当前用户加到第一个*/
+
+            /*按照条件赋值显示*/
+            if (sortFlag == sortdown) {
+            } else {
             }
-            return list;
-        }
-        PersonInfoEntity hasEntity=(PersonInfoEntity)mCache.getAsObject(LocalDataLabel.CurPerson);
-        if (hasEntity!=null)
-        {
-            mCache.remove(LocalDataLabel.CurPerson);
-        }
-        String curPerson=GsonUtil.getGson().toJson(curPersonEntity);
-        mCache.put(LocalDataLabel.CurPerson,curPerson);
-        if(topme_che.isChecked())
-        {
-            for (int i=0;i<entityList.size();i++)
-            {
-                if(entityList.get(i).UserID.equals(curPersonEntity.UserID))
-                {
+        } else {
+            if (sortFlag == sortdown) {
+                for (WorkValueResultParams valueEntity : ListSort.DownSort(entityList)) {
                     Map<String, Object> map = new HashMap<String, Object>();
-                    // map.put("personImg", setImg(valueEntity.UserID));
-                    Bitmap bitmap=setImg("123");
-                    map.put("personImg",bitmap );
-
-                    // map.put("personImg",  R.drawable.person );
-                    map.put("personId",entityList.get(i).UserID);
-                    map.put("personName", entityList.get(i).Name);
-                    map.put("valueSum", String.valueOf(entityList.get(i).BasicScore+entityList.get(i).CheckedScore));
-                    map.put("monthSum", entityList.get(i).Month + "个月");
+                    //个人图片 图片用ID命名
+//                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
+                    Bitmap bitmap = setImg("123.png");
+                    map.put("personImg", bitmap);
+                    map.put("personId", valueEntity.UserID);
+                    map.put("personName", valueEntity.Name);
+                    map.put("valueSum", String.valueOf(valueEntity.BasicScore + valueEntity.CheckedScore));
+                    map.put("monthSum", valueEntity.Month + "个月");
                     list.add(map);
-                    entityList.remove(i);
                 }
-            }
-            for (WorkValueResultParams valueEntity:entityList) {
-                Log.e(valueEntity.Name.toString(),"ee");
-                Map<String, Object> map = new HashMap<String, Object>();
-                // map.put("personImg", setImg(valueEntity.UserID));
-                Bitmap bitmap=setImg("123");
-                map.put("personImg",bitmap );
-
-                // map.put("personImg",  R.drawable.person );
-                map.put("personId", valueEntity.UserID);
-                map.put("personName", valueEntity.Name);
-                map.put("valueSum", String.valueOf(valueEntity.BasicScore+valueEntity.CheckedScore));
-                map.put("monthSum",  valueEntity.Month+"个月");
-                list.add(map);
-            }
-        }
-        else
-        {
-            for (WorkValueResultParams valueEntity:entityList) {
-                Map<String, Object> map = new HashMap<String, Object>();
-                // map.put("personImg", setImg(valueEntity.UserID));
-                Bitmap bitmap=setImg("123");
-                map.put("personImg",bitmap );
-                // map.put("personImg",  R.drawable.person );
-                map.put("personId", valueEntity.UserID);
-                map.put("personName", valueEntity.Name);
-                map.put("valueSum", String.valueOf(valueEntity.BasicScore+valueEntity.CheckedScore));
-                map.put("monthSum", valueEntity.Month+"个月");
-                list.add(map);
+            } else {
+                for (WorkValueResultParams valueEntity : ListSort.UpSort(entityList)) {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    //个人图片 图片用ID命名
+//                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
+                    Bitmap bitmap = setImg("123.png");
+                    map.put("personImg", bitmap);
+                    map.put("personId", valueEntity.UserID);
+                    map.put("personName", valueEntity.Name);
+                    map.put("valueSum", String.valueOf(valueEntity.BasicScore + valueEntity.CheckedScore));
+                    map.put("monthSum", valueEntity.Month + "个月");
+                    list.add(map);
+                }
             }
         }
         return list;
     }
-
-//    private  List<Map<String, Object>> topme()
-//    {
-//        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-//
-//        return list;
-//    }
-    private  List<WorkValueResultParams> getEntities(int sort,int status)
-    {
-//        WorkValueBusiness workValueBusiness=new WorkValueBusiness();
-//        //从缓存中取TeamID
-//        String TeamID="";
-//        String jsonarr=mCache.getAsString(LocalDataLabel.Label);
-//        if(jsonarr!=null)
-//        {
-//            try {
-//                List<TeamEntity> teamEntityList=JsonEntity.ParsingJsonForTeamList(jsonarr);
-//                if(teamEntityList!=null&&(!teamEntityList.isEmpty()))
-//                {
-//                    TeamID=teamEntityList.get(0).TeamID;
-//                }
-//            }catch (Exception e){}
-//        }
-//        workValueBusiness.GetWorkValue(handler,TeamID,status,1,mCache);
-//
-        valueEntityList=new ArrayList<WorkValueResultParams>();
-        for (int i=0;i<10;i++) {
-            WorkValueResultParams    valueEntity = new WorkValueResultParams();
-            // valueEntity.IMGTarget="";
-            valueEntity.UserID = "BID" + i;
-            valueEntity.Name = "Name" + i;
-         //   valueEntity.IMGTarget = "";//图片在list中处理
-            valueEntity.CheckedScore = (5-i) * 100;
-            valueEntity.BasicScore=i;
-            valueEntity.Month = i;
-            valueEntityList.add(valueEntity);
-        }
-        if(valueEntityList!=null)
-        {
-            if(sort==sortdown)
-            {
-                Collections.sort(valueEntityList, new ValueComparator());
-            }
-            else
-            {
-                Collections.sort(valueEntityList,new ValueComparator());
-                Collections.reverse(valueEntityList);
-            }
-        }
-        return  valueEntityList;
-    }
-
-    // 自定义比较器：按价值排序
-    static class ValueComparator implements Comparator {
-        public int compare(Object object1, Object object2) {// 实现接口中的方法
-            WorkValueResultParams p1 = ( WorkValueResultParams ) object1; // 强制转换
-            WorkValueResultParams  p2 = ( WorkValueResultParams ) object2;
-            return new Double(p1.BasicScore+p1.CheckedScore).compareTo(new Double(p2.BasicScore+p2.CheckedScore));
-        }
-    }
-
-
 }

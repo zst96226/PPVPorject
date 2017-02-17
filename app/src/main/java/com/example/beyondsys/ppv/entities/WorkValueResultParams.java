@@ -11,8 +11,8 @@ public class WorkValueResultParams implements Serializable {
         IMGTarget = null;
         Name=null;
         UserID = null;
-        CheckedScore = 0;
-        BasicScore = 0;
+        CheckedScore = 0.00;
+        BasicScore = 0.00;
         Month = 0;
     }
 

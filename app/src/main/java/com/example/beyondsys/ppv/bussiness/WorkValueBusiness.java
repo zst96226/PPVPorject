@@ -2,6 +2,7 @@ package com.example.beyondsys.ppv.bussiness;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.APIEntity;
@@ -26,50 +27,46 @@ import java.io.Serializable;
  */
 public class WorkValueBusiness {
     /*获取工作价值*/
-    public void GetWorkValue(final Handler handler, String TeamID, int state, int pageNum, ACache mCache) {
+    public void GetWorkValue(final Handler handler, String TeamID, int state, int pageNum, String TicketID) {
         WorkValueperson person = new WorkValueperson();
-       // UserLoginResultEntity userLoginResultEntity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
-        UserLoginResultEntity userLoginResultEntity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
-        if (userLoginResultEntity != null) {
-            person.TicketID = userLoginResultEntity.TicketID;
-            person.TeamID = TeamID;
-            person.PageNum = pageNum;
-            person.Status = state;
-            final String JsonParams = GsonUtil.getGson().toJson(person);
-            new Thread() {
-                public void run() {
+        person.TicketID = TicketID;
+        person.TeamID = TeamID;
+        person.PageNum = pageNum;
+        person.Status = state;
+        final String JsonParams = GsonUtil.getGson().toJson(person);
+        Log.i("价值参数：TicketID："+TicketID,"FHZ");
+        Log.i("价值参数：TeamID："+TeamID,"FHZ");
+        Log.i("价值参数：PageNum："+pageNum,"FHZ");
+        Log.i("价值参数：Status："+state,"FHZ");
+        new Thread() {
+            public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
-                    SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
-                    soapObject.addProperty("actionid", APIEntity.GETWORKVALUE);
-                    soapObject.addProperty("jsonvalue", JsonParams);
-                    // 通过SOAP1.1协议得到envelop对象
-                    SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-                    // 将soapObject对象设置为envelop对象，传出消息
-                    envelop.bodyOut = soapObject;
-                    envelop.dotNet = true;
-                    HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
-                    // 开始调用远程方法
-                    try {
-                        httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
-                        // 得到远程方法返回的SOAP对象
-                        SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
-                        Message msg = Message.obtain();
-                        msg.what = ThreadAndHandlerLabel.GetWorkValue;
-                        msg.obj = result;
-                        handler.sendMessage(msg);
-                    } catch (IOException | XmlPullParserException e) {
-                        e.printStackTrace();
-                        Message msg = Message.obtain();
-                        msg.what = ThreadAndHandlerLabel.CallAPIError;
-                        handler.sendMessage(msg);
-                    }
+                SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
+                soapObject.addProperty("actionid", APIEntity.GETWORKVALUE);
+                soapObject.addProperty("jsonvalue", JsonParams);
+                // 通过SOAP1.1协议得到envelop对象
+                SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+                // 将soapObject对象设置为envelop对象，传出消息
+                envelop.bodyOut = soapObject;
+                envelop.dotNet = true;
+                HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
+                // 开始调用远程方法
+                try {
+                    httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
+                    // 得到远程方法返回的SOAP对象
+                    SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+                    Message msg = Message.obtain();
+                    msg.what = ThreadAndHandlerLabel.GetWorkValue;
+                    msg.obj = result;
+                    handler.sendMessage(msg);
+                } catch (IOException | XmlPullParserException e) {
+                    e.printStackTrace();
+                    Message msg = Message.obtain();
+                    msg.what = ThreadAndHandlerLabel.CallAPIError;
+                    handler.sendMessage(msg);
                 }
-            }.start();
-        } else {
-            Message msg = Message.obtain();
-            msg.what = ThreadAndHandlerLabel.LocalNotdata;
-            handler.sendMessage(msg);
-        }
+            }
+        }.start();
     }
 
     /*获取工作价值参数*/

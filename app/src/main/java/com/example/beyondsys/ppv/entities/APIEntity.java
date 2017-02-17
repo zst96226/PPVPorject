@@ -19,6 +19,9 @@ public class APIEntity {
     /*WSDL文档中的URL*/;
     public static final String WSDL_URL = "http://120.26.37.247:8181/WSPPVService.asmx?wsdl";
 
+    /*图片地址*/
+    public static final String ImagePath = "http://120.26.37.247:8181/File/";
+
     /*登录接口标识*/
     public static final int LOGIN = 100;
     /*获取标识接口标识*/

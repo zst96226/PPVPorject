@@ -36,10 +36,10 @@ public class WorkItemBusiness {
         person.RelationID = relation;
         person.PageNum = pageNum;
         final String JsonParams = GsonUtil.getGson().toJson(person);
-        Log.i("TicketID:"+TicketID,"FHZ");
-        Log.i("TeamID:"+TeamID,"FHZ");
-        Log.i("Status:"+state,"FHZ");
-        Log.i("RelationID:"+relation,"FHZ");
+//        Log.i("TicketID:"+TicketID,"FHZ");
+//        Log.i("TeamID:"+TeamID,"FHZ");
+//        Log.i("Status:"+state,"FHZ");
+//        Log.i("RelationID:"+relation,"FHZ");
         new Thread() {
             public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/

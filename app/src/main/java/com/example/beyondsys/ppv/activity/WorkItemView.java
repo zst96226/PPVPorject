@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.GetChars;
 import android.util.Log;
@@ -110,7 +109,11 @@ public class WorkItemView extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.workitem_view, container, false);
-
+        try {
+            Reservoir.init(WorkItemView.this.getActivity(), 4096);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         IninView();
 
         Listener();
@@ -118,11 +121,7 @@ public class WorkItemView extends Fragment {
         GetDataForCache();
 
         GetDataForService();
-        try {
-            Reservoir.init(WorkItemView.this.getActivity(), 4096);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         return rootView;
     }
 
