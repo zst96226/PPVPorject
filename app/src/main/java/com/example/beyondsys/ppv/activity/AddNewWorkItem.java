@@ -37,10 +37,14 @@ public class AddNewWorkItem extends Activity {
     private LinearLayout inputScore_layout;
     private InputScoreDialog dialog;
     private TextView input_score,show_score;
-    String[] list = new String[]{"空","张三", "李四", "王五", "赵六"};
+    String[] list = new String[]{"空","张三","李四", "王五", "赵六"};
+
     String[]  typeList=new String[]{"事项","任务"};
     EditText input_AssignedTo, input_Head, input_Checker,input_CloseTime,input_type;
     ListPopupWindow AssignedTo_pop, Head_pop, Checker_pop,Type_pop;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

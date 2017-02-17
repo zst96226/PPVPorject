@@ -261,6 +261,14 @@ public class WorkValueView extends Fragment {
             e.printStackTrace();
         }
         try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                UserLoginResultEntity userLoginResultEntity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+                TKID = userLoginResultEntity.TicketID;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             if (Reservoir.contains(LocalDataLabel.Label)) {
                 Type resultType = new TypeToken<List<TeamEntity>>() {
                 }.getType();
