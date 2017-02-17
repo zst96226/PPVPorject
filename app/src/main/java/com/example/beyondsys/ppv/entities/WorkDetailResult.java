@@ -24,6 +24,10 @@ public class WorkDetailResult implements Serializable {
         Creater = null;
         CreaterID =null;
         WorkName = null;
+        BusinessValue = 0;
+        TheTimeStamp = 0;
+        Category = 0;
+        FID=null;
     }
 
     public String AssignerID ;
@@ -41,5 +45,8 @@ public class WorkDetailResult implements Serializable {
     public String  Description ;
     public String  WorkName ;
     public int AccessResult ;
-
+    public double BusinessValue;
+    public int TheTimeStamp;
+    public int Category;
+    public String FID;
 }
