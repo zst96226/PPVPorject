@@ -49,49 +49,46 @@ public class WorkItemDetail extends AppCompatActivity {
     ImageView wid_show_chid;
     ImageView returen;
     ImageView menu;
-    ImageView work_img,work_status;
+    ImageView work_img, work_status;
     LinearLayout main_workitem;
     ListView child_list;
     private WorkDetailResult workItemEntity;
-    private TextView item_name,value_tex,starttime_tex,endingtime_tex,creater_tex,creat_time_tex,modifier_tex,modify_time_tex;
-    private  EditText name_edt,assign2_edt,checker_edt,status_edt,value_edt,closetime_edt,des_edt;
+    private TextView item_name, value_tex, starttime_tex, endingtime_tex, creater_tex, creat_time_tex, modifier_tex, modify_time_tex;
+    private EditText name_edt, assign2_edt, checker_edt, status_edt, value_edt, closetime_edt, des_edt;
     private RelativeLayout del_layout;
-    private  Button del_ok,del_cancel;
-    private boolean isdel=false;
-    String[]  typeList=new String[]{"事项","任务"};
-    private  String CurItemId="",CurItemType=typeList[0];
-    private  List<SubWorkItemParams> SubItemList=null;
-    private Handler handler=new Handler()
-    {
-        public  void  handleMessage(Message msg)
-        {
-           if(msg.what== ThreadAndHandlerLabel.GetWorkItemContext)
-           {
-               if(msg.obj!=null)
-               {
-                 String jsonStr=msg.obj.toString();
-                   try{
-                       WorkDetailResult workDetailResult=JsonEntity.ParseJsonForWorkDetailResult(jsonStr);
-                       if(workDetailResult!=null){
-                          if(workDetailResult.AccessResult==0)
-                          {
-                             String json= GsonUtil.t2Json2(workDetailResult);
-                              mCache.put(LocalDataLabel.WorkItemDetail+CurItemId,json);
-                          }
-                       }
-                   }catch (Exception e){}
-               }else{
-                   Toast.makeText(WorkItemDetail.this, "没有获取到当前工作项信息", Toast.LENGTH_SHORT).show();
-               }
-            }else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
+    private Button del_ok, del_cancel;
+    private boolean isdel = false;
+    String[] typeList = new String[]{"事项", "任务"};
+    private String CurItemId = "", CurItemType = typeList[0];
+    private List<SubWorkItemParams> SubItemList = null;
+    private Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            if (msg.what == ThreadAndHandlerLabel.GetWorkItemContext) {
+                if (msg.obj != null) {
+                    String jsonStr = msg.obj.toString();
+                    try {
+                        WorkDetailResult workDetailResult = JsonEntity.ParseJsonForWorkDetailResult(jsonStr);
+                        if (workDetailResult != null) {
+                            if (workDetailResult.AccessResult == 0) {
+                                String json = GsonUtil.t2Json2(workDetailResult);
+                                mCache.put(LocalDataLabel.WorkItemDetail + CurItemId, json);
+                            }
+                        }
+                    } catch (Exception e) {
+                    }
+                } else {
+                    Toast.makeText(WorkItemDetail.this, "没有获取到当前工作项信息", Toast.LENGTH_SHORT).show();
+                }
+            } else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
                 Toast.makeText(WorkItemDetail.this, "修改失败，请检查网络连接", Toast.LENGTH_SHORT).show();
-            }else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
-               Toast.makeText(WorkItemDetail.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
+            } else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
+                Toast.makeText(WorkItemDetail.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
                 /*清除其余活动中Activity以及全部缓存显示登录界面*/
-           }
+            }
         }
 
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,26 +113,26 @@ public class WorkItemDetail extends AppCompatActivity {
         value_tex = (TextView) findViewById(R.id.wid_workvalue);
         starttime_tex = (TextView) findViewById(R.id.starttime_tex);
         endingtime_tex = (TextView) findViewById(R.id.endtime_tex);
-        work_status=(ImageView)findViewById(R.id.work_state_img);
-        work_img=(ImageView)findViewById(R.id.work_img);
-        name_edt=(EditText)findViewById(R.id.wid_workname_edt);
-        assign2_edt=(EditText)findViewById(R.id.wid_Assigned2_edt);
-        checker_edt=(EditText)findViewById(R.id.wid_Checker_edt);
-        creater_tex=(TextView)findViewById(R.id.wid_Creater_txt);
-        creat_time_tex=(TextView)findViewById(R.id.wid_CreateTime_txt);
-        modifier_tex=(TextView)findViewById(R.id.wid_Modifier_txt);
-        modify_time_tex=(TextView)findViewById(R.id.wid_ModifyTime_txt);
-        status_edt=(EditText)findViewById(R.id.wid_Status_edt);
-        value_edt=(EditText)findViewById(R.id.wid_Value_edt);
-        closetime_edt=(EditText)findViewById(R.id.wid_ClosingTime_edt);
-        des_edt=(EditText)findViewById(R.id.wid_Description_edt);
-        del_layout=(RelativeLayout)findViewById(R.id.del_choose_layout);
-        del_ok=(Button)findViewById(R.id.del_ok);
-        del_cancel=(Button)findViewById(R.id.del_cancel);
+        work_status = (ImageView) findViewById(R.id.work_state_img);
+        work_img = (ImageView) findViewById(R.id.work_img);
+        name_edt = (EditText) findViewById(R.id.wid_workname_edt);
+        assign2_edt = (EditText) findViewById(R.id.wid_Assigned2_edt);
+        checker_edt = (EditText) findViewById(R.id.wid_Checker_edt);
+        creater_tex = (TextView) findViewById(R.id.wid_Creater_txt);
+        creat_time_tex = (TextView) findViewById(R.id.wid_CreateTime_txt);
+        modifier_tex = (TextView) findViewById(R.id.wid_Modifier_txt);
+        modify_time_tex = (TextView) findViewById(R.id.wid_ModifyTime_txt);
+        status_edt = (EditText) findViewById(R.id.wid_Status_edt);
+        value_edt = (EditText) findViewById(R.id.wid_Value_edt);
+        closetime_edt = (EditText) findViewById(R.id.wid_ClosingTime_edt);
+        des_edt = (EditText) findViewById(R.id.wid_Description_edt);
+        del_layout = (RelativeLayout) findViewById(R.id.del_choose_layout);
+        del_ok = (Button) findViewById(R.id.del_ok);
+        del_cancel = (Button) findViewById(R.id.del_cancel);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
-        CurItemId=bundle.getString("ItemID").trim();
+        CurItemId = bundle.getString("ItemID").trim();
 //       workItemEntity=new WorkItemEntity();
 //        workItemEntity.BID="BID";
 //        workItemEntity.ID="ID";
@@ -184,21 +181,18 @@ public class WorkItemDetail extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //有子项则  可点击切换数据
                 Log.e("dianji", "tag");
-                TextView itemId=(TextView)view.findViewById(R.id.workid_tex);
-                if(itemId!=null)
-                {
-                    CurItemId=itemId.getText().toString().trim();
+                TextView itemId = (TextView) view.findViewById(R.id.workid_tex);
+                if (itemId != null) {
+                    CurItemId = itemId.getText().toString().trim();
                 }
                 SetData(CurItemId);
                 if (isdel == true) {
                     //判断选择框是否可见 选中
-                    CheckBox  checkBox=(CheckBox)view.findViewById(R.id.child_che);
-                    if(checkBox!=null)
-                    {
-                        if(checkBox.isChecked())
-                        {
+                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.child_che);
+                    if (checkBox != null) {
+                        if (checkBox.isChecked()) {
                             checkBox.setChecked(false);
-                        }else{
+                        } else {
                             checkBox.setChecked(true);
                         }
                     }
@@ -217,15 +211,14 @@ public class WorkItemDetail extends AppCompatActivity {
                     SetList(CurItemId);
                     wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                 }
-                for (int i=0;i<child_list.getCount();i++)
-                {
-                    View view=child_list.getChildAt(i);
-                    CheckBox checkBox=(CheckBox)view.findViewById(R.id.child_che);
-                    ImageView img=(ImageView)view.findViewById(R.id.child_img);
+                for (int i = 0; i < child_list.getCount(); i++) {
+                    View view = child_list.getChildAt(i);
+                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.child_che);
+                    ImageView img = (ImageView) view.findViewById(R.id.child_img);
                     img.setVisibility(View.VISIBLE);
                     checkBox.setVisibility(View.GONE);
                 }
-                isdel=false;
+                isdel = false;
                 del_layout.setVisibility(View.GONE);
             }
         });
@@ -253,11 +246,10 @@ public class WorkItemDetail extends AppCompatActivity {
             public void onClick(View v) {
                 //有父项则
                 //从缓存中取当前对象，若FID不为空，则显示父项内容
-                WorkDetailResult hasEntity=JsonEntity.ParseJsonForWorkDetailResult(mCache.getAsString(LocalDataLabel.WorkItemDetail+CurItemId));//(WorkItemEntity) mCache.getAsObject(LocalDataLabel.WorkItemDetail+id);
-                if(hasEntity!=null)
-                {
-                    if(hasEntity.FID!=null)
-                    CurItemId=hasEntity.FID;
+                WorkDetailResult hasEntity = JsonEntity.ParseJsonForWorkDetailResult(mCache.getAsString(LocalDataLabel.WorkItemDetail + CurItemId));//(WorkItemEntity) mCache.getAsObject(LocalDataLabel.WorkItemDetail+id);
+                if (hasEntity != null) {
+                    if (hasEntity.FID != null)
+                        CurItemId = hasEntity.FID;
                     SetData(CurItemId);
                 }
 
@@ -366,30 +358,26 @@ public class WorkItemDetail extends AppCompatActivity {
 
     }
 
-    private void SetList(String  CurItemId) {
+    private void SetList(String CurItemId) {
 
-            SimpleAdapter adapter = new SimpleAdapter(this, getData(CurItemId), R.layout.child_list_item, new String[]{"workImg","workId","workName", "workValue", "workState", "strartTime", "endingTime"},
-                    new int[]{R.id.work_img,R.id.workid_tex,R.id.workname_tex, R.id.workvalue_tex, R.id.work_state_img, R.id.strarttime_tex, R.id.endtime_tex});
-            child_list.setAdapter(adapter);
+        SimpleAdapter adapter = new SimpleAdapter(this, getData(CurItemId), R.layout.child_list_item, new String[]{"workImg", "workId", "workName", "workValue", "workState", "strartTime", "endingTime"},
+                new int[]{R.id.work_img, R.id.workid_tex, R.id.workname_tex, R.id.workvalue_tex, R.id.work_state_img, R.id.strarttime_tex, R.id.endtime_tex});
+        child_list.setAdapter(adapter);
     }
 
     private List<Map<String, Object>> getData(String CurItemId) {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         Map<String, Object> map = new HashMap<String, Object>();
-    List<SubWorkItemParams> subWorkItemParamses=SubItemList;
-        if(subWorkItemParamses!=null&&subWorkItemParamses.size()!=0)
-        {
-            for (SubWorkItemParams subItem:subWorkItemParamses)
-            {
-                if(workItemEntity.Category==0)
-                {
+        List<SubWorkItemParams> subWorkItemParamses = SubItemList;
+        if (subWorkItemParamses != null && subWorkItemParamses.size() != 0) {
+            for (SubWorkItemParams subItem : subWorkItemParamses) {
+                if (workItemEntity.Category == 0) {
                     map.put("workimg", R.drawable.b);
-                }else{
+                } else {
                     map.put("workimg", R.drawable.t);
                 }
                 //根据状态不同图片不同
-                switch (workItemEntity.Status)
-                {
+                switch (workItemEntity.Status) {
                     case 0:
                         map.put("workState", R.drawable.status0);
                         break;
@@ -418,11 +406,11 @@ public class WorkItemDetail extends AppCompatActivity {
                         map.put("workState", R.drawable.status0);
                         break;
                 }
-                map.put("workId",subItem.WorkID);
+                map.put("workId", subItem.WorkID);
                 map.put("workName", subItem.WorkName);
                 map.put("endingTime", subItem.EndTime);
                 map.put("workValue", subItem.Score);
-                map.put("strartTime",subItem.StartTime);
+                map.put("strartTime", subItem.StartTime);
                 list.add(map);
             }
 
@@ -430,17 +418,15 @@ public class WorkItemDetail extends AppCompatActivity {
         return list;
     }
 
-    private void SetData( String CurItemId) {
+    private void SetData(String CurItemId) {
         //传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
-        WorkDetailResult hasEntity=JsonEntity.ParseJsonForWorkDetailResult(mCache.getAsString(LocalDataLabel.WorkItemDetail+CurItemId));//(WorkItemEntity) mCache.getAsObject(LocalDataLabel.WorkItemDetail+id);
-        if(hasEntity==null)
-        {
-           //根据ID从服务器取 并存缓存
-            WorkItemBusiness workItemBusiness=new WorkItemBusiness();
-            workItemBusiness.GetWorkItemContent(handler,mCache,CurItemId);
-        }else
-        {
-             name_edt.setText(hasEntity.WorkName.toString());
+        WorkDetailResult hasEntity = JsonEntity.ParseJsonForWorkDetailResult(mCache.getAsString(LocalDataLabel.WorkItemDetail + CurItemId));//(WorkItemEntity) mCache.getAsObject(LocalDataLabel.WorkItemDetail+id);
+        if (hasEntity == null) {
+            //根据ID从服务器取 并存缓存
+            WorkItemBusiness workItemBusiness = new WorkItemBusiness();
+            workItemBusiness.GetWorkItemContent(handler, mCache, CurItemId);
+        } else {
+            name_edt.setText(hasEntity.WorkName.toString());
             assign2_edt.setText(hasEntity.AssignerName.toString());
             checker_edt.setText(hasEntity.CheckerName.toString());
             creater_tex.setText(hasEntity.Creater.toString());
@@ -448,22 +434,22 @@ public class WorkItemDetail extends AppCompatActivity {
             modifier_tex.setText(hasEntity.ModifierName.toString());
             modify_time_tex.setText(hasEntity.ModifyTime.toString());
             status_edt.setText(String.valueOf(hasEntity.Status));
-           // value_edt.setText(String.valueOf(hasEntity.AccessResult));
+            // value_edt.setText(String.valueOf(hasEntity.AccessResult));
             closetime_edt.setText(hasEntity.Deadline.toString());
             des_edt.setText(hasEntity.Description.toString());
 
-           item_name.setText(hasEntity.WorkName.toString());
+            item_name.setText(hasEntity.WorkName.toString());
             value_tex.setText(String.valueOf(hasEntity.WorkName));
-           // work_img.setImageDrawable(??);
+            // work_img.setImageDrawable(??);
             //work_status.setImageDrawable(??);
             starttime_tex.setText(hasEntity.CreateTime.toString());
-          //  endingtime_tex.setText(hasEntity.ClosingTime.toString());
+            //  endingtime_tex.setText(hasEntity.ClosingTime.toString());
 
-            CurItemType=typeList[0];
+            CurItemType = typeList[0];
         }
     }
-    private  void setChildData()
-    {
+
+    private void setChildData() {
 
     }
 }
