@@ -36,14 +36,12 @@ public class AddNewWorkItem extends Activity {
     ImageView back;
     private LinearLayout inputScore_layout;
     private InputScoreDialog dialog;
-    private TextView input_score,show_score;
-    String[] list = new String[]{"空","张三","李四", "王五", "赵六"};
+    private TextView input_score, show_score;
+    String[] list = new String[]{"空", "张三", "李四", "王五", "赵六"};
 
-    String[]  typeList=new String[]{"事项","任务"};
-    EditText input_AssignedTo, input_Head, input_Checker,input_CloseTime,input_type;
-    ListPopupWindow AssignedTo_pop, Head_pop, Checker_pop,Type_pop;
-
-
+    String[] typeList = new String[]{"事项", "任务"};
+    EditText input_AssignedTo, input_Head, input_Checker, input_CloseTime, input_type;
+    ListPopupWindow AssignedTo_pop, Head_pop, Checker_pop, Type_pop;
 
 
     @Override
@@ -67,13 +65,13 @@ public class AddNewWorkItem extends Activity {
         input_AssignedTo = (EditText) findViewById(R.id.input_AssignedTo);
         input_Head = (EditText) findViewById(R.id.input_Head);
         input_Checker = (EditText) findViewById(R.id.input_Checker);
-        input_CloseTime=(EditText)findViewById(R.id.input_endtime);
-        input_type=(EditText)findViewById(R.id.input_Type);
+        input_CloseTime = (EditText) findViewById(R.id.input_endtime);
+        input_type = (EditText) findViewById(R.id.input_Type);
 
     }
 
     protected void showDatePickDlg() {
-        int currentapiVersion=android.os.Build.VERSION.SDK_INT;
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(AddNewWorkItem.this, new DatePickerDialog.OnDateSetListener() {
 
@@ -103,7 +101,7 @@ public class AddNewWorkItem extends Activity {
         input_CloseTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             showDatePickDlg();
+                showDatePickDlg();
             }
         });
         input_type.setOnTouchListener(new View.OnTouchListener() {
@@ -135,21 +133,18 @@ public class AddNewWorkItem extends Activity {
                 Intent intent = getIntent();
                 Bundle bundle = intent.getExtras();
                 //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
-                String FID=bundle.getString("FatherID").trim();
-                String FType=bundle.getString("FatherType").trim();
-                if(FID==null)
-                {
+                String FID = bundle.getString("FatherID").trim();
+                String FType = bundle.getString("FatherType").trim();
+                if (FID == null) {
                     input_type.setText(typeList[0]);
-                }
-                else{
-                    if(FType==typeList[1])
-                    {
+                } else {
+                    if (FType == typeList[1]) {
                         input_type.setText(typeList[1]);
-                    }else{
+                    } else {
                         String inputstr = input_type.getText().toString();
                         int strlen = inputstr.length();
                         for (int i = 0; i < typeList.length; i++) {
-                            if (typeList[i].length() >strlen) {
+                            if (typeList[i].length() > strlen) {
                                 String str = typeList[i].substring(0, strlen);
                                 if (str.equals(inputstr)) {
                                     input_type.setText(typeList[i]);
@@ -340,22 +335,23 @@ public class AddNewWorkItem extends Activity {
             }
         });
     }
-private  void setPopWinForType()
-{
-    Type_pop=new ListPopupWindow(this);
-    Type_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, typeList));
-    Type_pop.setAnchorView(input_type);
-    Type_pop.setModal(true);
-    Type_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String item=typeList[position];
-            input_type.setText(item);
-            input_type.setSelection(item.length());
-            Type_pop.dismiss();
-        }
-    });
-}
+
+    private void setPopWinForType() {
+        Type_pop = new ListPopupWindow(this);
+        Type_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, typeList));
+        Type_pop.setAnchorView(input_type);
+        Type_pop.setModal(true);
+        Type_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String item = typeList[position];
+                input_type.setText(item);
+                input_type.setSelection(item.length());
+                Type_pop.dismiss();
+            }
+        });
+    }
+
     private void SetPopWinForHead() {
         Head_pop = new ListPopupWindow(this);
         Head_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list));
@@ -394,9 +390,9 @@ private  void setPopWinForType()
         switch (requestCode) {
             case 1:
                 if (resultCode == 1) {
-                     input_score.setText(data.getStringExtra("stepDetail"));
+                    input_score.setText(data.getStringExtra("stepDetail"));
                     //分值计算接口
-                     show_score.setText("1000分");
+                    show_score.setText("1000分");
                 } else {
                     input_score.setText("未估算分值");
                 }

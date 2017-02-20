@@ -39,6 +39,7 @@ import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UIDEntity;
 import com.example.beyondsys.ppv.entities.UserInfoResultParams;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.entities.ValueDetailEntity;
@@ -71,6 +72,7 @@ import java.util.Map;
 public class WorkValueView extends Fragment {
     private String TKID = "";
     private String TeamID = "";
+    private String UID = "";
     private ListView listView;
     private View rootView;
     private LinearLayout sort_layout, filter_layout;
@@ -111,24 +113,6 @@ public class WorkValueView extends Fragment {
                     }
                 } else {
                     Toast.makeText(WorkValueView.this.getActivity(), "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
-                }
-            } else if (msg.what == ThreadAndHandlerLabel.GetOneSelf) {
-                if (msg.obj != null) {
-                    Log.i("当前用户信息返回值：" + msg.obj, "FHZ");
-                    String jsonStr = msg.obj.toString();
-                    try {
-                        UserInfoResultParams userInfoResultParams = JsonEntity.ParseJsonForUserInfoResult(jsonStr);
-                        if (userInfoResultParams != null) {
-                            String curPerson = GsonUtil.t2Json2(userInfoResultParams);
-
-                            curPersonEntity = userInfoResultParams;
-                        }
-//                        PersonInfoEntity personInfoEntity=JsonEntity.ParseJsonForPerson(jsonStr);
-//                         curPersonEntity=personInfoEntity;
-                    } catch (Exception e) {
-                    }
-                } else {
-                    Toast.makeText(WorkValueView.this.getActivity(), "没有当前用户的数据", Toast.LENGTH_SHORT).show();
                 }
             } else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
                 Toast.makeText(WorkValueView.this.getActivity(), "请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
@@ -253,9 +237,9 @@ public class WorkValueView extends Fragment {
 
     private void GetDataForCache() {
         try {
-            if (Reservoir.contains(LocalDataLabel.Proof)) {
-                UserLoginResultEntity userLoginResultEntity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
-                TKID = userLoginResultEntity.TicketID;
+            if (Reservoir.contains(LocalDataLabel.UserID)) {
+                UIDEntity entity = Reservoir.get(LocalDataLabel.UserID, UIDEntity.class);
+                UID = entity.UID;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -331,14 +315,54 @@ public class WorkValueView extends Fragment {
         }
         if (topme_che.isChecked()) {
             /*从List中找到当前用户*/
-
-            /*在List中对剩下的数据排序*/
-
-            /*把当前用户加到第一个*/
-
+            WorkValueResultParams os_entity = new WorkValueResultParams();
+            for (WorkValueResultParams valueEntity : entityList) {
+                if (valueEntity.UserID.equals(UID)) {
+                    os_entity = valueEntity;
+                }
+            }
+            /*从List中移除自己*/
+            List<WorkValueResultParams> listvalue = new ArrayList<>();
+            for (WorkValueResultParams valueEntity : entityList) {
+                if (!valueEntity.UserID.equals(os_entity.UserID)) {
+                    listvalue.add(valueEntity);
+                }
+            }
             /*按照条件赋值显示*/
             if (sortFlag == sortdown) {
+                /*对剩下的数据排序*/
+                listvalue = ListSort.DownSort(listvalue);
+                /*把当前用户加到第一个*/
+                listvalue.add(0,os_entity);
+                for (WorkValueResultParams valueEntity : listvalue) {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    //个人图片 图片用ID命名
+//                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
+                    Bitmap bitmap = setImg("123.png");
+                    map.put("personImg", bitmap);
+                    map.put("personId", valueEntity.UserID);
+                    map.put("personName", valueEntity.Name);
+                    map.put("valueSum", String.valueOf(valueEntity.BasicScore + valueEntity.CheckedScore));
+                    map.put("monthSum", valueEntity.Month + "个月");
+                    list.add(map);
+                }
             } else {
+                /*对剩下的数据排序*/
+                listvalue = ListSort.UpSort(listvalue);
+                /*把当前用户加到第一个*/
+                listvalue.add(0,os_entity);
+                for (WorkValueResultParams valueEntity : listvalue) {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    //个人图片 图片用ID命名
+//                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
+                    Bitmap bitmap = setImg("123.png");
+                    map.put("personImg", bitmap);
+                    map.put("personId", valueEntity.UserID);
+                    map.put("personName", valueEntity.Name);
+                    map.put("valueSum", String.valueOf(valueEntity.BasicScore + valueEntity.CheckedScore));
+                    map.put("monthSum", valueEntity.Month + "个月");
+                    list.add(map);
+                }
             }
         } else {
             if (sortFlag == sortdown) {
