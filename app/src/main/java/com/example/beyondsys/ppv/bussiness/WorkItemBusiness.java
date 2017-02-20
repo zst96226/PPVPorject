@@ -144,7 +144,7 @@ public class WorkItemBusiness {
         public String WorkItemID;
     }
     /*创建新工作项*/
-    private   void AddWorkItem(final Handler handler, WorkItemEntity workItemEntity)
+    public    void AddWorkItem(final Handler handler, WorkItemEntity workItemEntity)
     {
         UserLoginResultEntity entity = null;
         try {
@@ -160,7 +160,7 @@ public class WorkItemBusiness {
             addRequest.TicketID= entity.TicketID;
             addRequest.WorkItem=workItemEntity;
             final String JsonParams = GsonUtil.getGson().toJson(addRequest);
-            Log.i("提交对象：" + JsonParams, "FHZ");
+            Log.i("创建工作项提交对象：" + JsonParams, "FHZ");
             new Thread(){
                 public  void run(){
                     //////

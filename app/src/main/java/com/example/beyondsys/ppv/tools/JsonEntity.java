@@ -5,8 +5,10 @@ import android.util.Log;
 import com.example.beyondsys.ppv.activity.PersonInfo;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.AccAndPwd;
+import com.example.beyondsys.ppv.entities.AddWorkItemResult;
 import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.LogOutResult;
 import com.example.beyondsys.ppv.entities.ModifyPwdResult;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.SubmitInfoResult;
@@ -205,7 +207,10 @@ public  static UserInTeamResult ParseJsonForUserInTeamResult(String  result)
 public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
 {
     SubmitInfoResult submitInfoResult=null;
-    submitInfoResult=GsonUtil.json2T(result, SubmitInfoResult.class);
+    Gson gson = new Gson();
+    java.lang.reflect.Type type = new TypeToken<SubmitInfoResult>() {}.getType();
+    submitInfoResult=gson.fromJson(result, type);
+   // submitInfoResult=GsonUtil.json2T(result, SubmitInfoResult.class);
     if(submitInfoResult!=null)
     {
         return  submitInfoResult;
@@ -213,6 +218,32 @@ public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
         return  null;
     }
 }
+    public static LogOutResult ParseJsonForLogOutResult(String result)
+    {
+        LogOutResult logOutResult=null;
+        Gson gson=new Gson();
+        java.lang.reflect.Type type = new TypeToken<LogOutResult>() {}.getType();
+        logOutResult=gson.fromJson(result, type);
+        if( logOutResult!=null)
+        {
+            return   logOutResult;
+        }else{
+            return  null;
+        }
+    }
+    public  static AddWorkItemResult ParseJsonForAddResult(String str)
+    {
+        AddWorkItemResult addWorkItemResult=null;
+        Gson gson=new Gson();
+        java.lang.reflect.Type type = new TypeToken<AddWorkItemResult>() {}.getType();
+        addWorkItemResult=gson.fromJson(str, type);
+        if(addWorkItemResult!=null)
+        {
+            return  addWorkItemResult;
+        }else{
+            return  null;
+        }
+    }
     public static WorkDetailResult ParseJsonForWorkDetailResult(String result)
     {
         WorkDetailResult workDetailResult=null;
@@ -224,6 +255,8 @@ public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
             return null;
         }
     }
+
+
     public static AccAndPwd ParseJsonForAccAndPwd(String str)
     {
         AccAndPwd accAndPwd=null;

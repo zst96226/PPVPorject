@@ -31,6 +31,8 @@ import com.anupcowkur.reservoir.Reservoir;
 import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.OtherBusiness;
+import com.example.beyondsys.ppv.bussiness.WorkItemBusiness;
+import com.example.beyondsys.ppv.entities.AddWorkItemResult;
 import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.TeamEntity;
@@ -115,7 +117,23 @@ private Handler handler=new Handler()
             }
         }else if(msg.what==ThreadAndHandlerLabel.AddWorkItem)
         {
+           //未完成
+            if(msg.obj!=null)
+            {
+                try{
+                    AddWorkItemResult addWorkItemResult =JsonEntity.ParseJsonForAddResult(msg.obj.toString());
+                    if(addWorkItemResult!=null)
+                    {
+                        if(addWorkItemResult.result==0)
+                        {
+                            Toast.makeText(AddNewWorkItem.this, "新建成功", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }catch (Exception e){}
 
+            }else{
+                Toast.makeText(AddNewWorkItem.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+            }
 
         }else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
             Toast.makeText(AddNewWorkItem.this, "请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
@@ -185,31 +203,17 @@ private Handler handler=new Handler()
             if(FType==typeList.get(1))
             {
                 input_type.setText(typeList.get(1));
+                Type_pop.dismiss();
             }
         }
-        input_AssignedTo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus)
-                {
-                    String  asssigned=input_AssignedTo.getText().toString().trim();
-                    if(asssigned.isEmpty())
-                    {
-                        input_status.setText(statusList.get(0));
-                    }else
-                    {
-                        input_status.setText(statusList.get(1));
-                    }
-                }
-            }
-        });
+
     }
     private  void setData()
     {
          boolean isCache=setCache();
         if(!isCache)
         {
-           // setService();
+            setService();
         }
     }
 
@@ -219,6 +223,7 @@ private Handler handler=new Handler()
         {
             if(Reservoir.contains(LocalDataLabel.AllUserInTeam))
             {
+                Log.i(" userinteam  SETCAche","FHZ");
                 Type resultType = new TypeToken<List<UserInTeam>>() {
                 }.getType();
                 List<UserInTeam> entityList = Reservoir.get(LocalDataLabel.AllUserInTeam, resultType);
@@ -256,6 +261,7 @@ private Handler handler=new Handler()
         if(label!=null)
         {
             String TeamID=label.get(0).TeamID;
+            Log.i(" userinteam  SETservice","FHZ");
             OtherBusiness other=new OtherBusiness();
             other.GetAllStaffForTeam(handler,TeamID);
             return ;
@@ -278,13 +284,14 @@ private Handler handler=new Handler()
     }
             private WorkItemEntity submitEntity()
             {
-                String Name,Assigned2,Belong2, Checker,Description,BID, FID,ID;
+                String Name,Assigned2,Belong2, Checker,Description,BID, FID,ID,ClosingTime;
                 int  Status,Category,TheTimeStamp;
                 double  BusinessValue,HardScale;
 
                 ID=null;
+                ClosingTime=input_CloseTime.getText().toString().trim();
                 Name=input_Name.getText().toString().trim();
-                boolean checkName= ValidaService.isUserName(Name);
+                boolean checkName= ValidaService.isTitleLength(Name);
                 if(!checkName)
                 {
                     Toast.makeText(AddNewWorkItem.this, "标题为2~50个字符！", Toast.LENGTH_SHORT).show();
@@ -377,9 +384,33 @@ private Handler handler=new Handler()
                 workItem.BusinessValue=BusinessValue;
                 workItem.Checker=Checker;
                 workItem.Category=Category;
+                workItem.ClosingTime=ClosingTime;
+                workItem.CreateTime="";
+                workItem.FID=FID;
+                workItem.HardScale=HardScale;
+                workItem.Description=Description;
+                workItem.ID=ID;
+                workItem.Name=Name;
+                workItem.Status=Status;
                 return  workItem;
             }
     private void Listener() {
+        input_AssignedTo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus)
+                {
+                    String  asssigned=input_AssignedTo.getText().toString().trim();
+                    if(asssigned.isEmpty()||asssigned.equals("空"))
+                    {
+                        input_status.setText(statusList.get(1));
+                    }else
+                    {
+                        input_status.setText(statusList.get(2));
+                    }
+                }
+            }
+        });
         ok_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -387,10 +418,9 @@ private Handler handler=new Handler()
                 //拼装要提交的WorkItemEntity
                 //调用服务提交
                 //handler中判断提交结果
-             submitEntity();
-
-
-
+             WorkItemEntity workItem= submitEntity();
+                WorkItemBusiness workItemBusiness=new WorkItemBusiness();
+                workItemBusiness.AddWorkItem(handler,workItem);
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -419,7 +449,18 @@ private Handler handler=new Handler()
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (event.getX() >= (v.getWidth() - ((EditText) v)
                             .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        Type_pop.show();
+                        Intent intent = getIntent();
+                        Bundle bundle = intent.getExtras();
+                        //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
+                        String FID=bundle.getString("FatherID").trim();
+                        String FType=bundle.getString("FatherType").trim();
+                        if(FID!=null)
+                        {
+                            if(FType!=typeList.get(1))
+                            {
+                                Type_pop.show();
+                            }
+                        }
                         return true;
                     }
                 }

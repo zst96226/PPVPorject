@@ -86,6 +86,12 @@ public class PersonInfo extends AppCompatActivity {
                      Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
                      String json= GsonUtil.t2Json2(newInfo);
                      mCache.put(LocalDataLabel.CurPerson,json);
+                         if(bitmap!=null)
+                        {
+                             /*上传头像，不在这个位置，以后会改*/
+                            ImgBusiness uploadImg = new ImgBusiness();
+                            uploadImg.uploadImg(handler, Tools.bitmap2Base64(bitmap));
+                        }
                  }
                  else
                  {
@@ -220,7 +226,7 @@ private  void setData()
     boolean isCache=setCache();
     if(!isCache)
     {
-       // setService();
+        setService();
     }
 }
     private  boolean setCache()
@@ -316,7 +322,7 @@ private  void setData()
             }
             //验证
             boolean phoneCheck = ValidaService.isMobileOrPhone(myPhoneEdt.getText().toString());
-            boolean nameCheck = ValidaService.isUserName(myNameEdt.getText().toString());
+            boolean nameCheck = ValidaService.isNameLength(myNameEdt.getText().toString());
             boolean emailCheck = ValidaService.isValidEmail(myEmailEdt.getText().toString());
             boolean idCheck = ValidaService.isValidIdCard(myIDEdt.getText().toString());
             boolean addressChek = ValidaService.isAddressLength(myAdressEdt.getText().toString());
@@ -360,14 +366,9 @@ private  void setData()
             newInfo.IDNo=myIDEdt.getText().toString().trim();
             newInfo.Address=myAdressEdt.getText().toString().trim();
             newInfo.Sign=myDesEdt.getText().toString().trim();
-//            OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
-//            oneSelfBusiness.ChangeOneSelf(handler, mCache, newInfo);
-//            if(bitmap!=null)
-//            {
-//                 /*上传头像，不在这个位置，以后会改*/
-//                ImgBusiness uploadImg = new ImgBusiness();
-//                uploadImg.uploadImg(handler, Tools.bitmap2Base64(bitmap));
-//            }
+            OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
+            oneSelfBusiness.ChangeOneSelf(handler, newInfo);
+
         }
     }
 

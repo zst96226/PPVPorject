@@ -184,6 +184,16 @@ public class ValidaService {
         Pattern pattern = Pattern.compile(".{0,50}");
         return pattern.matcher(str).matches();
     }
+    /**
+     * 用于判断用户输入标题字符长度0到50位
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isTitleLength(String str) {
+        Pattern pattern = Pattern.compile(".{2,50}");
+        return pattern.matcher(str).matches();
+    }
 
     /**
      * 用于判断用户真名长度

@@ -40,8 +40,12 @@ public class OneSelfBusiness {
             e.printStackTrace();
         }
         if (userLoginResultEntity != null) {
-            final String JsonParams = GsonUtil.getGson().toJson(userLoginResultEntity.TicketID);
-            Log.i("获取个人信息提交对象：" + JsonParams, "FHZ");
+//            final String JsonParams = GsonUtil.getGson().toJson(userLoginResultEntity.TicketID);
+//            Log.i("获取个人信息提交对象：" + JsonParams, "FHZ");
+            UserLogoPerson person=new UserLogoPerson();
+            person.TicketID= userLoginResultEntity.TicketID;
+            final String JsonParams = GsonUtil.getGson().toJson(person);
+            Log.i("提交参数：actionid:"+APIEntity.GETUSERMES+ " jsonvalue:"+ JsonParams, "FHZ");
             new Thread() {
                 public void run() {
                     /*根据命名空间和方法得到SoapObject对象*/
@@ -58,7 +62,9 @@ public class OneSelfBusiness {
                     try {
                         httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
                         // 得到远程方法返回的SOAP对象
-                        SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+                        Log.i("获取个人信息", "FHZ");
+//                    SoapObject result = (SoapObject) envelop.getResponse();
+                       SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
                         Log.i("获取个人信息发送消息", "FHZ");
                         Message msg = Message.obtain();
                         msg.what = ThreadAndHandlerLabel.GetOneSelf;
@@ -78,7 +84,9 @@ public class OneSelfBusiness {
             handler.sendMessage(msg);
         }
     }
-
+    private class UserLogoPerson implements Serializable{
+        public String TicketID;
+    }
     /*修改个人信息*/
     public void ChangeOneSelf(final Handler handler, UserInfoResultParams entity) {
         /*获取缓存*/

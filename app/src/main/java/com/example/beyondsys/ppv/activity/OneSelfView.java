@@ -33,6 +33,7 @@ import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.AccAndPwd;
 import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.LogOutResult;
 import com.example.beyondsys.ppv.entities.ModifyPwdResult;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
@@ -64,6 +65,7 @@ private LinearLayout personInfoLayout;
     private ImageView show_team;
     private TextView teamName_tex,teamlevel_tex,personname_tex,valuesum_tex,monthsum_tex;
     private UserInfoResultParams personInfoEntity;
+    private  String TeamID;
     private Handler handler=new Handler(){
         public void handleMessage(Message msg)
         {
@@ -76,6 +78,8 @@ private LinearLayout personInfoLayout;
                     try{
                         ModifyPwdResult result=JsonEntity.ParseJsonForModifyPwdResult(jsonStr);
                         int flag = result.Result;
+//                        int flag=(int)msg.obj;
+                        Log.i(flag+"","FHZ");
                         if(flag==0)
                         {
                             Log.i("修改密码完成", "FHZ");
@@ -101,6 +105,7 @@ private LinearLayout personInfoLayout;
                     String  jsonStr=msg.obj.toString();
                     try{
                         UserInfoResultParams userInfoResultParams=JsonEntity.ParseJsonForUserInfoResult(jsonStr);
+                        Log.i("accessresult:"+userInfoResultParams.AccessResult,"FHZ");
                         if(userInfoResultParams!=null)
                         {
 //                            String curPerson=GsonUtil.t2Json2(userInfoResultParams);
@@ -130,6 +135,24 @@ private LinearLayout personInfoLayout;
                     Toast.makeText(OneSelfView.this.getActivity(),"没有当前用户的数据",Toast.LENGTH_SHORT).show();
                 }
 
+            }else if(msg.what==ThreadAndHandlerLabel.LogOut)
+            {
+                  if(msg.obj!=null)
+                  {
+                      try{
+                          LogOutResult logOutResult=JsonEntity.ParseJsonForLogOutResult(msg.obj.toString());
+                          if(logOutResult!=null)
+                          {
+                              if(logOutResult.LogoutResult==0)
+                              {
+                                  Intent intent = new Intent(getActivity(),Login.class);
+                                  startActivity(intent);
+                              }
+                          }
+                      }catch (Exception e){}
+                  }else{
+                      Toast.makeText(OneSelfView.this.getActivity(),"退出异常",Toast.LENGTH_SHORT).show();
+                  }
             }else if(msg.what==ThreadAndHandlerLabel.CallAPIError){
                 Toast.makeText(OneSelfView.this.getActivity(),"请求失败，请检查网络连接",Toast.LENGTH_SHORT).show();
             }else  if(msg.what==ThreadAndHandlerLabel.LocalNotdata){
@@ -168,6 +191,35 @@ private LinearLayout personInfoLayout;
         personname_tex=(TextView)rootView.findViewById(R.id.personname_tex);
         valuesum_tex=(TextView)rootView.findViewById(R.id.valuesum_tex);
         monthsum_tex=(TextView)rootView.findViewById(R.id.monthsum_tex);
+        List<TeamEntity> teamList=null;
+        try{
+            Log.i("label try","FHZ");
+            if(Reservoir.contains(LocalDataLabel.Label))
+            {
+                Log.i("label","FHZ");
+
+                Type resultType = new TypeToken<List<TeamEntity>>() {
+                }.getType();
+                teamList = Reservoir.get(LocalDataLabel.Label, resultType);
+//                label=Reservoir.get(LocalDataLabel.Label,IdentifyResult.class);
+                Log.i("label","FHZ");
+            }
+        }catch (Exception e)
+        {
+            Log.i("label excep","FHZ");
+            e.printStackTrace();
+        }
+        if(teamList!=null)
+        {
+            teamName_tex.setText(teamList.get(0).TeamName);
+            teamlevel_tex.setText(String.valueOf(teamList.get(0).TeamLeave));
+            TeamID=teamList.get(0).TeamID;
+        }else
+        {
+            teamName_tex.setText("无团队");
+            teamlevel_tex.setText("");
+            TeamID="";
+        }
     }
 
 
@@ -248,8 +300,9 @@ private LinearLayout personInfoLayout;
 //                toast.setGravity(Gravity.CENTER, 0, 0);
 //                toast.show();
                 //注销账户
-                Intent intent = new Intent(getActivity(),Login.class);
-                startActivity(intent);
+                LoginBusiness loginBusiness=new LoginBusiness();
+                loginBusiness.LogOut(handler);
+
             }
         });
         changeTeam_layout.setOnClickListener(new View.OnClickListener() {
@@ -275,6 +328,10 @@ private LinearLayout personInfoLayout;
                 // checkBox.setChecked(true);
                 teamName_tex.setText(teamName.getText());
                 teamlevel_tex.setText(teamLevel.getText());
+
+
+                //把当前选择的团队置顶 重新存缓存
+
 
                 child_list.setVisibility(View.GONE);
                 show_team.setImageResource(R.drawable.arrow_down_float);

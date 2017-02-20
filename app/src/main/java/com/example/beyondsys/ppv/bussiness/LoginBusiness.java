@@ -122,12 +122,24 @@ public class LoginBusiness {
     }
 
     /*退出登录*/
-    public void LogOut(final Handler handler, ACache mCache) {
+    public void LogOut(final Handler handler) {
         /*从缓存中获取凭据*/
-        UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+    //    UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+        UserLoginResultEntity entity = null;
+        try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                entity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (entity != null && !entity.TicketID.equals("")) {
-            String _poof = entity.TicketID;
-            final String JsonParams = GsonUtil.getGson().toJson(_poof);
+//            String _poof = entity.TicketID;
+//            final String JsonParams = GsonUtil.getGson().toJson(_poof);
+            UserLogoPerson person=new UserLogoPerson();
+            person.TicketID= entity.TicketID;
+            final String JsonParams = GsonUtil.getGson().toJson(person);
+            Log.i("提交参数：actionid:"+APIEntity.LOGOUT+ " jsonvalue:"+ JsonParams, "FHZ");
             Log.i("提交对象：" + JsonParams, "FHZ");
             new Thread() {
                 public void run() {
@@ -168,8 +180,29 @@ public class LoginBusiness {
     /*修改密码*/
     public void ChangePWD(final Handler handler, ACache mCache, String newpwd) {
         /*获取缓存中的账号*/
-        UserLoginResultEntity entitys = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
-        AccAndPwd entity = (AccAndPwd) mCache.getAsObject(LocalDataLabel.AccAndPwd);
+    //    UserLoginResultEntity entitys = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+        UserLoginResultEntity entitys = null;
+        AccAndPwd entity=null;
+        try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                entitys = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try{
+            Log.i("ChangePWDentity try","FHZ");
+            if(Reservoir.contains(LocalDataLabel.AccAndPwd))
+            {
+                Log.i("ChangePWDentity","FHZ");
+                entity=Reservoir.get(LocalDataLabel.AccAndPwd, AccAndPwd.class);
+                Log.i("ChangePWDUSER","FHZ");
+            }
+        }catch (Exception e){
+            Log.i("ChangePWDentity excep","FHZ");
+            e.printStackTrace();
+        }
+       // AccAndPwd entity = (AccAndPwd) mCache.getAsObject(LocalDataLabel.AccAndPwd);
         if (entity != null && entitys != null) {
             ChangePWDPerson person = new ChangePWDPerson();
             person.TicketID = entitys.TicketID;
