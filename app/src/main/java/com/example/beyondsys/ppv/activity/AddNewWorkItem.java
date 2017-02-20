@@ -57,7 +57,7 @@ public class AddNewWorkItem extends Activity {
     private LinearLayout inputScore_layout,ok_layout;
     private InputScoreDialog dialog;
     private TextView input_score,show_score;
-  ArrayList< String> list =new ArrayList<String>();// new String[]{"空","张三", "李四", "王五", "赵六"};
+    ArrayList< String> list =new ArrayList<String>();// new String[]{"空","张三", "李四", "王五", "赵六"};
     ArrayList< String> typeList=new ArrayList<String>();//new String[]{"事项","任务"};
     ArrayList< String> statusList= new ArrayList<String>();
     private  enum status_enum{
@@ -72,36 +72,36 @@ public class AddNewWorkItem extends Activity {
 
     EditText input_AssignedTo, input_Head, input_Checker,input_CloseTime,input_type,input_Name,input_status,input_des;
     ListPopupWindow AssignedTo_pop, Head_pop, Checker_pop,Type_pop;
-private Handler handler=new Handler()
-{
-    public void handleMessage(Message msg) {
-        if (msg.what == ThreadAndHandlerLabel.GetAllStaff)
-        {
-            if(msg.obj!=null)
+    private Handler handler=new Handler()
+    {
+        public void handleMessage(Message msg) {
+            if (msg.what == ThreadAndHandlerLabel.GetAllStaff)
             {
-                Log.i("获取团队成员返回值：" + msg.obj, "FHZ");
-                String jsonStr = msg.obj.toString();
+                if(msg.obj!=null)
+                {
+                    Log.i("获取团队成员返回值：" + msg.obj, "FHZ");
+                    String jsonStr = msg.obj.toString();
                     /*解析Json*/
-                try {
-                    UserInTeamResult  result= JsonEntity.ParseJsonForUserInTeamResult(jsonStr);
-                    if(result!=null)
-                    {
-                        if(result.AccessResult==0)
+                    try {
+                        UserInTeamResult  result= JsonEntity.ParseJsonForUserInTeamResult(jsonStr);
+                        if(result!=null)
                         {
-                           // result.teamUsers
-                           // List<UserInTeam> userList=result.teamUsers;
-                            //存缓存
-                            Reservoir.putAsync(LocalDataLabel.AllUserInTeam, result.teamUsers, new ReservoirPutCallback() {
-                                @Override
-                                public void onSuccess() {
-                                    setData();
-                                }
+                            if(result.AccessResult==0)
+                            {
+                                // result.teamUsers
+                                // List<UserInTeam> userList=result.teamUsers;
+                                //存缓存
+                                Reservoir.putAsync(LocalDataLabel.AllUserInTeam, result.teamUsers, new ReservoirPutCallback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        setData();
+                                    }
 
-                                @Override
-                                public void onFailure(Exception e) {
+                                    @Override
+                                    public void onFailure(Exception e) {
 
-                                }
-                            });
+                                    }
+                                });
 //                            if(userList!=null&&userList.size()!=0)
 //                            {
 //                                for (UserInTeam user: userList)
@@ -109,39 +109,39 @@ private Handler handler=new Handler()
 //                                    list.add(user.UserName);
 //                                }
 //                            }
+                            }
                         }
-                    }
-                }catch (Exception e){}
-            }else{
-                Toast.makeText(AddNewWorkItem.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
-            }
-        }else if(msg.what==ThreadAndHandlerLabel.AddWorkItem)
-        {
-           //未完成
-            if(msg.obj!=null)
+                    }catch (Exception e){}
+                }else{
+                    Toast.makeText(AddNewWorkItem.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+                }
+            }else if(msg.what==ThreadAndHandlerLabel.AddWorkItem)
             {
-                try{
-                    AddWorkItemResult addWorkItemResult =JsonEntity.ParseJsonForAddResult(msg.obj.toString());
-                    if(addWorkItemResult!=null)
-                    {
-                        if(addWorkItemResult.result==0)
+                //未完成
+                if(msg.obj!=null)
+                {
+                    try{
+                        AddWorkItemResult addWorkItemResult =JsonEntity.ParseJsonForAddResult(msg.obj.toString());
+                        if(addWorkItemResult!=null)
                         {
-                            Toast.makeText(AddNewWorkItem.this, "新建成功", Toast.LENGTH_SHORT).show();
+                            if(addWorkItemResult.result==0)
+                            {
+                                Toast.makeText(AddNewWorkItem.this, "新建成功", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                }catch (Exception e){}
+                    }catch (Exception e){}
 
-            }else{
-                Toast.makeText(AddNewWorkItem.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(AddNewWorkItem.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+                }
+
+            }else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
+                Toast.makeText(AddNewWorkItem.this, "请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+            } else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
+                Toast.makeText(AddNewWorkItem.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
             }
-
-        }else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
-            Toast.makeText(AddNewWorkItem.this, "请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
-        } else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
-            Toast.makeText(AddNewWorkItem.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
         }
-    }
-};
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -210,7 +210,7 @@ private Handler handler=new Handler()
     }
     private  void setData()
     {
-         boolean isCache=setCache();
+        boolean isCache=setCache();
         if(!isCache)
         {
             setService();
@@ -266,7 +266,7 @@ private Handler handler=new Handler()
             other.GetAllStaffForTeam(handler,TeamID);
             return ;
         }
-           //获取团队信息失败
+        //获取团队信息失败
         Toast.makeText(AddNewWorkItem.this, "读取团队信息失败！", Toast.LENGTH_SHORT).show();
     }
     protected void showDatePickDlg() {
@@ -282,118 +282,118 @@ private Handler handler=new Handler()
         datePickerDialog.show();
 
     }
-            private WorkItemEntity submitEntity()
+    private WorkItemEntity submitEntity()
+    {
+        String Name,Assigned2,Belong2, Checker,Description,BID, FID,ID,ClosingTime;
+        int  Status,Category,TheTimeStamp;
+        double  BusinessValue,HardScale;
+
+        ID=null;
+        ClosingTime=input_CloseTime.getText().toString().trim();
+        Name=input_Name.getText().toString().trim();
+        boolean checkName= ValidaService.isTitleLength(Name);
+        if(!checkName)
+        {
+            Toast.makeText(AddNewWorkItem.this, "标题为2~50个字符！", Toast.LENGTH_SHORT).show();
+            return     null;
+        }
+
+        if(input_type.getText().toString().equals(typeList.get(0)))
+        {
+            Category=0;
+        }
+        else
+        {
+            Category=1;
+        }
+        //其他参数未写完
+        Assigned2=input_AssignedTo.getText().toString().trim();
+        if(Assigned2.equals("空"))
+        {
+            Assigned2=null;
+        }
+
+        Belong2=input_Head.getText().toString().trim();
+        if(Belong2.equals("空"))
+        {
+            Belong2=null;
+        }
+
+        Checker=input_Checker.getText().toString().trim();
+        if(Checker.equals("空"))
+        {
+
+            Checker=null;
+        }
+
+        Description=input_des.getText().toString().trim();
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        //传递FID过来
+        String FatherID=bundle.getString("FatherID").trim();
+        String FatherType=bundle.getString("FatherType").trim();
+        if(FatherID==null)
+        {
+            FID=null;
+        }else{
+            FID=FatherID;
+        }
+
+        List<TeamEntity> teamList=null;
+        try{
+            Log.i("label try","FHZ");
+            if(Reservoir.contains(LocalDataLabel.Label))
             {
-                String Name,Assigned2,Belong2, Checker,Description,BID, FID,ID,ClosingTime;
-                int  Status,Category,TheTimeStamp;
-                double  BusinessValue,HardScale;
+                Log.i("label","FHZ");
 
-                ID=null;
-                ClosingTime=input_CloseTime.getText().toString().trim();
-                Name=input_Name.getText().toString().trim();
-                boolean checkName= ValidaService.isTitleLength(Name);
-                if(!checkName)
-                {
-                    Toast.makeText(AddNewWorkItem.this, "标题为2~50个字符！", Toast.LENGTH_SHORT).show();
-                    return     null;
-                }
-
-                if(input_type.getText().toString().equals(typeList.get(0)))
-                {
-                    Category=0;
-                }
-                else
-                {
-                    Category=1;
-                }
-                //其他参数未写完
-                Assigned2=input_AssignedTo.getText().toString().trim();
-                if(Assigned2.equals("空"))
-                {
-                    Assigned2=null;
-                }
-
-                Belong2=input_Head.getText().toString().trim();
-                if(Belong2.equals("空"))
-                {
-                    Belong2=null;
-                }
-
-                Checker=input_Checker.getText().toString().trim();
-                if(Checker.equals("空"))
-                {
-
-                    Checker=null;
-                }
-
-                Description=input_des.getText().toString().trim();
-
-                Intent intent = getIntent();
-                Bundle bundle = intent.getExtras();
-                //传递FID过来
-               String FatherID=bundle.getString("FatherID").trim();
-                String FatherType=bundle.getString("FatherType").trim();
-                if(FatherID==null)
-                {
-                    FID=null;
-                }else{
-                    FID=FatherID;
-                }
-
-                List<TeamEntity> teamList=null;
-                try{
-                    Log.i("label try","FHZ");
-                    if(Reservoir.contains(LocalDataLabel.Label))
-                    {
-                        Log.i("label","FHZ");
-
-                        Type resultType = new TypeToken<List<TeamEntity>>() {
-                        }.getType();
-                        teamList = Reservoir.get(LocalDataLabel.Label, resultType);
+                Type resultType = new TypeToken<List<TeamEntity>>() {
+                }.getType();
+                teamList = Reservoir.get(LocalDataLabel.Label, resultType);
 //                label=Reservoir.get(LocalDataLabel.Label,IdentifyResult.class);
-                        Log.i("label","FHZ");
-                    }
-                }catch (Exception e)
-                {
-                    Log.i("label excep","FHZ");
-                    e.printStackTrace();
-                }
-                if(teamList!=null)
-                {
-                   BID=teamList.get(0).TeamID;
-                }else{
-                    BID=null;
-                }
-                Status=0;
-                if(input_status.getText().equals(statusList.get(0)))
-                {
-                    Status=0;
-                }else
-                {
-                    Status=1;
-                }
-                TheTimeStamp=1;
-                //难度和分数未完成
-                BusinessValue=100;
-                HardScale=2;
-                WorkItemEntity workItem=new WorkItemEntity();
-                workItem.TheTimeStamp=TheTimeStamp;
-                workItem.Assigned2=Assigned2;
-                workItem.Belong2=Belong2;
-                workItem.BID=BID;
-                workItem.BusinessValue=BusinessValue;
-                workItem.Checker=Checker;
-                workItem.Category=Category;
-                workItem.ClosingTime=ClosingTime;
-                workItem.CreateTime="";
-                workItem.FID=FID;
-                workItem.HardScale=HardScale;
-                workItem.Description=Description;
-                workItem.ID=ID;
-                workItem.Name=Name;
-                workItem.Status=Status;
-                return  workItem;
+                Log.i("label","FHZ");
             }
+        }catch (Exception e)
+        {
+            Log.i("label excep","FHZ");
+            e.printStackTrace();
+        }
+        if(teamList!=null)
+        {
+            BID=teamList.get(0).TeamID;
+        }else{
+            BID=null;
+        }
+        Status=0;
+        if(input_status.getText().equals(statusList.get(0)))
+        {
+            Status=0;
+        }else
+        {
+            Status=1;
+        }
+        TheTimeStamp=1;
+        //难度和分数未完成
+        BusinessValue=100;
+        HardScale=2;
+        WorkItemEntity workItem=new WorkItemEntity();
+        workItem.TheTimeStamp=TheTimeStamp;
+        workItem.Assigned2=Assigned2;
+        workItem.Belong2=Belong2;
+        workItem.BID=BID;
+        workItem.BusinessValue=BusinessValue;
+        workItem.Checker=Checker;
+        workItem.Category=Category;
+        workItem.ClosingTime=ClosingTime;
+        workItem.CreateTime="";
+        workItem.FID=FID;
+        workItem.HardScale=HardScale;
+        workItem.Description=Description;
+        workItem.ID=ID;
+        workItem.Name=Name;
+        workItem.Status=Status;
+        return  workItem;
+    }
     private void Listener() {
         input_AssignedTo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -418,7 +418,7 @@ private Handler handler=new Handler()
                 //拼装要提交的WorkItemEntity
                 //调用服务提交
                 //handler中判断提交结果
-             WorkItemEntity workItem= submitEntity();
+                WorkItemEntity workItem= submitEntity();
                 WorkItemBusiness workItemBusiness=new WorkItemBusiness();
                 workItemBusiness.AddWorkItem(handler,workItem);
             }
@@ -725,22 +725,22 @@ private Handler handler=new Handler()
             }
         });
     }
-private  void setPopWinForType()
-{
-    Type_pop=new ListPopupWindow(this);
-    Type_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, typeList));
-    Type_pop.setAnchorView(input_type);
-    Type_pop.setModal(true);
-    Type_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String item=typeList.get(position);
-            input_type.setText(item);
-            input_type.setSelection(item.length());
-            Type_pop.dismiss();
-        }
-    });
-}
+    private  void setPopWinForType()
+    {
+        Type_pop=new ListPopupWindow(this);
+        Type_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, typeList));
+        Type_pop.setAnchorView(input_type);
+        Type_pop.setModal(true);
+        Type_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String item=typeList.get(position);
+                input_type.setText(item);
+                input_type.setSelection(item.length());
+                Type_pop.dismiss();
+            }
+        });
+    }
     private void SetPopWinForHead() {
         Head_pop = new ListPopupWindow(this);
         Head_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list));

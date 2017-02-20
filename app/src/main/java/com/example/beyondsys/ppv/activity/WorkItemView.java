@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.anupcowkur.reservoir.Reservoir;
+import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.WorkItemBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
@@ -55,7 +56,7 @@ public class WorkItemView extends Fragment {
     private LinearLayout wi_s_one, undo_layout, progress_layout, done_layout, cancel_layout;
     private TextView wi_s_one_txt, undo_tex, proing_tex, done_tex, cancel_tex;
     // private WorkItemEntity workItemEntity;
-    private List<WorkItemResultParams> workItemEntityList = null;
+    private List<WorkItemResultParams> workItemEntityList = new ArrayList<>();
     private final static int aboutme = 1;
     private final static int assignme = 0;
     private final static int undo = 0;
@@ -65,7 +66,7 @@ public class WorkItemView extends Fragment {
     private int reflag = 0, stflag = 0;
     SimpleAdapter adapter;
 
-    private String TKID ="";
+    private String TKID = "";
     private String TeamID = "";
 
     private Handler threadHander = new Handler() {
@@ -79,10 +80,30 @@ public class WorkItemView extends Fragment {
                         switch (entity.AccessResult) {
                             case 0:
                                 Log.i("获取工作项成功", "FHZ");
+                                workItemEntityList.clear();
                                 workItemEntityList = entity.WorkItemList;
                                 if (workItemEntityList != null) {
-                                    SetList();
+                                    if (reflag == 0 && stflag == 0) {
+                                        try {
+                                            Reservoir.putAsync(LocalDataLabel.WorkItemList, entity.WorkItemList, new ReservoirPutCallback() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    SetList();
+                                                }
+
+                                                @Override
+                                                public void onFailure(Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            });
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else {
+                                        SetList();
+                                    }
                                 }
+
                                 break;
                             case 1:
                                 Toast.makeText(WorkItemView.this.getActivity(), "请求失败，请重新尝试", Toast.LENGTH_SHORT).show();
@@ -115,16 +136,24 @@ public class WorkItemView extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        GetDataForCache();
 
         IninView();
 
+        ShowData();
+
         Listener();
 
-        GetDataForCache();
-
-        GetDataForService();
-
         return rootView;
+    }
+
+    private void ShowData() {
+        if (workItemEntityList!=null) {
+            SetList();
+            GetDataForService();
+        } else {
+            GetDataForService();
+        }
     }
 
     private void IninView() {
@@ -164,10 +193,16 @@ public class WorkItemView extends Fragment {
                 Intent intent = new Intent(getActivity(), WorkItemDetail.class);
                 TextView ItemName_tex = (TextView) view.findViewById(R.id.workname_tex);
                 TextView ItemId_tex = (TextView) view.findViewById(R.id.workid_tex);
-                //实际上是传递ID过去
-                intent.putExtra("ItemID", ItemId_tex.getText().toString().trim());
-                // intent.putExtra("ItemName",ItemName_tex.getText().toString().trim());
-                startActivity(intent);
+                String Id = ItemId_tex.getText().toString().trim();
+                for (WorkItemResultParams entity : workItemEntityList) {
+                    if (entity.WorkID.equals(Id)) {
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("Item", entity);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                }
+
             }
         });
         wi_s_one.setOnClickListener(new View.OnClickListener() {
@@ -234,8 +269,7 @@ public class WorkItemView extends Fragment {
             Intent intent = new Intent(WorkItemView.this.getContext(), Login.class);
             startActivity(intent);
             this.getActivity().finish();
-        }
-        else {
+        } else {
             WorkItemBusiness workItemBusiness = new WorkItemBusiness();
             workItemBusiness.GetWorkItem(threadHander, TeamID, stflag, reflag, 1, TKID);
         }
@@ -260,7 +294,15 @@ public class WorkItemView extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        try {
+            if (Reservoir.contains(LocalDataLabel.WorkItemList)) {
+                Type resultType = new TypeToken<List<WorkItemResultParams>>() {
+                }.getType();
+                workItemEntityList = Reservoir.get(LocalDataLabel.WorkItemList, resultType);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -280,17 +322,15 @@ public class WorkItemView extends Fragment {
         for (WorkItemResultParams workItemEntity : entityList) {
             Map<String, Object> map = new HashMap<String, Object>();
             //根据类别不同图片不同
-            if(workItemEntity.Category==0)
-            {
+            if (workItemEntity.Category == 0) {
                 map.put("workimg", R.drawable.b);
-            }else{
+            } else {
                 map.put("workimg", R.drawable.t);
             }
             map.put("workId", workItemEntity.WorkID);
             map.put("workName", workItemEntity.WorkName);
             //根据状态不同图片不同
-            switch (workItemEntity.Status)
-            {
+            switch (workItemEntity.Status) {
                 case 0:
                     map.put("workState", R.drawable.status0);
                     break;
@@ -305,7 +345,7 @@ public class WorkItemView extends Fragment {
                     break;
                 case 4:
                     map.put("workState", R.drawable.status4);
-                     break;
+                    break;
                 case 5:
                     map.put("workState", R.drawable.status5);
                     break;
@@ -315,15 +355,15 @@ public class WorkItemView extends Fragment {
                 case 7:
                     map.put("workState", R.drawable.status7);
                     break;
-               default:
-                   map.put("workState", R.drawable.status0);
-                   break;
+                default:
+                    map.put("workState", R.drawable.status0);
+                    break;
             }
             map.put("endingTime", workItemEntity.EndTime);
-           // map.put("workState", R.drawable.img_done);
-            map.put("endingTime", workItemEntity.EndTime.substring(0,10));
+            // map.put("workState", R.drawable.img_done);
+            map.put("endingTime", workItemEntity.EndTime.substring(0, 10));
             map.put("workValue", workItemEntity.Workscore);
-            map.put("strartTime", workItemEntity.StartTime.substring(0,10));
+            map.put("strartTime", workItemEntity.StartTime.substring(0, 10));
             list.add(map);
         }
         return list;
