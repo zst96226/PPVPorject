@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * Created by zhsht on 2017/1/13.个人信息界面
@@ -325,15 +326,46 @@ private LinearLayout personInfoLayout;
                 //   CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
                 TextView teamName = (TextView) view.findViewById(R.id.TeamName_tex);
                 TextView teamLevel = (TextView) view.findViewById(R.id.TeamLevel_tex);
+                TextView teamId=(TextView) view.findViewById(R.id.TeamID_tex);
                 // checkBox.setChecked(true);
                 teamName_tex.setText(teamName.getText());
                 teamlevel_tex.setText(teamLevel.getText());
 
 
                 //把当前选择的团队置顶 重新存缓存
+                List<TeamEntity> teamList=null;
+                try{
+                    Log.i("label try","FHZ");
+                    if(Reservoir.contains(LocalDataLabel.Label))
+                    {
+                        Log.i("label","FHZ");
+
+                        Type resultType = new TypeToken<List<TeamEntity>>() {
+                        }.getType();
+                        teamList = Reservoir.get(LocalDataLabel.Label, resultType);
+                        Log.i("label","FHZ");
+                    }
+                }catch (Exception e)
+                {
+                    Log.i("label excep","FHZ");
+                    e.printStackTrace();
+                }
+                if(teamList!=null)
+                {
+                    TeamEntity curTeam=null;
+                    for (TeamEntity  team:teamList)
+                    {
+                   if( team.TeamID.equals(teamId.getText().toString().trim()))
+                   {
+                       curTeam=team;
+                       teamList.remove(team);
+                   }
+                    }
+                    teamList.add(0,curTeam);
+                }
 
 
-                child_list.setVisibility(View.GONE);
+                    child_list.setVisibility(View.GONE);
                 show_team.setImageResource(R.drawable.arrow_down_float);
             }
         });
