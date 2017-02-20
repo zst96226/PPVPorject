@@ -10,6 +10,8 @@ import com.example.beyondsys.ppv.entities.APIEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
+import com.example.beyondsys.ppv.entities.WorkItemEntity;
+import com.example.beyondsys.ppv.entities.WorkValueResultParams;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 
@@ -81,7 +83,7 @@ public class WorkItemBusiness {
     }
 
     /*获取工作项详细信息*/
-    public void GetWorkItemContent(final Handler handler, ACache mCache, String WorkItemID) {
+    public void GetWorkItemContent(final Handler handler,  String WorkItemID) {
         /*获取缓存*/
        // UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
   //      UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
@@ -141,11 +143,79 @@ public class WorkItemBusiness {
         public String TicketID;
         public String WorkItemID;
     }
+    /*创建新工作项*/
+    private   void AddWorkItem(final Handler handler, WorkItemEntity workItemEntity)
+    {
+        UserLoginResultEntity entity = null;
+        try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                entity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(entity!=null)
+        {
+            AddWorkItemRequest addRequest=new AddWorkItemRequest();
+            addRequest.TicketID= entity.TicketID;
+            addRequest.WorkItem=workItemEntity;
+            final String JsonParams = GsonUtil.getGson().toJson(addRequest);
+            Log.i("提交对象：" + JsonParams, "FHZ");
+            new Thread(){
+                public  void run(){
+                    //////
+                    /*根据命名空间和方法得到SoapObject对象*/
+                    SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
+                    soapObject.addProperty("actionid", APIEntity.ADDNEWWORKITEM);
+                    soapObject.addProperty("jsonvalue", JsonParams);
+                    // 通过SOAP1.1协议得到envelop对象
+                    SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+                    // 将soapObject对象设置为envelop对象，传出消息
+                    envelop.bodyOut = soapObject;
+                    envelop.dotNet = true;
+                    HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
+                    // 开始调用远程方法
+                    try {
+                        httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
+                        // 得到远程方法返回的SOAP对象
+                        SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+                        Message msg = Message.obtain();
+                        msg.what =ThreadAndHandlerLabel.AddWorkItem ;
+                        msg.obj = result;
+                        handler.sendMessage(msg);
+                    } catch (IOException | XmlPullParserException e) {
+                        e.printStackTrace();
+                        Message msg = Message.obtain();
+                        msg.what = ThreadAndHandlerLabel.CallAPIError;
+                        handler.sendMessage(msg);
+                    }
+                }
+            }.start();
+
+        } else {
+            Message msg = Message.obtain();
+            msg.what = ThreadAndHandlerLabel.LocalNotdata;
+            handler.sendMessage(msg);
+        }
+    }
+    /*创建新工作项提交参数*/
+    private  class AddWorkItemRequest implements  Serializable{
+        public  String TicketID;
+        public WorkItemEntity WorkItem;
+    }
 
     /*获取子工作项*/
-    public void GetChildWorkItem(final Handler handler, ACache mCache, String WorkItemID, int pagenum) {
+    public void GetChildWorkItem(final Handler handler,  String WorkItemID, int pagenum) {
         /*获取缓存*/
-        UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+      //  UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+        UserLoginResultEntity entity = null;
+        try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                entity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (entity != null) {
             ChildWorkItemPerson person = new ChildWorkItemPerson();
             person.proof = entity.TicketID;

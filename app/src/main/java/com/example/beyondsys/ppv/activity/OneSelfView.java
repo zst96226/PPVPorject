@@ -24,14 +24,18 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anupcowkur.reservoir.Reservoir;
+import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.LoginBusiness;
 import com.example.beyondsys.ppv.bussiness.OneSelfBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.AccAndPwd;
+import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.ModifyPwdResult;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
+import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserInfoResultParams;
 import com.example.beyondsys.ppv.tools.CustomDialog;
@@ -39,7 +43,9 @@ import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.MD5;
 import com.example.beyondsys.ppv.tools.ValidaService;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,11 +71,14 @@ private LinearLayout personInfoLayout;
             {
                 if(msg.obj!=null)
                 {
+                    Log.i("修改密码返回值：" + msg.obj, "FHZ");
+                    String jsonStr = msg.obj.toString();
                     try{
-                        ModifyPwdResult result=JsonEntity.ParseJsonForModifyPwdResult(msg.obj.toString());
+                        ModifyPwdResult result=JsonEntity.ParseJsonForModifyPwdResult(jsonStr);
                         int flag = result.Result;
                         if(flag==0)
                         {
+                            Log.i("修改密码完成", "FHZ");
                             Toast toast=Toast.makeText(getActivity().getApplicationContext(),"修改成功!",Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
@@ -77,7 +86,10 @@ private LinearLayout personInfoLayout;
                         }else {
                             Toast.makeText(OneSelfView.this.getActivity(),"修改密码失败，请稍后再试！",Toast.LENGTH_SHORT).show();
                         }
-                    }catch (Exception e){}
+                    }catch (Exception e)
+                    {
+                        Log.i("修改密码返回值：异常", "FHZ");
+                    }
                 }else{
                     Toast.makeText(OneSelfView.this.getActivity(),"服务端验证出错，请联系管理员",Toast.LENGTH_SHORT).show();
                 }
@@ -85,20 +97,35 @@ private LinearLayout personInfoLayout;
             }else if(msg.what==ThreadAndHandlerLabel.GetOneSelf){
                 if(msg.obj!=null)
                 {
-                    Log.i("当前用户信息返回值："+msg.obj,"FHZ");
+                    Log.i(" 获取个人信息返回值："+msg.obj,"FHZ");
                     String  jsonStr=msg.obj.toString();
                     try{
                         UserInfoResultParams userInfoResultParams=JsonEntity.ParseJsonForUserInfoResult(jsonStr);
                         if(userInfoResultParams!=null)
                         {
-                            String curPerson=GsonUtil.t2Json2(userInfoResultParams);
-                            mCache.put(LocalDataLabel.CurPerson,curPerson);
-                            personInfoEntity=userInfoResultParams;
+//                            String curPerson=GsonUtil.t2Json2(userInfoResultParams);
+//                            mCache.put(LocalDataLabel.CurPerson,curPerson);
+//                            personInfoEntity=userInfoResultParams;
+                            Log.i(" 获取个人信息返回值保存","FHZ");
+                            Reservoir.putAsync(LocalDataLabel.CurPerson, userInfoResultParams, new ReservoirPutCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    setData();
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+
+                                }
+                            });
                         }
 //                        PersonInfoEntity personInfoEntity= JsonEntity.ParseJsonForPerson(jsonStr);
 //                        String curPerson= GsonUtil.t2Json2(personInfoEntity);
 //                        mCache.put(LocalDataLabel.CurPerson,curPerson);
-                    }catch (Exception e){}
+                    }catch (Exception e)
+                    {
+                        Log.i(" 获取个人信息返回值异常：","FHZ");
+                    }
                 }else{
                     Toast.makeText(OneSelfView.this.getActivity(),"没有当前用户的数据",Toast.LENGTH_SHORT).show();
                 }
@@ -114,9 +141,14 @@ private LinearLayout personInfoLayout;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        try {
+            Reservoir.init(OneSelfView.this.getActivity(), 4096);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         View rootView = inflater.inflate(R.layout.oneself_view, container, false);
         init(rootView);
+       // initCache();
         setData();
        setListener();
         return rootView;
@@ -137,6 +169,9 @@ private LinearLayout personInfoLayout;
         valuesum_tex=(TextView)rootView.findViewById(R.id.valuesum_tex);
         monthsum_tex=(TextView)rootView.findViewById(R.id.monthsum_tex);
     }
+
+
+
     private  void setData()
     {
 //        personInfoEntity=(UserInfoResultParams)mCache.getAsObject(LocalDataLabel.CurPerson);
@@ -152,6 +187,42 @@ private LinearLayout personInfoLayout;
 //            valuesum_tex.setText(String.valueOf(personInfoEntity.TotalScore));
 //            monthsum_tex.setText(String.valueOf(personInfoEntity.TotalMonth));
 //        }
+
+      boolean isCache=setCache();
+        if(!isCache)
+        {
+            setService();
+        }
+    }
+    private  boolean  setCache()
+    {
+         try{
+             if(Reservoir.contains(LocalDataLabel.CurPerson))
+             {
+                 personInfoEntity=Reservoir.get(LocalDataLabel.CurPerson,UserInfoResultParams.class);
+             }
+
+         }catch (Exception e)
+         {
+             e.printStackTrace();
+         }
+        if(personInfoEntity!=null)
+        {
+            Log.i("personInfoEntity","FHZ");
+            personname_tex.setText(personInfoEntity.Name);
+            valuesum_tex.setText(String.valueOf(personInfoEntity.TotalScore));
+            monthsum_tex.setText(String.valueOf(personInfoEntity.TotalMonth));
+            return  true;
+        }
+        Log.i("personInfoEntity null","FHZ");
+        return false;
+    }
+    private  void setService()
+    {
+        //缓存中未获取到用户个人信息 从服务加载
+            Log.i("getService","FHZ");
+            OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
+            oneSelfBusiness.GetOneSelf(handler);
     }
     private void setListener()
     {
@@ -198,10 +269,10 @@ private LinearLayout personInfoLayout;
         child_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-             //   CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
-                TextView  teamName=(TextView)view.findViewById(R.id.TeamName_tex);
-                TextView teamLevel=(TextView)view.findViewById(R.id.TeamLevel_tex);
-               // checkBox.setChecked(true);
+                //   CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
+                TextView teamName = (TextView) view.findViewById(R.id.TeamName_tex);
+                TextView teamLevel = (TextView) view.findViewById(R.id.TeamLevel_tex);
+                // checkBox.setChecked(true);
                 teamName_tex.setText(teamName.getText());
                 teamlevel_tex.setText(teamLevel.getText());
 
@@ -221,23 +292,50 @@ private LinearLayout personInfoLayout;
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         Map<String, Object> map = new HashMap<String, Object>();
+        List<TeamEntity> teamList=null;
+        try{
+            Log.i("label try","FHZ");
+            if(Reservoir.contains(LocalDataLabel.Label))
+            {
+                Log.i("label","FHZ");
 
-        map.put("teamName", "杉石科技");
-        map.put("teamLevel", "员工");
-        map.put("teamId","1122");
-        list.add(map);
-
-        map=new HashMap<String,Object>();
-        map.put("teamName", "杉石科技");
-        map.put("teamLevel", "经理");
-        map.put("teamId","2233");
-        list.add(map);
-
-        map=new HashMap<String,Object>();
-        map.put("teamName", "杉石科技");
-        map.put("teamLevel", "项目总监");
-        map.put("teamId","3344");
-        list.add(map);
+                Type resultType = new TypeToken<List<TeamEntity>>() {
+                }.getType();
+                teamList = Reservoir.get(LocalDataLabel.Label, resultType);
+//                label=Reservoir.get(LocalDataLabel.Label,IdentifyResult.class);
+                Log.i("label","FHZ");
+            }
+        }catch (Exception e)
+        {
+            Log.i("label excep","FHZ");
+            e.printStackTrace();
+        }
+        if(teamList!=null)
+        {
+            for (TeamEntity team: teamList)
+            {
+                map.put("teamName", team.TeamName);
+                map.put("teamLevel", team.TeamLeave);
+                map.put("teamId",team.TeamID);
+                list.add(map);
+            }
+        }
+//        map.put("teamName", "杉石科技");
+//        map.put("teamLevel", "员工");
+//        map.put("teamId","1122");
+//        list.add(map);
+//
+//        map=new HashMap<String,Object>();
+//        map.put("teamName", "杉石科技");
+//        map.put("teamLevel", "经理");
+//        map.put("teamId","2233");
+//        list.add(map);
+//
+//        map=new HashMap<String,Object>();
+//        map.put("teamName", "杉石科技");
+//        map.put("teamLevel", "项目总监");
+//        map.put("teamId","3344");
+//        list.add(map);
     return  list;
     }
     @Override
@@ -278,22 +376,42 @@ private LinearLayout personInfoLayout;
                         String newPass=dialog.getNewPass().toString().trim();
                         String newMD5= MD5.getMD5(newPass);
                         String inputMD5= MD5.getMD5(inputPass);
-                          AccAndPwd accAndPwd = (AccAndPwd) mCache.getAsObject(LocalDataLabel.AccAndPwd);
+                          AccAndPwd accAndPwd = null;//(AccAndPwd) mCache.getAsObject(LocalDataLabel.AccAndPwd);
+                        try{
+                            Log.i("USER try","FHZ");
+                            if(Reservoir.contains(LocalDataLabel.AccAndPwd))
+                            {
+                                Log.i("USER","FHZ");
+                                accAndPwd=Reservoir.get(LocalDataLabel.AccAndPwd, AccAndPwd.class);
+                                Log.i("USER","FHZ");
+                            }
+                        }catch (Exception e){
+                            Log.i("USER excep","FHZ");
+                            e.printStackTrace();
+                        }
                         if(accAndPwd!=null)
                         {
+                            Log.i("accpwd exit","FHZ");
                             userPass=accAndPwd.Password;
-                        }
-                        if(!userPass.equals(inputMD5))
-                        {
-                            Toast toast=Toast.makeText(getActivity().getApplicationContext(),"原密码不正确!",Toast.LENGTH_LONG);
+                            if(!userPass.equals(inputMD5))
+                            {
+                                Toast toast=Toast.makeText(getActivity().getApplicationContext(),"原密码不正确!",Toast.LENGTH_LONG);
+                                toast.setGravity(Gravity.CENTER,0,0);
+                                toast.show();
+                                dialog.dismiss();
+                            }else{
+                                //与服务器交互
+                                LoginBusiness loginBusiness=new LoginBusiness();
+                                loginBusiness.ChangePWD(handler,mCache,newMD5);
+                            }
+                        }else{
+                            Log.i("accpwd is null","FHZ");
+                            Toast toast=Toast.makeText(getActivity().getApplicationContext(),"获取缓存失败，请检查内存后重新登录!",Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.CENTER,0,0);
                             toast.show();
                             dialog.dismiss();
-                        }else{
-                            //与服务器交互
-                            LoginBusiness loginBusiness=new LoginBusiness();
-                            loginBusiness.ChangePWD(handler,mCache,newPass);
                         }
+
                     }
                 }
 

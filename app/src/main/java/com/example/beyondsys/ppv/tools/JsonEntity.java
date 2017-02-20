@@ -11,6 +11,7 @@ import com.example.beyondsys.ppv.entities.ModifyPwdResult;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.SubmitInfoResult;
 import com.example.beyondsys.ppv.entities.TeamEntity;
+import com.example.beyondsys.ppv.entities.UserInTeamResult;
 import com.example.beyondsys.ppv.entities.UserInfoResultParams;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.entities.ValueDetailResult;
@@ -108,7 +109,20 @@ public class JsonEntity{
          return null;
      }
  }
+public  static UserInTeamResult ParseJsonForUserInTeamResult(String  result)
+{
+    UserInTeamResult userInTeamResult=null;
+    Gson gson=new Gson();
+    java.lang.reflect.Type type=new TypeToken<UserInTeamResult>() {}.getType();
+    userInTeamResult=gson.fromJson(result,type);
+    if(userInTeamResult!=null)
+    {
+        return  userInTeamResult;
+    }else {
+        return null;
+    }
 
+}
     public static List<WorkItemResultParams> ParseJsonForworkItemResultParamsList(String result)
     {
         List<WorkItemResultParams> workItemResultParamsList=null;
@@ -149,7 +163,10 @@ public class JsonEntity{
     public  static UserInfoResultParams ParseJsonForUserInfoResult(String result)
     {
         UserInfoResultParams userInfoResultParams=null;
-        userInfoResultParams=GsonUtil.json2T(result, UserInfoResultParams.class);
+        Gson gson = new Gson();
+        java.lang.reflect.Type type = new TypeToken<UserInfoResultParams>() {}.getType();
+        userInfoResultParams = gson.fromJson(result, type);
+       // userInfoResultParams=GsonUtil.json2T(result, UserInfoResultParams.class);
         if(userInfoResultParams!=null)
         {
             return  userInfoResultParams;
@@ -160,7 +177,10 @@ public class JsonEntity{
     public  static ModifyPwdResult ParseJsonForModifyPwdResult(String result)
     {
         ModifyPwdResult modifyPwdResult=null;
-        modifyPwdResult=GsonUtil.json2T(result, ModifyPwdResult.class);
+        Gson gson = new Gson();
+        java.lang.reflect.Type type = new TypeToken< ModifyPwdResult>() {}.getType();
+        modifyPwdResult = gson.fromJson(result, type);
+        //modifyPwdResult=GsonUtil.json2T(result, ModifyPwdResult.class);
         if(modifyPwdResult!=null)
         {
             return  modifyPwdResult;

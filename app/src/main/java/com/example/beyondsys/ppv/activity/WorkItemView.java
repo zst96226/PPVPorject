@@ -109,11 +109,13 @@ public class WorkItemView extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.workitem_view, container, false);
+
         try {
             Reservoir.init(WorkItemView.this.getActivity(), 4096);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         IninView();
 
         Listener();

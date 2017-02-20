@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.anupcowkur.reservoir.Reservoir;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.APIEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
@@ -26,8 +27,16 @@ import java.io.Serializable;
  */
 public class OtherBusiness {
     /*获取团队下全部人员信息*/
-    public void GetAllStaffForTeam(final Handler handler,ACache mCachem,String TeamID){
-        UserLoginResultEntity entity=(UserLoginResultEntity)mCachem.getAsObject(LocalDataLabel.Proof);
+    public void GetAllStaffForTeam(final Handler handler,String TeamID){
+      //  UserLoginResultEntity entity=(UserLoginResultEntity)mCachem.getAsObject(LocalDataLabel.Proof);
+        UserLoginResultEntity entity = null;
+        try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                entity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (entity!=null){
             AllStaffPerson person = new AllStaffPerson();
             person.proof = entity.TicketID;

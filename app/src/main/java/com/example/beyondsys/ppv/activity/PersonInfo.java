@@ -22,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.anupcowkur.reservoir.Reservoir;
+import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.ImgBusiness;
 import com.example.beyondsys.ppv.bussiness.OneSelfBusiness;
@@ -58,10 +60,10 @@ public class PersonInfo extends AppCompatActivity {
     private String IMAGE_FILE_LOCATION = Tools.getSDPath() + File.separator + "photo.jpeg";
     File file;
     private UserInfoResultParams personInfoEntity, newInfo;
-    private Handler threadHandler = new Handler() {
+    private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.UploadImg) {
-                Log.i("上传返回值：" + msg.obj, "UPIMG");
+                Log.i("上传图片返回值：" + msg.obj, "FHZ");
                 if (!msg.obj.toString().equals("") && msg.obj!=null)
                 {
                     Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
@@ -73,12 +75,14 @@ public class PersonInfo extends AppCompatActivity {
             }else if(msg.what==ThreadAndHandlerLabel.OneselfInf){
              if(msg.obj!=null)
              {
+                 Log.i("修改个人信息返回值：" + msg.obj, "FHZ");
                  SubmitInfoResult result= JsonEntity.ParseJsonForSubmitResult(msg.obj.toString());
                  if(result!=null)
                  {
                      int flag=result.Result;
                      if(flag==0)
                  {
+                     Log.i("修改个人信息返回值：成功" + msg.obj, "FHZ");
                      Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
                      String json= GsonUtil.t2Json2(newInfo);
                      mCache.put(LocalDataLabel.CurPerson,json);
@@ -97,6 +101,38 @@ public class PersonInfo extends AppCompatActivity {
 //                 {
 //                     Toast.makeText(PersonInfo.this, "修改失败", Toast.LENGTH_SHORT).show();
 //                 }
+             }else if(msg.what==ThreadAndHandlerLabel.GetOneSelf){
+                 if(msg.obj!=null)
+                 {
+                     Log.i("获取当前用户信息返回值："+msg.obj,"FHZ");
+                     String  jsonStr=msg.obj.toString();
+                     try{
+                         UserInfoResultParams userInfoResultParams=JsonEntity.ParseJsonForUserInfoResult(jsonStr);
+                         if(userInfoResultParams!=null)
+                         {
+                             Log.i("获取当前用户信息返回值：保存","FHZ");
+                             Reservoir.putAsync(LocalDataLabel.CurPerson, userInfoResultParams, new ReservoirPutCallback() {
+                                 @Override
+                                 public void onSuccess() {
+                                     setData();
+                                 }
+
+                                 @Override
+                                 public void onFailure(Exception e) {
+
+                                 }
+                             });
+                         }
+//                        PersonInfoEntity personInfoEntity= JsonEntity.ParseJsonForPerson(jsonStr);
+//                        String curPerson= GsonUtil.t2Json2(personInfoEntity);
+//                        mCache.put(LocalDataLabel.CurPerson,curPerson);
+                     }catch (Exception e)
+                     {
+                         Log.i("获取当前用户信息返回值：异常","FHZ");
+                     }
+                 }else{
+                     Toast.makeText(PersonInfo.this,"没有当前用户的数据",Toast.LENGTH_SHORT).show();
+                 }
              }else {
                  Toast.makeText(PersonInfo.this,"服务端验证出错，请联系管理员",Toast.LENGTH_SHORT).show();
              }
@@ -112,8 +148,14 @@ public class PersonInfo extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            Reservoir.init(PersonInfo.this, 4096);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         setContentView(R.layout.activity_person_info);
         init();
+       // initCache();
         setData();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,28 +196,74 @@ public class PersonInfo extends AppCompatActivity {
 //        personInfoEntity.ID="ID";
 
     }
+
+    private  void initCache()
+    {
+
+    }
+
 private  void setData()
 {
-    personInfoEntity=(UserInfoResultParams)mCache.getAsObject(LocalDataLabel.CurPerson);
-    if(personInfoEntity!=null)
+//    personInfoEntity=(UserInfoResultParams)mCache.getAsObject(LocalDataLabel.CurPerson);
+//    if(personInfoEntity!=null)
+//    {
+//        //个人头像未完成
+//        setImg(myImg);
+//     //   myImg.setImageResource(R.drawable.person);
+//        myNameEdt.setText(personInfoEntity.Name);
+//        myPhoneEdt.setText(personInfoEntity.Tel);
+//        myEmailEdt.setText(personInfoEntity.EMail);
+//        myAdressEdt.setText(personInfoEntity.Address);
+//        myIDEdt.setText(personInfoEntity.IDNo);
+//        myDesEdt.setText(personInfoEntity.Sign);
+//    }
+    boolean isCache=setCache();
+    if(!isCache)
     {
-        //个人头像未完成
-        setImg(myImg);
-     //   myImg.setImageResource(R.drawable.person);
-        myNameEdt.setText(personInfoEntity.Name);
-        myPhoneEdt.setText(personInfoEntity.Tel);
-        myEmailEdt.setText(personInfoEntity.EMail);
-        myAdressEdt.setText(personInfoEntity.Address);
-        myIDEdt.setText(personInfoEntity.IDNo);
-        myDesEdt.setText(personInfoEntity.Sign);
+       // setService();
     }
 }
-    private  void setImg( ImageView test_img)
+    private  boolean setCache()
     {
-        /**
-         * 文件目录如果不存在，则创建
-         */
+            try{
+                if(Reservoir.contains(LocalDataLabel.CurPerson))
+                {
+                    personInfoEntity=Reservoir.get(LocalDataLabel.CurPerson,UserInfoResultParams.class);
+                }
+
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            if(personInfoEntity!=null)
+            {
+                Log.i("personInfoEntity","FHZ");
+             //   myImg.setImageResource(R.drawable.person);
+                myNameEdt.setText(personInfoEntity.Name);
+                myPhoneEdt.setText(personInfoEntity.Tel);
+                myEmailEdt.setText(personInfoEntity.EMail);
+                myAdressEdt.setText(personInfoEntity.Address);
+                myIDEdt.setText(personInfoEntity.IDNo);
+                myDesEdt.setText(personInfoEntity.Sign);
+                //个人头像未完成
+                Bitmap userBitmap=setImg(personInfoEntity.UserID);
+                myImg.setImageBitmap(userBitmap);
+                return  true;
+            }
+            return  false;
+    }
+    private  void setService()
+    {
+        //缓存中未获取到用户个人信息 从服务加载
+        Log.i("缓存中未获取到用户个人信息 从服务加载" , "FHZ");
+        OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
+        oneSelfBusiness.GetOneSelf(handler);
+    }
+    private Bitmap setImg(String id)
+    {
         File fileDir;
+        Bitmap bitmap=null;
+        // Drawable drawable=null;
         String path = Environment.getExternalStorageDirectory()
                 + "/listviewImg/";// 文件目录
         fileDir = new File(path);
@@ -183,24 +271,22 @@ private  void setData()
             Log.i("exit","qq");
             fileDir.mkdirs();
         }
-        /**
-         * 创建图片文件
-         */
-        String picurl="http://120.26.37.247:8181/File/123.png";
-        String      name="123.png";
+        String picurl="http://120.26.37.247:8181/File/"+id+".png";
+        String      name=id+".png";
         file = new File(fileDir, name);
-        if (!file.exists()) {// 如果本地图片不存在则从网上下载
+        if (!file.exists())
+        {// 如果本地图片不存在则从网上下载
             Log.i("wwwwwwwww","qq");
             ImgBusiness imgBusiness=new ImgBusiness();
             imgBusiness.downloadImg(picurl,name);
             Log.i("end", "qq");
-            // downloadPic(picNames[position], picUrls[position]);
         } else {// 图片存在则填充到view上
             Log.i("ttttt", "qq");
-            Bitmap bitmap = BitmapFactory
+            bitmap = BitmapFactory
                     .decodeFile(file.getAbsolutePath());
-            test_img.setImageBitmap(bitmap);
+            // drawable =new BitmapDrawable(bitmap);
         }
+        return bitmap;
     }
     public void isModify(View v) {
         modifyImg = (ImageView) findViewById(R.id.infoModify_img);
@@ -274,8 +360,14 @@ private  void setData()
             newInfo.IDNo=myIDEdt.getText().toString().trim();
             newInfo.Address=myAdressEdt.getText().toString().trim();
             newInfo.Sign=myDesEdt.getText().toString().trim();
-            OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
-            oneSelfBusiness.ChangeOneSelf(threadHandler,mCache,newInfo);
+//            OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
+//            oneSelfBusiness.ChangeOneSelf(handler, mCache, newInfo);
+//            if(bitmap!=null)
+//            {
+//                 /*上传头像，不在这个位置，以后会改*/
+//                ImgBusiness uploadImg = new ImgBusiness();
+//                uploadImg.uploadImg(handler, Tools.bitmap2Base64(bitmap));
+//            }
         }
     }
 
@@ -368,9 +460,7 @@ private  void setData()
                         bitmap = extras.getParcelable("data");
                         myImg.setImageBitmap(bitmap);
                        takePhotoPopWin.dismiss();
-                        /*上传头像，不在这个位置，以后会改*/
-                        ImgBusiness uploadImg = new ImgBusiness();
-                        uploadImg.uploadImg(threadHandler, Tools.bitmap2Base64(bitmap));
+
                     }
                 }
                 break;

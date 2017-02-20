@@ -20,9 +20,12 @@ import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.entities.AccAndPwd;
 import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.WecommPagerAdapter;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +56,7 @@ public class Welcome extends AppCompatActivity {
             public void run() {
                 UserLoginResultEntity  proof = null;
                 AccAndPwd user=null;
-                IdentifyResult label=null;
+               List<TeamEntity> label=null;
                 try {
                     Log.i("proof try","FHZ");
                     if (Reservoir.contains(LocalDataLabel.Proof))
@@ -83,7 +86,10 @@ public class Welcome extends AppCompatActivity {
                     if(Reservoir.contains(LocalDataLabel.Label))
                     {
                         Log.i("label","FHZ");
-                        label=Reservoir.get(LocalDataLabel.Label,IdentifyResult.class);
+                        Type resultType = new TypeToken<List<TeamEntity>>() {
+                        }.getType();
+                        label = Reservoir.get(LocalDataLabel.Label, resultType);
+                      //  label=Reservoir.get(LocalDataLabel.Label,IdentifyResult.class);
                         Log.i("label","FHZ");
                     }
                 }catch (Exception e)

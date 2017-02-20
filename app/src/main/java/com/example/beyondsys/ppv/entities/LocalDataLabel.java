@@ -22,4 +22,6 @@ public class LocalDataLabel{
     public static final String WorkItemDetail="WorkItemDetail";
     /*用户ID*/
     public static final String UserID="UserID";
+    /*团队内所有成员列表*/
+    public  static final String  AllUserInTeam="AllUserInTeam";
 }

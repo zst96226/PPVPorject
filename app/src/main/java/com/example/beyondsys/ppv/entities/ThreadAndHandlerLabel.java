@@ -34,4 +34,6 @@ public class ThreadAndHandlerLabel {
     public static int GetAllStaff=12;
     /*获取上传头像返回值*/
     public static int UploadImg=13;
+    /*创建工作项*/
+    public  static  int AddWorkItem=14;
 }

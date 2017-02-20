@@ -424,7 +424,7 @@ public class WorkItemDetail extends AppCompatActivity {
         if (hasEntity == null) {
             //根据ID从服务器取 并存缓存
             WorkItemBusiness workItemBusiness = new WorkItemBusiness();
-            workItemBusiness.GetWorkItemContent(handler, mCache, CurItemId);
+            workItemBusiness.GetWorkItemContent(handler,  CurItemId);
         } else {
             name_edt.setText(hasEntity.WorkName.toString());
             assign2_edt.setText(hasEntity.AssignerName.toString());

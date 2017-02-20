@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.anupcowkur.reservoir.Reservoir;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.APIEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
@@ -28,11 +29,19 @@ import java.io.Serializable;
  */
 public class OneSelfBusiness {
     /*获取个人信息*/
-    public void GetOneSelf(final Handler handler, ACache mCache) {
-        UserLoginResultEntity userLoginResultEntity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+    public void GetOneSelf(final Handler handler) {
+      //  UserLoginResultEntity userLoginResultEntity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+        UserLoginResultEntity userLoginResultEntity = null;
+        try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                userLoginResultEntity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (userLoginResultEntity != null) {
             final String JsonParams = GsonUtil.getGson().toJson(userLoginResultEntity.TicketID);
-            Log.i("提交对象：" + JsonParams, "FHZ");
+            Log.i("获取个人信息提交对象：" + JsonParams, "FHZ");
             new Thread() {
                 public void run() {
                     /*根据命名空间和方法得到SoapObject对象*/
@@ -50,6 +59,7 @@ public class OneSelfBusiness {
                         httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
                         // 得到远程方法返回的SOAP对象
                         SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+                        Log.i("获取个人信息发送消息", "FHZ");
                         Message msg = Message.obtain();
                         msg.what = ThreadAndHandlerLabel.GetOneSelf;
                         msg.obj = result;
@@ -70,9 +80,17 @@ public class OneSelfBusiness {
     }
 
     /*修改个人信息*/
-    public void ChangeOneSelf(final Handler handler, ACache mCache, UserInfoResultParams entity) {
+    public void ChangeOneSelf(final Handler handler, UserInfoResultParams entity) {
         /*获取缓存*/
-        UserLoginResultEntity entitys = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+      //  UserLoginResultEntity entitys = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
+        UserLoginResultEntity entitys = null;
+        try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                entitys= Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (entitys != null) {
             InformationPerson person = new InformationPerson();
             person.TicketID = entitys.TicketID;

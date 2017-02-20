@@ -9,8 +9,9 @@ import java.security.PrivateKey;
 public class WorkItemEntity implements Serializable {
 
     public String BID;//归属ID
-    public String ID;//本身ID
     public String FID;//父工作项ID
+    public String ID;//本身ID
+    public int TheTimeStamp;//时间戳
     public String RID;//关系ID
     public String Name;//名称
     public String Description;//描述
@@ -25,15 +26,16 @@ public class WorkItemEntity implements Serializable {
     public String Modifier;//修改人
     public String ModifyTime;//修改时间
     public double BusinessValue;//分值
+    public double HardScale;//难易系数
     public double BasicScore;//基本分值
     public double CheckedScore;//检查分值
-    public double HardScale;//难易系数
     public String Remark;//备注
 
     public WorkItemEntity(){
         this.BID=null;
         this.ID=null;
         this.FID=null;
+        this.TheTimeStamp=0;
         this.RID=null;
         this.Name=null;
         this.Description=null;
