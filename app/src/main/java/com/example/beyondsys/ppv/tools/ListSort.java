@@ -1,5 +1,7 @@
 package com.example.beyondsys.ppv.tools;
 
+import android.util.Log;
+
 import com.example.beyondsys.ppv.entities.WorkValueResultParams;
 
 import java.lang.reflect.Method;
@@ -17,6 +19,7 @@ import java.util.Map;
 public class ListSort {
 
     public static List<WorkValueResultParams> UpSort(List<WorkValueResultParams> list) {
+        List<WorkValueResultParams> _list=new ArrayList<>();
         Map<String, Integer> map = new HashMap<String, Integer>();
         for (WorkValueResultParams valueEntity : list) {
             map.put(valueEntity.UserID,(int)valueEntity.BasicScore+(int)valueEntity.CheckedScore);
@@ -29,19 +32,19 @@ public class ListSort {
                 return (o1.getValue() - o2.getValue());
             }
         });
-        list.clear();
         for (Map.Entry<String,Integer> _map : mapList) {
             for (WorkValueResultParams valueEntity : list)  {
                 if (_map.getKey().equals(valueEntity.UserID))
                 {
-                    list.add(valueEntity);
+                    _list.add(valueEntity);
                 }
             }
         }
-        return list;
+        return _list;
     }
 
     public static List<WorkValueResultParams> DownSort(List<WorkValueResultParams> list) {
+        List<WorkValueResultParams> _list=new ArrayList<>();
         Map<String, Integer> map = new HashMap<String, Integer>();
         for (WorkValueResultParams valueEntity : list) {
             map.put(valueEntity.UserID,(int)valueEntity.BasicScore+(int)valueEntity.CheckedScore);
@@ -54,15 +57,14 @@ public class ListSort {
                 return (o2.getValue() - o1.getValue());
             }
         });
-        list.clear();
         for (Map.Entry<String,Integer> _map : mapList) {
             for (WorkValueResultParams valueEntity : list)  {
                 if (_map.getKey().equals(valueEntity.UserID))
                 {
-                    list.add(valueEntity);
+                    _list.add(valueEntity);
                 }
             }
         }
-        return list;
+        return _list;
     }
 }
