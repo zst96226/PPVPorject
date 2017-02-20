@@ -65,36 +65,30 @@ public class ImgBusiness
         new Thread() {
             public void run() {
                 File fileDir;
-                String path = Environment.getExternalStorageDirectory()
-                        + "/listviewImg/";// 文件目录
+                String path = Environment.getExternalStorageDirectory() + "/listviewImg/";// 文件目录
                 /**
                  * 文件目录如果不存在，则创建
                  */
                 fileDir = new File(path);
                 if (!fileDir.exists()) {
-                    Log.i("exit  ee", "qq");
                     fileDir.mkdirs();
                 }
-                Log.i("exit  out", "qq");
                 FileOutputStream fos = null;
                 InputStream in = null;
 
                 // 创建文件
-                File file = new File(fileDir, name);
-                Log.i("creat", "qq");
+               // File file = new File(fileDir);
                 try {
 
-                    fos = new FileOutputStream(file);
+                    fos = new FileOutputStream(fileDir);
 
                     URL url = new URL(picurl);
                     in = url.openStream();
-                    Log.i("in ee", "qq");
                     int len = -1;
                     byte[] b = new byte[1024];
                     while ((len = in.read(b)) != -1) {
                         fos.write(b, 0, len);
                     }
-                    Log.i("exit   eeeeeee","qq");
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e) {

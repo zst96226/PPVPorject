@@ -95,6 +95,7 @@ public class WorkValueView extends Fragment {
                 if (msg.obj != null && !jsonStr.equals("anyType{}")) {
                     Log.i("价值返回值;" + msg.obj, "FHZ");
                     WorkValueResultEntity entity = JsonEntity.ParseJsonForWorkValueResult(jsonStr);
+                    Log.i("价值返回值;" + entity.AccessResult+" "+entity.Score.size(), "FHZ");
                     if (entity != null) {
                         switch (entity.AccessResult) {
                             case 0:
@@ -196,9 +197,11 @@ public class WorkValueView extends Fragment {
                 if (topme_che.isChecked()) {
                     topme_che.setChecked(false);
                     setAdapter();
+//                    GetDataForService();
                 } else {
                     topme_che.setChecked(true);
                     setAdapter();
+//                    GetDataForService();
                 }
 
             }
@@ -287,8 +290,7 @@ public class WorkValueView extends Fragment {
         File fileDir;
         Bitmap bitmap = null;
         // Drawable drawable=null;
-        String path = Environment.getExternalStorageDirectory()
-                + "/listviewImg/";// 文件目录
+        String path = Environment.getExternalStorageDirectory() + "/listviewImg/";// 文件目录
         fileDir = new File(path);
         if (!fileDir.exists()) {
             Log.i("exit", "qq");
@@ -365,8 +367,11 @@ public class WorkValueView extends Fragment {
                 }
             }
         } else {
+            Log.i("我置顶未选中","VS");
             if (sortFlag == sortdown) {
+                Log.i("降序","VS");
                 for (WorkValueResultParams valueEntity : ListSort.DownSort(entityList)) {
+                    Log.i("排序完成","VS");
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
@@ -379,7 +384,9 @@ public class WorkValueView extends Fragment {
                     list.add(map);
                 }
             } else {
+                Log.i("升序","VS");
                 for (WorkValueResultParams valueEntity : ListSort.UpSort(entityList)) {
+                    Log.i("排序完成","VS");
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
