@@ -77,20 +77,24 @@ private LinearLayout personInfoLayout;
                 {
                     Log.i("修改密码返回值：" + msg.obj, "FHZ");
                     try{
-                        ModifyPwdResult result=JsonEntity.ParseJsonForModifyPwdResult(jsonStr);
-                        int flag = result.Result;
-//                        int flag=(int)msg.obj;
+//                        ModifyPwdResult result=JsonEntity.ParseJsonForModifyPwdResult(jsonStr);
+//                        int flag = result.Result;
+                        int flag=Integer.parseInt(msg.obj.toString());
                         Log.i(flag+"","FHZ");
                         if(flag==0)
                         {
                             Log.i("修改密码完成", "FHZ");
-                            Toast toast=Toast.makeText(getActivity().getApplicationContext(),"修改成功!",Toast.LENGTH_LONG);
+                            dialog.dismiss();
+                            Toast toast=Toast.makeText(getActivity().getApplicationContext(),"修改成功,请重新登陆!",Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
-                            dialog.dismiss();
-                        }else {
-                            Toast.makeText(OneSelfView.this.getActivity(),"修改密码失败，请稍后再试！",Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getActivity(),Login.class);
+                            startActivity(intent);
+
                         }
+//                        else {
+//                            Toast.makeText(OneSelfView.this.getActivity(),"修改密码失败，请稍后再试！",Toast.LENGTH_SHORT).show();
+//                        }
                     }catch (Exception e)
                     {
                         Log.i("修改密码返回值：异常", "FHZ");

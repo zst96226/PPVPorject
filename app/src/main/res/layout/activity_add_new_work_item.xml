@@ -201,7 +201,7 @@
                     android:editable="false"
                     android:layout_marginRight="10sp"
                     android:maxLines="20"
-                    android:text="待指派"/>
+                    android:text=""/>
             </LinearLayout>
 
             <LinearLayout

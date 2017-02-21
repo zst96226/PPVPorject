@@ -62,7 +62,8 @@ public class PersonValueDetail extends AppCompatActivity {
         {
             if(msg.what== ThreadAndHandlerLabel.GetWorkValueContext)
             {
-                if(msg.obj!=null)
+                String  jsonStr=msg.obj.toString();
+                if(msg.obj!=null&& !jsonStr.equals("anyType{}"))
                 {
                     try{
                         ValueDetailResult valueDetailResult=JsonEntity.ParseJsonForValueDetail(msg.obj.toString());

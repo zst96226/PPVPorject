@@ -78,26 +78,38 @@ public class PersonInfo extends AppCompatActivity {
                  if(msg.obj!=null&&!jsonStr.equals("anyType{}"))
                  {
                      Log.i("修改个人信息返回值：" + msg.obj, "FHZ");
-                     SubmitInfoResult result= JsonEntity.ParseJsonForSubmitResult(msg.obj.toString());
-                     if(result!=null)
-                     {
-                               int flag=result.Result;
+                   //  SubmitInfoResult result= JsonEntity.ParseJsonForSubmitResult(msg.obj.toString());
+//                     if(result!=null)
+//                     {
+                               int flag=Integer.parseInt(jsonStr);
                                if(flag==0)
                               {
-                                     Log.i("修改个人信息返回值：成功" + msg.obj, "FHZ");
+                                     Log.i("修改个人信息返回值：成功" , "FHZ");
                                      Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
-                                     String json= GsonUtil.t2Json2(newInfo);
-                                     mCache.put(LocalDataLabel.CurPerson,json);
-                                     if(bitmap!=null)
-                                    {
+//                                     String json= GsonUtil.t2Json2(newInfo);
+//                                     mCache.put(LocalDataLabel.CurPerson,json);
+                                  Reservoir.putAsync(LocalDataLabel.CurPerson, newInfo, new ReservoirPutCallback() {
+                                      @Override
+                                      public void onSuccess() {
+                                          if(bitmap!=null)
+                                          {
                                          /*上传头像，不在这个位置，以后会改*/
-                                        ImgBusiness uploadImg = new ImgBusiness();
-                                        uploadImg.uploadImg(handler, Tools.bitmap2Base64(bitmap));
-                                    }
-                              }else{
+                                              ImgBusiness uploadImg = new ImgBusiness();
+                                              uploadImg.uploadImg(handler, Tools.bitmap2Base64(bitmap));
+                                          }
+                                      }
+
+                                      @Override
+                                      public void onFailure(Exception e) {
+
+                                      }
+                                  });
+
+                              }
+                              else{
                                      Toast.makeText(PersonInfo.this, "修改失败", Toast.LENGTH_SHORT).show();
                               }
-                     }
+//                     }
     //                 int flag=Integer.parseInt(msg.obj.toString().trim());
     //                 if(flag==0)
     //                 {

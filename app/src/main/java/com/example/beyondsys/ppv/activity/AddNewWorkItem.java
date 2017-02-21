@@ -37,6 +37,7 @@ import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UIDEntity;
 import com.example.beyondsys.ppv.entities.UserInTeam;
 import com.example.beyondsys.ppv.entities.UserInTeamResult;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
@@ -77,10 +78,11 @@ public class AddNewWorkItem extends Activity {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.GetAllStaff)
             {
-                if(msg.obj!=null)
+                String jsonStr = msg.obj.toString();
+                if(msg.obj!=null&& !jsonStr.equals("anyType{}"))
                 {
                     Log.i("获取团队成员返回值：" + msg.obj, "FHZ");
-                    String jsonStr = msg.obj.toString();
+
                     /*解析Json*/
                     try {
                         UserInTeamResult  result= JsonEntity.ParseJsonForUserInTeamResult(jsonStr);
@@ -118,12 +120,15 @@ public class AddNewWorkItem extends Activity {
             }else if(msg.what==ThreadAndHandlerLabel.AddWorkItem)
             {
                 //未完成
-                if(msg.obj!=null)
+                String jsonStr = msg.obj.toString();
+                if(msg.obj!=null&& !jsonStr.equals("anyType{}"))
                 {
+                    Log.i("添加工作项返回值：" + msg.obj, "FHZ");
                     try{
-                        AddWorkItemResult addWorkItemResult =JsonEntity.ParseJsonForAddResult(msg.obj.toString());
+                        AddWorkItemResult addWorkItemResult =JsonEntity.ParseJsonForAddResult(jsonStr);
                         if(addWorkItemResult!=null)
                         {
+                            Log.i("添加工作项返回值：" + addWorkItemResult.result, "FHZ");
                             if(addWorkItemResult.result==0)
                             {
                                 Toast.makeText(AddNewWorkItem.this, "新建成功", Toast.LENGTH_SHORT).show();
@@ -196,11 +201,11 @@ public class AddNewWorkItem extends Activity {
         //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
         String FID=bundle.getString("FatherID").trim();
         String FType=bundle.getString("FatherType").trim();
-        if(FID==null)
+        if(!FID.isEmpty())
         {
             input_type.setText(typeList.get(0));
-        }else{
-            if(FType==typeList.get(1))
+        }else {
+            if (FType.equals(typeList.get(1)))
             {
                 input_type.setText(typeList.get(1));
                 Type_pop.dismiss();
@@ -287,8 +292,15 @@ public class AddNewWorkItem extends Activity {
         String Name,Assigned2,Belong2, Checker,Description,BID, FID,ID,ClosingTime;
         int  Status,Category,TheTimeStamp;
         double  BusinessValue,HardScale;
-
-        ID=null;
+        ID="";
+        try {
+            if (Reservoir.contains(LocalDataLabel.UserID)) {
+                UIDEntity entity = Reservoir.get(LocalDataLabel.UserID, UIDEntity.class);
+                ID = entity.UID;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         ClosingTime=input_CloseTime.getText().toString().trim();
         Name=input_Name.getText().toString().trim();
         boolean checkName= ValidaService.isTitleLength(Name);
@@ -310,20 +322,20 @@ public class AddNewWorkItem extends Activity {
         Assigned2=input_AssignedTo.getText().toString().trim();
         if(Assigned2.equals("空"))
         {
-            Assigned2=null;
+            Assigned2="";
         }
 
         Belong2=input_Head.getText().toString().trim();
         if(Belong2.equals("空"))
         {
-            Belong2=null;
+            Belong2="";
         }
 
         Checker=input_Checker.getText().toString().trim();
         if(Checker.equals("空"))
         {
 
-            Checker=null;
+            Checker="";
         }
 
         Description=input_des.getText().toString().trim();
@@ -333,9 +345,9 @@ public class AddNewWorkItem extends Activity {
         //传递FID过来
         String FatherID=bundle.getString("FatherID").trim();
         String FatherType=bundle.getString("FatherType").trim();
-        if(FatherID==null)
+        if(!FatherID.isEmpty())
         {
-            FID=null;
+            FID="";
         }else{
             FID=FatherID;
         }
@@ -358,11 +370,11 @@ public class AddNewWorkItem extends Activity {
             Log.i("label excep","FHZ");
             e.printStackTrace();
         }
-        if(teamList!=null)
+        if(teamList!=null&&!teamList.isEmpty())
         {
             BID=teamList.get(0).TeamID;
         }else{
-            BID=null;
+            BID="";
         }
         Status=0;
         if(input_status.getText().equals(statusList.get(0)))
@@ -386,6 +398,7 @@ public class AddNewWorkItem extends Activity {
         workItem.Category=Category;
         workItem.ClosingTime=ClosingTime;
         workItem.CreateTime="";
+        workItem.Creater=ID;
         workItem.FID=FID;
         workItem.HardScale=HardScale;
         workItem.Description=Description;
@@ -454,9 +467,9 @@ public class AddNewWorkItem extends Activity {
                         //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
                         String FID=bundle.getString("FatherID").trim();
                         String FType=bundle.getString("FatherType").trim();
-                        if(FID!=null)
+                        if(!FID.isEmpty())
                         {
-                            if(FType!=typeList.get(1))
+                            if(!FType.equals(typeList.get(1)))
                             {
                                 Type_pop.show();
                             }

@@ -15,6 +15,8 @@ import com.example.beyondsys.ppv.entities.WorkValueResultParams;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
@@ -24,6 +26,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhsht on 2017/2/5.工作项业务
@@ -156,18 +160,16 @@ public class WorkItemBusiness {
         }
         if(entity!=null)
         {
-            AddWorkItemRequest addRequest=new AddWorkItemRequest();
-            addRequest.TicketID= entity.TicketID;
-            addRequest.WorkItem=workItemEntity;
-            final String JsonParams = GsonUtil.getGson().toJson(addRequest);
+            final JSONObject JsonParams = AddWorkItemPerson(workItemEntity,entity.TicketID);
             Log.i("创建工作项提交对象：" + JsonParams, "FHZ");
+            System.out.println("jsonObject直接创建json:" + JsonParams);
             new Thread(){
                 public  void run(){
                     //////
                     /*根据命名空间和方法得到SoapObject对象*/
                     SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
                     soapObject.addProperty("actionid", APIEntity.ADDNEWWORKITEM);
-                    soapObject.addProperty("jsonvalue", JsonParams);
+                    soapObject.addProperty("jsonvalue", JsonParams.toString());
                     // 通过SOAP1.1协议得到envelop对象
                     SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
                     // 将soapObject对象设置为envelop对象，传出消息
@@ -179,12 +181,14 @@ public class WorkItemBusiness {
                         httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
                         // 得到远程方法返回的SOAP对象
                         SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+                        Log.i("创建工作项：senmes" , "FHZ");
                         Message msg = Message.obtain();
                         msg.what =ThreadAndHandlerLabel.AddWorkItem ;
                         msg.obj = result;
                         handler.sendMessage(msg);
                     } catch (IOException | XmlPullParserException e) {
                         e.printStackTrace();
+                        Log.i("创建工作项：send exc", "FHZ");
                         Message msg = Message.obtain();
                         msg.what = ThreadAndHandlerLabel.CallAPIError;
                         handler.sendMessage(msg);
@@ -199,10 +203,35 @@ public class WorkItemBusiness {
         }
     }
     /*创建新工作项提交参数*/
-    private  class AddWorkItemRequest implements  Serializable{
-        public  String TicketID;
-        public WorkItemEntity WorkItem;
+    private JSONObject AddWorkItemPerson(WorkItemEntity workItem,String TicketID){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("TicketID",TicketID);
+            JSONObject newItem = new JSONObject();
+            newItem.put("TheTimeStamp",  workItem.TheTimeStamp);
+            newItem.put("Assigned2", workItem.Assigned2);
+            newItem.put("Belong2", workItem.Belong2);
+            newItem.put("BID", workItem.BID);
+            newItem.put("BusinessValue", workItem.BusinessValue);
+            newItem.put("Checker", workItem.Checker);
+            newItem.put("Category", workItem.Category);
+            newItem.put("ClosingTime", workItem.ClosingTime);
+            newItem.put("Creater",workItem.Creater);
+            newItem.put("CreateTime",workItem.CreateTime);
+            newItem.put("FID",workItem.FID);
+            newItem.put("HardScale",workItem.HardScale);
+            newItem.put("Description",workItem.Description);
+            newItem.put("ID", workItem.ID);
+            newItem.put("Name",workItem.Name);
+            newItem.put("Status",workItem.Status);
+         jsonObject.put("WorkItem",newItem);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject;
     }
+
 
     /*获取子工作项*/
     public void GetChildWorkItem(final Handler handler,  String WorkItemID, int pagenum) {

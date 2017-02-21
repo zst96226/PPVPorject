@@ -260,7 +260,10 @@ public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
     public static AccAndPwd ParseJsonForAccAndPwd(String str)
     {
         AccAndPwd accAndPwd=null;
-        accAndPwd=GsonUtil.json2T(str,AccAndPwd.class);
+        Gson gson=new Gson();
+        java.lang.reflect.Type type = new TypeToken< AccAndPwd>() {}.getType();
+        //accAndPwd=GsonUtil.json2T(str,AccAndPwd.class);
+        accAndPwd=gson.fromJson(str, type);
         if(accAndPwd!=null)
         {
             return accAndPwd;
@@ -271,7 +274,10 @@ public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
     public  static ValueDetailResult ParseJsonForValueDetail(String str)
     {
         ValueDetailResult valueDetailResult=null;
-        valueDetailResult=GsonUtil.json2T(str, ValueDetailResult.class);
+        Gson gson=new Gson();
+        java.lang.reflect.Type type = new TypeToken< ValueDetailResult>() {}.getType();
+        valueDetailResult=gson.fromJson(str, type);
+        //valueDetailResult=GsonUtil.json2T(str, ValueDetailResult.class);
         if(valueDetailResult!=null)
         {
             return  valueDetailResult;
