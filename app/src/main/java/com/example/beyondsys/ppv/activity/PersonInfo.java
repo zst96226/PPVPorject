@@ -64,7 +64,8 @@ public class PersonInfo extends AppCompatActivity {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.UploadImg) {
                 Log.i("上传图片返回值：" + msg.obj, "FHZ");
-                if (!msg.obj.toString().equals("") && msg.obj!=null)
+                String  jsonStr=msg.obj.toString();
+                if (!msg.obj.toString().equals("") && msg.obj!=null&& !jsonStr.equals("anyType{}"))
                 {
                     Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
                 }
@@ -73,45 +74,46 @@ public class PersonInfo extends AppCompatActivity {
                     Toast.makeText(PersonInfo.this, "修改失败", Toast.LENGTH_SHORT).show();
                 }
             }else if(msg.what==ThreadAndHandlerLabel.OneselfInf){
-             if(msg.obj!=null)
-             {
-                 Log.i("修改个人信息返回值：" + msg.obj, "FHZ");
-                 SubmitInfoResult result= JsonEntity.ParseJsonForSubmitResult(msg.obj.toString());
-                 if(result!=null)
+                String  jsonStr=msg.obj.toString();
+                 if(msg.obj!=null&&!jsonStr.equals("anyType{}"))
                  {
-                     int flag=result.Result;
-                     if(flag==0)
-                 {
-                     Log.i("修改个人信息返回值：成功" + msg.obj, "FHZ");
-                     Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
-                     String json= GsonUtil.t2Json2(newInfo);
-                     mCache.put(LocalDataLabel.CurPerson,json);
-                         if(bitmap!=null)
-                        {
-                             /*上传头像，不在这个位置，以后会改*/
-                            ImgBusiness uploadImg = new ImgBusiness();
-                            uploadImg.uploadImg(handler, Tools.bitmap2Base64(bitmap));
-                        }
+                     Log.i("修改个人信息返回值：" + msg.obj, "FHZ");
+                     SubmitInfoResult result= JsonEntity.ParseJsonForSubmitResult(msg.obj.toString());
+                     if(result!=null)
+                     {
+                               int flag=result.Result;
+                               if(flag==0)
+                              {
+                                     Log.i("修改个人信息返回值：成功" + msg.obj, "FHZ");
+                                     Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
+                                     String json= GsonUtil.t2Json2(newInfo);
+                                     mCache.put(LocalDataLabel.CurPerson,json);
+                                     if(bitmap!=null)
+                                    {
+                                         /*上传头像，不在这个位置，以后会改*/
+                                        ImgBusiness uploadImg = new ImgBusiness();
+                                        uploadImg.uploadImg(handler, Tools.bitmap2Base64(bitmap));
+                                    }
+                              }else{
+                                     Toast.makeText(PersonInfo.this, "修改失败", Toast.LENGTH_SHORT).show();
+                              }
+                     }
+    //                 int flag=Integer.parseInt(msg.obj.toString().trim());
+    //                 if(flag==0)
+    //                 {
+    //                     Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
+    //                 }
+    //                 else
+    //                 {
+    //                     Toast.makeText(PersonInfo.this, "修改失败", Toast.LENGTH_SHORT).show();
+    //                 }
                  }
-                 else
-                 {
-                     Toast.makeText(PersonInfo.this, "修改失败", Toast.LENGTH_SHORT).show();
-                 }
-                 }
-//                 int flag=Integer.parseInt(msg.obj.toString().trim());
-//                 if(flag==0)
-//                 {
-//                     Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
-//                 }
-//                 else
-//                 {
-//                     Toast.makeText(PersonInfo.this, "修改失败", Toast.LENGTH_SHORT).show();
-//                 }
-             }else if(msg.what==ThreadAndHandlerLabel.GetOneSelf){
-                 if(msg.obj!=null)
+            }else if(msg.what==ThreadAndHandlerLabel.GetOneSelf){
+                String  jsonStr=msg.obj.toString();
+                 if(msg.obj!=null&&!jsonStr.equals("anyType{}"))
                  {
                      Log.i("获取当前用户信息返回值："+msg.obj,"FHZ");
-                     String  jsonStr=msg.obj.toString();
+
                      try{
                          UserInfoResultParams userInfoResultParams=JsonEntity.ParseJsonForUserInfoResult(jsonStr);
                          if(userInfoResultParams!=null)
@@ -136,12 +138,10 @@ public class PersonInfo extends AppCompatActivity {
                      {
                          Log.i("获取当前用户信息返回值：异常","FHZ");
                      }
-                 }else{
-                     Toast.makeText(PersonInfo.this,"没有当前用户的数据",Toast.LENGTH_SHORT).show();
+                 }else {
+                     Toast.makeText(PersonInfo.this,"服务端验证出错，请联系管理员",Toast.LENGTH_SHORT).show();
                  }
-             }else {
-                 Toast.makeText(PersonInfo.this,"服务端验证出错，请联系管理员",Toast.LENGTH_SHORT).show();
-             }
+
             }else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
                 Toast.makeText(PersonInfo.this, "修改失败，请检查网络连接", Toast.LENGTH_SHORT).show();
             }else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {

@@ -72,10 +72,10 @@ private LinearLayout personInfoLayout;
         {
             if(msg.what== ThreadAndHandlerLabel.ChangePwd)
             {
-                if(msg.obj!=null)
+                String jsonStr = msg.obj.toString();
+                if(msg.obj!=null&& !jsonStr.equals("anyType{}"))
                 {
                     Log.i("修改密码返回值：" + msg.obj, "FHZ");
-                    String jsonStr = msg.obj.toString();
                     try{
                         ModifyPwdResult result=JsonEntity.ParseJsonForModifyPwdResult(jsonStr);
                         int flag = result.Result;
@@ -100,10 +100,11 @@ private LinearLayout personInfoLayout;
                 }
 
             }else if(msg.what==ThreadAndHandlerLabel.GetOneSelf){
-                if(msg.obj!=null)
+                String  jsonStr=msg.obj.toString();
+                if(msg.obj!=null&& !jsonStr.equals("anyType{}"))
                 {
                     Log.i(" 获取个人信息返回值："+msg.obj,"FHZ");
-                    String  jsonStr=msg.obj.toString();
+
                     try{
                         UserInfoResultParams userInfoResultParams=JsonEntity.ParseJsonForUserInfoResult(jsonStr);
                         Log.i("accessresult:"+userInfoResultParams.AccessResult,"FHZ");
@@ -138,10 +139,11 @@ private LinearLayout personInfoLayout;
 
             }else if(msg.what==ThreadAndHandlerLabel.LogOut)
             {
-                  if(msg.obj!=null)
+                String  jsonStr=msg.obj.toString();
+                  if(msg.obj!=null&& !jsonStr.equals("anyType{}"))
                   {
                       try{
-                          LogOutResult logOutResult=JsonEntity.ParseJsonForLogOutResult(msg.obj.toString());
+                          LogOutResult logOutResult=JsonEntity.ParseJsonForLogOutResult(jsonStr);
                           if(logOutResult!=null)
                           {
                               if(logOutResult.LogoutResult==0)

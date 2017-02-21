@@ -94,23 +94,28 @@ public class WorkValueView extends Fragment {
                 String jsonStr = msg.obj.toString();
                 if (msg.obj != null && !jsonStr.equals("anyType{}")) {
                     Log.i("价值返回值;" + msg.obj, "FHZ");
-                    WorkValueResultEntity entity = JsonEntity.ParseJsonForWorkValueResult(jsonStr);
-                    Log.i("价值返回值;" + entity.AccessResult+" "+entity.Score.size(), "FHZ");
-                    if (entity != null) {
-                        switch (entity.AccessResult) {
-                            case 0:
-                                if (entity.Score != null) {
-                                    valueEntityList = entity.Score;
-                                    setAdapter();
-                                }
-                                break;
-                            case 1:
-                                Toast.makeText(WorkValueView.this.getActivity(), "请求失败，请重新尝试", Toast.LENGTH_SHORT).show();
-                                break;
-                            case -3:
-                                Toast.makeText(WorkValueView.this.getActivity(), "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
-                                break;
+                    try{
+                        WorkValueResultEntity entity = JsonEntity.ParseJsonForWorkValueResult(jsonStr);
+                        Log.i("价值返回值;" + entity.AccessResult + " " + entity.Score.size(), "FHZ");
+                        if (entity != null) {
+                            switch (entity.AccessResult) {
+                                case 0:
+                                    if (entity.Score != null) {
+                                        valueEntityList = entity.Score;
+                                        setAdapter();
+                                    }
+                                    break;
+                                case 1:
+                                    Toast.makeText(WorkValueView.this.getActivity(), "请求失败，请重新尝试", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case -3:
+                                    Toast.makeText(WorkValueView.this.getActivity(), "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
                         }
+                    }catch (Exception e)
+                    {
+                        Log.i("价值返回值;异常","FHZ");
                     }
                 } else {
                     Toast.makeText(WorkValueView.this.getActivity(), "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
