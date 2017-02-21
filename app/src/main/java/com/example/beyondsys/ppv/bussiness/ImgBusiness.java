@@ -29,12 +29,12 @@ import java.net.URL;
 public class ImgBusiness
 {
     /*上传头像*/
-    public void uploadImg(final Handler handler,final String img){
+    public void uploadImg(final Handler handler,final String img ,final String imgname){
         new Thread() {
             public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
                 SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_IMG_NAME);
-                soapObject.addProperty("fileName", "ppv.png");
+                soapObject.addProperty("fileName", imgname+".png");
                 soapObject.addProperty("image", img);
                 // 通过SOAP1.1协议得到envelop对象
                 SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);

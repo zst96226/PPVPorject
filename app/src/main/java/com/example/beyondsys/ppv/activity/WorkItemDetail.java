@@ -34,6 +34,7 @@ import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.entities.WorkDetailResult;
+import com.example.beyondsys.ppv.entities.WorkItemContextentity;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
 import com.example.beyondsys.ppv.entities.WorkItemResultParams;
 import com.example.beyondsys.ppv.entities.WorkValueEntity;
@@ -41,6 +42,8 @@ import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.PopupMenuForWorkItem;
 import com.google.gson.reflect.TypeToken;
+
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -52,7 +55,7 @@ public class WorkItemDetail extends AppCompatActivity {
 
     String TKID="";
     String TeamID="";
-
+    String WorkID="";
 
     ListPopupWindow Assign_pop, Checker_pop, Head_pop, Status_pop;
     ArrayList<String> Userlist = new ArrayList<String>();
@@ -64,8 +67,8 @@ public class WorkItemDetail extends AppCompatActivity {
     ImageView work_img, work_status;
     LinearLayout main_workitem;
     ListView child_list;
-    private EditText name_edt, assign2_edt, checker_edt, status_edt, Head_edt;
-    private TextView wid_workname, wid_workvalue, starttime_tex, endtime_tex;
+    private EditText name_edt, assign2_edt, checker_edt, status_edt, Head_edt,value_edt,closingtime_edt,des_edt;
+    private TextView wid_workname, wid_workvalue, starttime_tex, endtime_tex,creater_tex,creatertime_tex,modifier_tex,modifytime_tex;
     private RelativeLayout del_layout;
     private Button del_ok, del_cancel;
     private boolean isdel = false;
@@ -76,13 +79,26 @@ public class WorkItemDetail extends AppCompatActivity {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.GetWorkItemContext) {
                 if (msg.obj != null) {
-                    String jsonStr = msg.obj.toString();
                     try {
-                        WorkDetailResult workDetailResult = JsonEntity.ParseJsonForWorkDetailResult(jsonStr);
-                        if (workDetailResult != null) {
-                            if (workDetailResult.AccessResult == 0) {
-                                String json = GsonUtil.t2Json2(workDetailResult);
-
+                        WorkItemContextentity Result = JsonEntity.ParseJsonForWorkItemContextentity(msg.obj.toString());
+                        if (Result != null) {
+                            switch (Result.AccessResult)
+                            {
+                                case 0:
+                                    /*获得详细信息*/
+                                    List<WorkDetailResult> list=Result.ScoredetailsList;
+                                    if(list!=null)
+                                    {
+                                        /*显示工作详细信息*/
+                                        ShowWorkContext(list.get(0));
+                                    }
+                                    break;
+                                case -1:
+                                    Toast.makeText(WorkItemDetail.this, "请求失败，请重新尝试", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case -3:
+                                    Toast.makeText(WorkItemDetail.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+                                    break;
                             }
                         }
                     } catch (Exception e) {
@@ -92,19 +108,14 @@ public class WorkItemDetail extends AppCompatActivity {
                 }
             } else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
                 Toast.makeText(WorkItemDetail.this, "修改失败，请检查网络连接", Toast.LENGTH_SHORT).show();
-            } else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
-                Toast.makeText(WorkItemDetail.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
-                /*清除其余活动中Activity以及全部缓存显示登录界面*/
             }
         }
-
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work_item_detail);
-
         try {
             Reservoir.init(this, 4096);
         } catch (Exception e) {
@@ -115,7 +126,7 @@ public class WorkItemDetail extends AppCompatActivity {
 
         GetDataForCache();
 
-        ShowWorkValue();
+        ShowWorkItem();
 
         GetDataForService();
 
@@ -148,10 +159,17 @@ public class WorkItemDetail extends AppCompatActivity {
         wid_workvalue = (TextView) findViewById(R.id.wid_workvalue);
         starttime_tex = (TextView) findViewById(R.id.starttime_tex);
         endtime_tex = (TextView) findViewById(R.id.endtime_tex);
+        creater_tex=(TextView)findViewById(R.id.wid_Creater_txt);
+        creatertime_tex=(TextView)findViewById(R.id.wid_CreateTime_txt);
+        modifier_tex=(TextView)findViewById(R.id.wid_Modifier_txt);
+        modifytime_tex=(TextView)findViewById(R.id.wid_ModifyTime_txt);
+        value_edt=(EditText)findViewById(R.id.wid_Value_edt);
+        closingtime_edt=(EditText)findViewById(R.id.wid_Value_edt);
+        des_edt=(EditText)findViewById(R.id.wid_Description_edt);
     }
 
     /*获取跳转传递信息*/
-    private void ShowWorkValue() {
+    private void ShowWorkItem() {
         Intent intent = getIntent();
         WorkItemResultParams WorkItem = (WorkItemResultParams) intent.getSerializableExtra("Item");
         if (WorkItem.Category == 0) {
@@ -159,6 +177,7 @@ public class WorkItemDetail extends AppCompatActivity {
         } else {
             work_img.setImageResource(R.drawable.b);
         }
+        WorkID=WorkItem.WorkID;
         wid_workname.setText(WorkItem.WorkName);
         wid_workvalue.setText(WorkItem.Workscore + "");
         switch (WorkItem.Status) {
@@ -192,6 +211,22 @@ public class WorkItemDetail extends AppCompatActivity {
         }
         starttime_tex.setText(WorkItem.StartTime.substring(0, 10));
         endtime_tex.setText(WorkItem.EndTime.substring(0, 10));
+    }
+
+    /*显示工作详细信息*/
+    private void ShowWorkContext(WorkDetailResult result){
+        name_edt.setText(result.WorkName);
+        assign2_edt.setText(result.AssignerName);
+        checker_edt.setText(result.CheckerName);
+        //Head_edt.setText(result.Nam);
+        creater_tex.setText(result.Creater);
+        creatertime_tex.setText(result.CreateTime.toString());
+        modifier_tex.setText(result.ModifierName);
+        modifytime_tex.setText(result.ModifyTime.toString());
+        status_edt.setText(result.Status);
+        value_edt.setText(result.BusinessValue+"");
+        closingtime_edt.setText(result.Deadline.toString());
+        des_edt.setText(result.Description);
     }
 
     /*事件监听相关*/
@@ -513,6 +548,17 @@ public class WorkItemDetail extends AppCompatActivity {
 
     /*获取服务端数据*/
     private void GetDataForService() {
+        /*获取当前项详细信息*/
+        if (WorkID.equals("") || TKID.equals("")) {
+            Toast.makeText(WorkItemDetail.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
+            /*清除其余活动中Activity以及全部缓存显示登录界面*/
+        }
+        else
+        {
+            WorkItemBusiness business=new WorkItemBusiness();
+            business.GetWorkItemContent(handler,WorkID,TKID);
+        }
+        /*获取子项*/
     }
 
     /*设置下拉菜单相关*/

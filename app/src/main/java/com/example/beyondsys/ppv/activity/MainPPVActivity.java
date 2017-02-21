@@ -2,20 +2,35 @@ package com.example.beyondsys.ppv.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.anupcowkur.reservoir.Reservoir;
+import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.bussiness.OtherBusiness;
+import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.TeamEntity;
+import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UserInTeamResult;
+import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.PageAdapter;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainPPVActivity extends FragmentActivity implements View.OnClickListener {
 
@@ -38,6 +53,39 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
     private TextView txt_worknone;
     private TextView txt_oneself;
 
+    private Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            if (msg.what == ThreadAndHandlerLabel.GetAllStaff) {
+                if (msg.obj != null) {
+                    Log.i("获取团队成员返回值：" + msg.obj, "FHZ");
+                    String jsonStr = msg.obj.toString();
+                    /*解析Json*/
+                    try {
+                        UserInTeamResult result = JsonEntity.ParseJsonForUserInTeamResult(jsonStr);
+                        if (result != null) {
+                            if (result.AccessResult == 0) {
+                                Reservoir.putAsync(LocalDataLabel.AllUserInTeam, result.teamUsers, new ReservoirPutCallback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        //setData();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+
+                                    }
+                                });
+                            }
+                        }
+                    } catch (Exception e) {
+                    }
+                } else {
+                    Toast.makeText(MainPPVActivity.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +95,30 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
         initView();
 
         initData();
+
+        GetAllUserForTeam();
     }
+
+    public void GetAllUserForTeam() {
+        List<TeamEntity> label = null;
+        try {
+            if (Reservoir.contains(LocalDataLabel.Label)) {
+                Type resultType = new TypeToken<List<TeamEntity>>() {
+                }.getType();
+                label = Reservoir.get(LocalDataLabel.Label, resultType);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (label != null) {
+            String TeamID = label.get(0).TeamID;
+
+            OtherBusiness other = new OtherBusiness();
+            other.GetAllStaffForTeam(handler, TeamID);
+            return;
+        }
+    }
+
 
     private void initView() {
         viewPager = (ViewPager) findViewById(R.id.view_page);
@@ -56,15 +127,15 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
         worknone = (LinearLayout) findViewById(R.id.btn_worknone);
         oneself = (LinearLayout) findViewById(R.id.btn_oneself);
 
-        img_workitem=(ImageView)findViewById(R.id.img_workitem);
-        img_workvalue=(ImageView)findViewById(R.id.img_workvalue);
-        img_worknone=(ImageView)findViewById(R.id.img_worknone);
-        img_oneself=(ImageView)findViewById(R.id.img_oneself);
+        img_workitem = (ImageView) findViewById(R.id.img_workitem);
+        img_workvalue = (ImageView) findViewById(R.id.img_workvalue);
+        img_worknone = (ImageView) findViewById(R.id.img_worknone);
+        img_oneself = (ImageView) findViewById(R.id.img_oneself);
 
-        txt_workitem=(TextView)findViewById(R.id.txt_workitem);
-        txt_workvalue=(TextView)findViewById(R.id.txt_workvalue);
-        txt_worknone=(TextView)findViewById(R.id.txt_worknone);
-        txt_oneself=(TextView)findViewById(R.id.txt_oneself);
+        txt_workitem = (TextView) findViewById(R.id.txt_workitem);
+        txt_workvalue = (TextView) findViewById(R.id.txt_workvalue);
+        txt_worknone = (TextView) findViewById(R.id.txt_worknone);
+        txt_oneself = (TextView) findViewById(R.id.txt_oneself);
 
         workitem.setOnClickListener(this);
         workvalue.setOnClickListener(this);
@@ -90,13 +161,13 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
             }
         });
 
-        Add_btn=(ImageView)this.findViewById(R.id.title_btn);
+        Add_btn = (ImageView) this.findViewById(R.id.title_btn);
         Add_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent =new Intent(MainPPVActivity.this,AddNewWorkItem.class);
-                intent.putExtra("FatherID","");
-                intent.putExtra("FatherType","");
+                Intent intent = new Intent(MainPPVActivity.this, AddNewWorkItem.class);
+                intent.putExtra("FatherID", "");
+                intent.putExtra("FatherType", "");
                 startActivity(intent);
             }
         });
@@ -203,7 +274,7 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
         }
     }
 
-    private void SetDefault(){
+    private void SetDefault() {
         txt_workitem.setTextColor(this.getResources().getColor(R.color.Gray));
         txt_workvalue.setTextColor(this.getResources().getColor(R.color.Gray));
         txt_worknone.setTextColor(this.getResources().getColor(R.color.Gray));

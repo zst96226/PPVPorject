@@ -37,7 +37,6 @@ import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
-import com.example.beyondsys.ppv.entities.UIDEntity;
 import com.example.beyondsys.ppv.entities.UserInTeam;
 import com.example.beyondsys.ppv.entities.UserInTeamResult;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
@@ -78,11 +77,10 @@ public class AddNewWorkItem extends Activity {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.GetAllStaff)
             {
-                String jsonStr = msg.obj.toString();
-                if(msg.obj!=null&& !jsonStr.equals("anyType{}"))
+                if(msg.obj!=null)
                 {
                     Log.i("获取团队成员返回值：" + msg.obj, "FHZ");
-
+                    String jsonStr = msg.obj.toString();
                     /*解析Json*/
                     try {
                         UserInTeamResult  result= JsonEntity.ParseJsonForUserInTeamResult(jsonStr);
@@ -123,12 +121,10 @@ public class AddNewWorkItem extends Activity {
                 String jsonStr = msg.obj.toString();
                 if(msg.obj!=null&& !jsonStr.equals("anyType{}"))
                 {
-                    Log.i("添加工作项返回值：" + msg.obj, "FHZ");
                     try{
                         AddWorkItemResult addWorkItemResult =JsonEntity.ParseJsonForAddResult(jsonStr);
                         if(addWorkItemResult!=null)
                         {
-                            Log.i("添加工作项返回值：" + addWorkItemResult.result, "FHZ");
                             if(addWorkItemResult.result==0)
                             {
                                 Toast.makeText(AddNewWorkItem.this, "新建成功", Toast.LENGTH_SHORT).show();
@@ -154,7 +150,7 @@ public class AddNewWorkItem extends Activity {
 
         InitView();
         Listener();
-        setData();
+        setCache();
         initDate();
         SetPopWinForAssignedTo();
         SetPopWinForHead();
@@ -213,14 +209,6 @@ public class AddNewWorkItem extends Activity {
         }
 
     }
-    private  void setData()
-    {
-        boolean isCache=setCache();
-        if(!isCache)
-        {
-            setService();
-        }
-    }
 
     private  boolean setCache()
     {
@@ -266,9 +254,8 @@ public class AddNewWorkItem extends Activity {
         if(label!=null)
         {
             String TeamID=label.get(0).TeamID;
-            Log.i(" userinteam  SETservice","FHZ");
-            OtherBusiness other=new OtherBusiness();
-            other.GetAllStaffForTeam(handler,TeamID);
+            Log.i(" userinteam  SETservice", "FHZ");
+
             return ;
         }
         //获取团队信息失败
@@ -469,7 +456,7 @@ public class AddNewWorkItem extends Activity {
                         String FType=bundle.getString("FatherType").trim();
                         if(!FID.isEmpty())
                         {
-                            if(!FType.equals(typeList.get(1)))
+                            if(FType!=typeList.get(1))
                             {
                                 Type_pop.show();
                             }

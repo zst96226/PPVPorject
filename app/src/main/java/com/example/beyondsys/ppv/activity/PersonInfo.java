@@ -95,7 +95,7 @@ public class PersonInfo extends AppCompatActivity {
                                           {
                                          /*上传头像，不在这个位置，以后会改*/
                                               ImgBusiness uploadImg = new ImgBusiness();
-                                              uploadImg.uploadImg(handler, Tools.bitmap2Base64(bitmap));
+                                              uploadImg.uploadImg(handler, Tools.bitmap2Base64(bitmap),"xxxx");
                                           }
                                       }
 
