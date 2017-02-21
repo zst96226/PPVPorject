@@ -29,6 +29,7 @@ import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.LoginBusiness;
 import com.example.beyondsys.ppv.bussiness.OneSelfBusiness;
+import com.example.beyondsys.ppv.bussiness.OtherBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.AccAndPwd;
 import com.example.beyondsys.ppv.entities.IdentifyResult;
@@ -38,6 +39,7 @@ import com.example.beyondsys.ppv.entities.ModifyPwdResult;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UserInTeamResult;
 import com.example.beyondsys.ppv.entities.UserInfoResultParams;
 import com.example.beyondsys.ppv.tools.CustomDialog;
 import com.example.beyondsys.ppv.tools.GsonUtil;
@@ -160,7 +162,39 @@ private LinearLayout personInfoLayout;
                   }else{
                       Toast.makeText(OneSelfView.this.getActivity(),"退出异常",Toast.LENGTH_SHORT).show();
                   }
-            }else if(msg.what==ThreadAndHandlerLabel.CallAPIError){
+            }  if (msg.what == ThreadAndHandlerLabel.GetAllStaff)
+        {
+            if(msg.obj!=null)
+            {
+                Log.i("获取团队成员返回值：" + msg.obj, "FHZ");
+                String jsonStr = msg.obj.toString();
+                    /*解析Json*/
+                try {
+                    UserInTeamResult result= JsonEntity.ParseJsonForUserInTeamResult(jsonStr);
+                    if(result!=null)
+                    {
+                        if(result.AccessResult==0)
+                        {
+                            // result.teamUsers
+                            // List<UserInTeam> userList=result.teamUsers;
+                            //存缓存
+                            Reservoir.putAsync(LocalDataLabel.AllUserInTeam, result.teamUsers, new ReservoirPutCallback() {
+                                @Override
+                                public void onSuccess() {
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+                                       Log.i("缓存 alluserinteam 异常","FHZ");
+                                }
+                            });
+                        }
+                    }
+                }catch (Exception e){}
+            }else{
+                Toast.makeText(OneSelfView.this.getActivity(), "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+            }
+        }else if(msg.what==ThreadAndHandlerLabel.CallAPIError){
                 Toast.makeText(OneSelfView.this.getActivity(),"请求失败，请检查网络连接",Toast.LENGTH_SHORT).show();
             }else  if(msg.what==ThreadAndHandlerLabel.LocalNotdata){
                 Toast.makeText(OneSelfView.this.getActivity(),"读取缓存失败，请检查内存重新登录",Toast.LENGTH_SHORT).show();
@@ -369,7 +403,20 @@ private LinearLayout personInfoLayout;
                     }
                     teamList.add(0,curTeam);
                 }
+                OtherBusiness other = new OtherBusiness();
+                other.GetAllStaffForTeam(handler, teamList.get(0).TeamID);
+                     /*存储团队信息*/
+                Reservoir.putAsync(LocalDataLabel.Label, teamList, new ReservoirPutCallback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.i("更改后团队信息保存完毕", "FHZ");
+                    }
 
+                    @Override
+                    public void onFailure(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
 
                     child_list.setVisibility(View.GONE);
                 show_team.setImageResource(R.drawable.arrow_down_float);

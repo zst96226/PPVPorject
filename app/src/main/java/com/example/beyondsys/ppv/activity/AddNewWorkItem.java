@@ -43,6 +43,7 @@ import com.example.beyondsys.ppv.entities.WorkItemEntity;
 import com.example.beyondsys.ppv.tools.InputScoreDialog;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.PopupMenuForWorkItem;
+import com.example.beyondsys.ppv.tools.Tools;
 import com.example.beyondsys.ppv.tools.ValidaService;
 import com.google.gson.reflect.TypeToken;
 
@@ -94,7 +95,7 @@ public class AddNewWorkItem extends Activity {
                                 Reservoir.putAsync(LocalDataLabel.AllUserInTeam, result.teamUsers, new ReservoirPutCallback() {
                                     @Override
                                     public void onSuccess() {
-                                        setData();
+                                      //  setCache();
                                     }
 
                                     @Override
@@ -216,7 +217,7 @@ public class AddNewWorkItem extends Activity {
         {
             if(Reservoir.contains(LocalDataLabel.AllUserInTeam))
             {
-                Log.i(" userinteam  SETCAche","FHZ");
+                Log.i(" userinteam  SetCAche","FHZ");
                 Type resultType = new TypeToken<List<UserInTeam>>() {
                 }.getType();
                 List<UserInTeam> entityList = Reservoir.get(LocalDataLabel.AllUserInTeam, resultType);
@@ -279,15 +280,7 @@ public class AddNewWorkItem extends Activity {
         String Name,Assigned2,Belong2, Checker,Description,BID, FID,ID,ClosingTime;
         int  Status,Category,TheTimeStamp;
         double  BusinessValue,HardScale;
-        ID="";
-        try {
-            if (Reservoir.contains(LocalDataLabel.UserID)) {
-                UIDEntity entity = Reservoir.get(LocalDataLabel.UserID, UIDEntity.class);
-                ID = entity.UID;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ID= Tools.GetGUID();
         ClosingTime=input_CloseTime.getText().toString().trim();
         Name=input_Name.getText().toString().trim();
         boolean checkName= ValidaService.isTitleLength(Name);

@@ -23,6 +23,7 @@ import com.example.beyondsys.ppv.bussiness.OtherBusiness;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UserInTeam;
 import com.example.beyondsys.ppv.entities.UserInTeamResult;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.PageAdapter;
@@ -99,7 +100,7 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
         GetAllUserForTeam();
     }
 
-    public void GetAllUserForTeam() {
+    public   void GetAllUserForTeam() {
         List<TeamEntity> label = null;
         try {
             if (Reservoir.contains(LocalDataLabel.Label)) {
@@ -112,9 +113,21 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
         }
         if (label != null) {
             String TeamID = label.get(0).TeamID;
-
-            OtherBusiness other = new OtherBusiness();
-            other.GetAllStaffForTeam(handler, TeamID);
+            try
+            {
+                if(Reservoir.contains(LocalDataLabel.AllUserInTeam))
+                {
+                    Log.i(" userinteam  SETCAche","FHZ");
+                    Type resultType = new TypeToken<List<UserInTeam>>() {
+                    }.getType();
+                    List<UserInTeam> entityList = Reservoir.get(LocalDataLabel.AllUserInTeam, resultType);
+                    if(entityList==null||entityList.size()==0)
+                    {
+                        OtherBusiness other = new OtherBusiness();
+                        other.GetAllStaffForTeam(handler, TeamID);
+                    }
+                }
+            }catch (Exception e){}
             return;
         }
     }

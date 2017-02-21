@@ -20,17 +20,23 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anupcowkur.reservoir.Reservoir;
+import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.WorkValueBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UserInTeam;
+import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.entities.ValueDetailResult;
 import com.example.beyondsys.ppv.entities.ValueDetailResultParam;
+import com.example.beyondsys.ppv.entities.WorkValueResultParams;
 import com.example.beyondsys.ppv.tools.DateUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.MonPickerDialog;
+import com.google.gson.reflect.TypeToken;
 //import com.google.android.gms.appindexing.Action;
 //import com.google.android.gms.appindexing.AppIndex;
 //import com.google.android.gms.common.api.GoogleApiClient;
@@ -39,6 +45,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,13 +56,14 @@ import java.util.List;
 import java.util.Map;
 
 public class PersonValueDetail extends AppCompatActivity {
-    ACache mCache=null;
     private ListView listView;
     private TextView textView,monthSum,valueSum,personName;
     private ImageView back,lastone,nextone,lastmonth,nextmonth;
     private  List<ValueDetailResultParam> valueDetailList;
+    private  List<ValueDetailResultParam>  personList;
      private SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
     private  String  nowTime=sdf.format(new  java.util.Date());
+    private  String  SelectTime;
     private Handler handler=new Handler()
     {
         public void handleMessage(Message msg)
@@ -63,6 +71,7 @@ public class PersonValueDetail extends AppCompatActivity {
             if(msg.what== ThreadAndHandlerLabel.GetWorkValueContext)
             {
                 String  jsonStr=msg.obj.toString();
+                Log.i("价值详细 返回值"+jsonStr,"FHZ");
                 if(msg.obj!=null&& !jsonStr.equals("anyType{}"))
                 {
                     try{
@@ -71,29 +80,42 @@ public class PersonValueDetail extends AppCompatActivity {
                         {
                             if(valueDetailResult.AccessResult==0)
                             {
-                                JSONArray jsonArr=(JSONArray)valueDetailResult.ScoredetailsList;
-                                if(jsonArr!=null&&jsonArr.length()!=0)
-                                {
-                                    for(int i=0;i<jsonArr.length();i++)
-                                    {
-                                        try {
-                                            JSONObject json=(JSONObject)jsonArr.get(i);
-                                            ValueDetailResultParam entity=JsonEntity.ParseJsonForValueDetailParam(json.toString());
-                                            if(entity!=null)
-                                            {
-                                                valueDetailList.add(entity);
-                                            }
+                                valueDetailList=valueDetailResult.ScoredetailsList;
+                                Reservoir.putAsync(LocalDataLabel.WorkValueDetail+SelectTime, valueDetailList, new ReservoirPutCallback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.i("设置list date=："+SelectTime,"FHZ");
+                                       setListData(SelectTime);
+                                    }
 
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
+                                    @Override
+                                    public void onFailure(Exception e) {
 
                                     }
-                                    if(valueDetailList!=null&&valueDetailList.size()!=0)
-                                    {
-                                        //存缓存
-                                    }
-                                }
+                                });
+//                              //  JSONArray jsonArr=(JSONArray)valueDetailResult.ScoredetailsList;
+//                                if(jsonArr!=null&&jsonArr.length()!=0)
+//                                {
+//                                    for(int i=0;i<jsonArr.length();i++)
+//                                    {
+//                                        try {
+//                                            JSONObject json=(JSONObject)jsonArr.get(i);
+//                                            ValueDetailResultParam entity=JsonEntity.ParseJsonForValueDetailParam(json.toString());
+//                                            if(entity!=null)
+//                                            {
+//                                                valueDetailList.add(entity);
+//                                            }
+//
+//                                        } catch (JSONException e) {
+//                                            e.printStackTrace();
+//                                        }
+//
+//                                    }
+//                                    if(valueDetailList!=null&&valueDetailList.size()!=0)
+//                                    {
+//                                        //存缓存
+//                                    }
+//                                }
                             }
                         }
                     }catch (Exception e){}
@@ -114,13 +136,13 @@ public class PersonValueDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_value_detail);
         init();
-        setListData(nowTime);
+        //setListData(nowTime);
+        showData(nowTime);
         setListener();
     }
 
     private void  init()
     {
-        mCache=ACache.get(this);
         listView = (ListView) findViewById(R.id.MonthDeatil_list);
         back = (ImageView) this.findViewById(R.id.dttail_back);
         textView = (TextView) findViewById(R.id.selectTime_tex);
@@ -131,6 +153,7 @@ public class PersonValueDetail extends AppCompatActivity {
         monthSum=(TextView)findViewById(R.id.monthsum_tex);
         valueSum=(TextView)findViewById(R.id.valuesum_tex);
         personName=(TextView)findViewById(R.id.personname_tex);
+        SelectTime=nowTime;
     }
     private void setListData(String date)
     {
@@ -139,12 +162,67 @@ public class PersonValueDetail extends AppCompatActivity {
         listView.setAdapter(adapter);
 
     }
- private  void setPersonData(String  personid)
+ private  void showData(String  date)
  {
 
+     boolean isCache=setmCache(date);
+     if(!isCache)
+     {
+            setService(date);
+     }
+
  }
+private  boolean  setmCache(String date)
+{
+    try{
+        if(Reservoir.contains(LocalDataLabel.WorkValueDetail+date))
+        {
+            Type resultType = new TypeToken<List<WorkValueResultParams>>() {
+            }.getType();
+            valueDetailList=Reservoir.get(LocalDataLabel.WorkValueDetail+date,resultType);
+            Log.i("设置list date=："+date,"FHZ");
+            setListData(date);
+            return  true;
+        }
+    }catch (Exception e)
+    {
+        return  false;
+    }
+    return  false;
+}
 
-
+    private  void  setService(String date)
+    {
+        WorkValueBusiness workValueBusiness=new WorkValueBusiness();
+        String id="";
+        String  TeamID="";
+        String TicketID="";
+        Intent intent=getIntent();
+        Bundle bundle=intent.getExtras();
+        id=bundle.getString("personId");
+        List<TeamEntity> label=null;
+        try{
+            if(Reservoir.contains(LocalDataLabel.Label))
+            {
+                Type resultType = new TypeToken<List<TeamEntity>>() {
+                }.getType();
+                label = Reservoir.get(LocalDataLabel.Label, resultType);
+                TeamID=label.get(0).TeamID;
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                UserLoginResultEntity userLoginResultEntity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+                TicketID = userLoginResultEntity.TicketID;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        workValueBusiness.GetWorkValueContext(handler,id,TeamID,date,TicketID,1);
+    }
     private void setListener()
     {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -183,7 +261,6 @@ public class PersonValueDetail extends AppCompatActivity {
              //判断是否为最初月份，否则减一
              String month=monthSum.getText().toString();
              String  oldTime=textView.getText().toString();
-             String newTime="";
              Date oldDate=null;
              Date minDate=null;
              String nowTime=sdf.format(new  java.util.Date());
@@ -200,14 +277,14 @@ public class PersonValueDetail extends AppCompatActivity {
              Log.e("time3", "qq");
              if(oldDate.getTime()<minDate.getTime()||oldDate.getTime()==minDate.getTime())
              {
-                 newTime=oldTime;
+                 SelectTime=oldTime;
              }
              else {
-                  newTime = dateFormat(oldTime, -1);
+                  SelectTime = dateFormat(oldTime, -1);
 
              }
-             textView.setText(newTime);
-             setListData(newTime);
+             textView.setText(SelectTime);
+             showData(SelectTime);
          }
      });
         lastone.setOnClickListener(new View.OnClickListener() {
@@ -221,7 +298,6 @@ public class PersonValueDetail extends AppCompatActivity {
             public void onClick(View v) {
                 //判断是否为当前月份，否则加一
                 String  oldTime=textView.getText().toString();
-                String newTime="";
         //    SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
                 Date oldDate=null;
                 Date nowDate=null;
@@ -237,26 +313,27 @@ public class PersonValueDetail extends AppCompatActivity {
                 Log.e("time3", "qq");
                 if(oldDate.getTime()>nowDate.getTime()||oldDate.getTime()==nowDate.getTime())
                 {
-                    newTime=oldTime;
+                   SelectTime=oldTime;
                 }
                  else
                 {
-                    newTime=dateFormat(oldTime, +1);
+                    SelectTime=dateFormat(oldTime, +1);
                 }
-                textView.setText(newTime);
-                setListData(newTime);
+                textView.setText(SelectTime);
+               showData(SelectTime);
             }
         });
         nextone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //下一个人
+
             }
         });
     }
     private List<Map<String, Object>> getData(String date) {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        List<ValueDetailResultParam> entityList=getEntities(date);
+        List<ValueDetailResultParam> entityList=valueDetailList;
         if(entityList==null||entityList.size()==0)
         {
             return  list;
@@ -264,8 +341,13 @@ public class PersonValueDetail extends AppCompatActivity {
         for ( ValueDetailResultParam entity:entityList)
         {
             Map<String, Object> map = new HashMap<String, Object>();
-            //图片未处理
-            map.put("itemImg", R.drawable.work_item);
+            //根据类别不同图片不同
+            if (entity.Category == 0) {
+                map.put("itemImg", R.drawable.b);
+            } else {
+                map.put("itemImg", R.drawable.t);
+            }
+         //   map.put("itemImg", R.drawable.work_item);
             map.put("itemId",entity.WorkID);
             map.put("itemName", entity.WorkName);
             map.put("planValue", String.valueOf(entity.IdealScore));
@@ -276,24 +358,24 @@ public class PersonValueDetail extends AppCompatActivity {
     }
 private  List<ValueDetailResultParam> getEntities(String date)
 {
-    WorkValueBusiness workValueBusiness=new WorkValueBusiness();
-    String id="";
-    Intent intent=getIntent();
-    Bundle bundle=intent.getExtras();
-    id=bundle.getString("personId");
-    String TeamID="";
-    String jsonarr=mCache.getAsString(LocalDataLabel.Label);
-    if(jsonarr!=null)
-    {
-        try {
-            List<TeamEntity> teamEntityList= JsonEntity.ParsingJsonForTeamList(jsonarr);
-            if(teamEntityList!=null&&(!teamEntityList.isEmpty()))
-            {
-                TeamID=teamEntityList.get(0).TeamID;
-            }
-        }catch (Exception e){}
-    }
-    workValueBusiness.GetWorkValueContext(handler, mCache,id,TeamID,date,1);
+//    WorkValueBusiness workValueBusiness=new WorkValueBusiness();
+//    String id="";
+//    Intent intent=getIntent();
+//    Bundle bundle=intent.getExtras();
+//    id=bundle.getString("personId");
+//    String TeamID="";
+//    String jsonarr=mCache.getAsString(LocalDataLabel.Label);
+//    if(jsonarr!=null)
+//    {
+//        try {
+//            List<TeamEntity> teamEntityList= JsonEntity.ParsingJsonForTeamList(jsonarr);
+//            if(teamEntityList!=null&&(!teamEntityList.isEmpty()))
+//            {
+//                TeamID=teamEntityList.get(0).TeamID;
+//            }
+//        }catch (Exception e){}
+//    }
+//    workValueBusiness.GetWorkValueContext(handler, mCache,id,TeamID,date,1);
     return  valueDetailList;
 
 }

@@ -32,6 +32,7 @@ import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.SubmitInfoResult;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UIDEntity;
 import com.example.beyondsys.ppv.entities.UserInfoResultParams;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
@@ -60,6 +61,7 @@ public class PersonInfo extends AppCompatActivity {
     private String IMAGE_FILE_LOCATION = Tools.getSDPath() + File.separator + "photo.jpeg";
     File file;
     private UserInfoResultParams personInfoEntity, newInfo;
+    private UIDEntity uidEntity;
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.UploadImg) {
@@ -68,6 +70,7 @@ public class PersonInfo extends AppCompatActivity {
                 if (!msg.obj.toString().equals("") && msg.obj!=null&& !jsonStr.equals("anyType{}"))
                 {
                     Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
+
                 }
                 else
                 {
@@ -93,9 +96,13 @@ public class PersonInfo extends AppCompatActivity {
                                       public void onSuccess() {
                                           if(bitmap!=null)
                                           {
-                                         /*上传头像，不在这个位置，以后会改*/
-                                              ImgBusiness uploadImg = new ImgBusiness();
-                                              uploadImg.uploadImg(handler, Tools.bitmap2Base64(bitmap),"xxxx");
+                                              if(uidEntity!=null)
+                                              {
+                                                   /*上传头像，不在这个位置，以后会改*/
+                                                  ImgBusiness uploadImg = new ImgBusiness();
+                                                  uploadImg.uploadImg(handler, Tools.bitmap2Base64(bitmap),uidEntity.UID);
+                                              }
+
                                           }
                                       }
 
@@ -212,7 +219,13 @@ public class PersonInfo extends AppCompatActivity {
 //        personInfoEntity=new PersonInfoEntity();
 //        personInfoEntity.BID="BID";
 //        personInfoEntity.ID="ID";
-
+        try {
+            if (Reservoir.contains(LocalDataLabel.UserID)) {
+                uidEntity = Reservoir.get(LocalDataLabel.UserID, UIDEntity.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private  void initCache()

@@ -78,12 +78,10 @@ public class WorkValueBusiness {
     }
 
     /*获取详细价值*/
-    public void GetWorkValueContext(final Handler handler, ACache mCache, String UserID, String TeamID, String DateTime, int pagenum) {
-        /*获取缓存*/
-        UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
-        if (entity != null) {
+    public void GetWorkValueContext(final Handler handler, String UserID, String TeamID, String DateTime, String TicketID, int pagenum) {
+
             WorkValueContextPerson person = new WorkValueContextPerson();
-            person.TicketID = entity.TicketID;
+            person.TicketID = TicketID;
             person.TeamID = TeamID;
             person.UserID = UserID;
             person.Time = DateTime;
@@ -118,11 +116,7 @@ public class WorkValueBusiness {
                     }
                 }
             }.start();
-        } else {
-            Message msg = Message.obtain();
-            msg.what = ThreadAndHandlerLabel.LocalNotdata;
-            handler.sendMessage(msg);
-        }
+
     }
 
     /*获取详细价值参数*/

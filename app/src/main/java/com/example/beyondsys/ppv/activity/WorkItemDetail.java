@@ -556,7 +556,7 @@ public class WorkItemDetail extends AppCompatActivity {
         else
         {
             WorkItemBusiness business=new WorkItemBusiness();
-            business.GetWorkItemContent(handler,WorkID,TKID);
+            business.GetWorkItemContent(handler,WorkID);
         }
         /*获取子项*/
     }

@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.anupcowkur.reservoir.Reservoir;
+import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.ImgBusiness;
 import com.example.beyondsys.ppv.bussiness.OneSelfBusiness;
@@ -138,11 +139,13 @@ public class WorkValueView extends Fragment {
         }
         init();
         //setAdapter();
-        setListenter();
+
 
         GetDataForCache();
 
         GetDataForService();
+
+        setListenter();
 
         return rootView;
     }
@@ -237,6 +240,8 @@ public class WorkValueView extends Fragment {
                 TextView person = (TextView) view.findViewById(R.id.personid_tex);
                 personId = person.getText().toString();
                 intent.putExtra("personId", personId);
+//                intent.putExtra("sortFlag",sortFlag);
+//                intent.putExtra("staFlag",staFlag);
                 startActivity(intent);
 
             }
@@ -340,7 +345,9 @@ public class WorkValueView extends Fragment {
                 /*对剩下的数据排序*/
                 listvalue = ListSort.DownSort(listvalue);
                 /*把当前用户加到第一个*/
-                listvalue.add(0,os_entity);
+                listvalue.add(0, os_entity);
+
+
                 for (WorkValueResultParams valueEntity : listvalue) {
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
@@ -357,7 +364,8 @@ public class WorkValueView extends Fragment {
                 /*对剩下的数据排序*/
                 listvalue = ListSort.UpSort(listvalue);
                 /*把当前用户加到第一个*/
-                listvalue.add(0,os_entity);
+                listvalue.add(0, os_entity);
+
                 for (WorkValueResultParams valueEntity : listvalue) {
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
@@ -403,6 +411,19 @@ public class WorkValueView extends Fragment {
                     map.put("monthSum", valueEntity.Month + "个月");
                     list.add(map);
                 }
+                //存缓存 直接存升序排列
+                Reservoir.putAsync(LocalDataLabel.WorkValueList, entityList, new ReservoirPutCallback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+
+                    }
+                });
+
             }
         }
         return list;
