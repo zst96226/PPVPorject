@@ -83,7 +83,8 @@ public class WorkValueView extends Fragment {
     private TextView sort_tex, filter_tex;
     private List<WorkValueResultParams> valueEntityList = null;
     private UserInfoResultParams curPersonEntity = null;
-    File file;
+   // File file;
+    private ImgBusiness imgBusiness;
     private final static int sortup = 1;
     private final static int sortdown = 0;
     private final static int curmonth = 0;
@@ -151,6 +152,7 @@ public class WorkValueView extends Fragment {
     }
 
     private void init() {
+       imgBusiness=new ImgBusiness();
         listView = (ListView) rootView.findViewById(R.id.value_list);
         sort_layout = (LinearLayout) rootView.findViewById(R.id.wv_sort);
         filter_layout = (LinearLayout) rootView.findViewById(R.id.wv_filter);
@@ -239,10 +241,22 @@ public class WorkValueView extends Fragment {
                 Intent intent = new Intent(getActivity(), PersonValueDetail.class);
                 TextView person = (TextView) view.findViewById(R.id.personid_tex);
                 personId = person.getText().toString();
-                intent.putExtra("personId", personId);
+
+                for (WorkValueResultParams workValue: valueEntityList)
+                {
+                    if(workValue.UserID.equals(personId))
+                    {
+                        Bundle bundle = new Bundle();
+                        intent.putExtra("personId", personId);
+                        bundle.putSerializable("Item", workValue);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                }
+//
 //                intent.putExtra("sortFlag",sortFlag);
 //                intent.putExtra("staFlag",staFlag);
-                startActivity(intent);
+
 
             }
         });
@@ -296,27 +310,27 @@ public class WorkValueView extends Fragment {
         super.onActivityCreated(savedInstanceState);
     }
 
-    private Bitmap setImg(String ImageName) {
-        File fileDir;
-        Bitmap bitmap = null;
-        // Drawable drawable=null;
-        String path = Environment.getExternalStorageDirectory() + "/listviewImg/";// 文件目录
-        fileDir = new File(path);
-        if (!fileDir.exists()) {
-            Log.i("exit", "qq");
-            fileDir.mkdirs();
-        }
-        String picurl = APIEntity.ImagePath + ImageName;
-        file = new File(fileDir, ImageName);
-        if (!file.exists()) {// 如果本地图片不存在则从网上下载
-            ImgBusiness imgBusiness = new ImgBusiness();
-            imgBusiness.downloadImg(picurl, ImageName);
-        } else {// 图片存在则填充到view上
-            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            // drawable =new BitmapDrawable(bitmap);
-        }
-        return bitmap;
-    }
+//    private Bitmap setImg(String ImageName) {
+//        File fileDir;
+//        Bitmap bitmap = null;
+//        // Drawable drawable=null;
+//        String path = Environment.getExternalStorageDirectory() + "/listviewImg/";// 文件目录
+//        fileDir = new File(path);
+//        if (!fileDir.exists()) {
+//            Log.i("exit", "qq");
+//            fileDir.mkdirs();
+//        }
+//        String picurl = APIEntity.ImagePath + ImageName;
+//        file = new File(fileDir, ImageName);
+//        if (!file.exists()) {// 如果本地图片不存在则从网上下载
+//            ImgBusiness imgBusiness = new ImgBusiness();
+//            imgBusiness.downloadImg(picurl, ImageName);
+//        } else {// 图片存在则填充到view上
+//            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+//            // drawable =new BitmapDrawable(bitmap);
+//        }
+//        return bitmap;
+//    }
 
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -352,7 +366,8 @@ public class WorkValueView extends Fragment {
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
-                    Bitmap bitmap = setImg("123.png");
+                    Bitmap bitmap = imgBusiness.setImg("123.png");
+
                     map.put("personImg", bitmap);
                     map.put("personId", valueEntity.UserID);
                     map.put("personName", valueEntity.Name);
@@ -370,7 +385,7 @@ public class WorkValueView extends Fragment {
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
-                    Bitmap bitmap = setImg("123.png");
+                    Bitmap bitmap =  imgBusiness.setImg("123.png");
                     map.put("personImg", bitmap);
                     map.put("personId", valueEntity.UserID);
                     map.put("personName", valueEntity.Name);
@@ -388,7 +403,7 @@ public class WorkValueView extends Fragment {
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
-                    Bitmap bitmap = setImg("123.png");
+                    Bitmap bitmap = imgBusiness.setImg("123.png");
                     map.put("personImg", bitmap);
                     map.put("personId", valueEntity.UserID);
                     map.put("personName", valueEntity.Name);
@@ -403,7 +418,7 @@ public class WorkValueView extends Fragment {
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
-                    Bitmap bitmap = setImg("123.png");
+                    Bitmap bitmap = imgBusiness.setImg("123.png");
                     map.put("personImg", bitmap);
                     map.put("personId", valueEntity.UserID);
                     map.put("personName", valueEntity.Name);

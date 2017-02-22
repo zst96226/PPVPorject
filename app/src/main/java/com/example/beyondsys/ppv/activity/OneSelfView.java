@@ -3,6 +3,7 @@ package com.example.beyondsys.ppv.activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import com.anupcowkur.reservoir.Reservoir;
 import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.bussiness.ImgBusiness;
 import com.example.beyondsys.ppv.bussiness.LoginBusiness;
 import com.example.beyondsys.ppv.bussiness.OneSelfBusiness;
 import com.example.beyondsys.ppv.bussiness.OtherBusiness;
@@ -48,6 +50,7 @@ import com.example.beyondsys.ppv.tools.MD5;
 import com.example.beyondsys.ppv.tools.ValidaService;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,10 +68,11 @@ private LinearLayout personInfoLayout;
     private CustomDialog dialog;
     private RelativeLayout changeTeam_layout;
     private ListView child_list;
-    private ImageView show_team;
+    private ImageView show_team,person_img;
     private TextView teamName_tex,teamlevel_tex,personname_tex,valuesum_tex,monthsum_tex;
     private UserInfoResultParams personInfoEntity;
-    private  String TeamID;
+    private  String TeamID,UserID;
+  private ImgBusiness imgBusiness;
     private Handler handler=new Handler(){
         public void handleMessage(Message msg)
         {
@@ -220,7 +224,7 @@ private LinearLayout personInfoLayout;
 
     private  void init(View  rootView)
     {
-        mCache=ACache.get(getActivity());
+        imgBusiness=new ImgBusiness();
         personInfoLayout=(LinearLayout)rootView.findViewById(R.id.personInfo_layout);
         passwordChangeLayout=(LinearLayout)rootView.findViewById(R.id.passwordChange_layout);
         qiutLayout=(LinearLayout)rootView.findViewById( R.id.quit_layout);
@@ -232,6 +236,9 @@ private LinearLayout personInfoLayout;
         personname_tex=(TextView)rootView.findViewById(R.id.personname_tex);
         valuesum_tex=(TextView)rootView.findViewById(R.id.valuesum_tex);
         monthsum_tex=(TextView)rootView.findViewById(R.id.monthsum_tex);
+        person_img=(ImageView)rootView.findViewById(R.id.person_img);
+        Bitmap bitmap=imgBusiness.setImg("123.png");
+       person_img.setImageBitmap(bitmap);
         List<TeamEntity> teamList=null;
         try{
             Log.i("label try","FHZ");
@@ -303,6 +310,7 @@ private LinearLayout personInfoLayout;
         {
             Log.i("personInfoEntity","FHZ");
             personname_tex.setText(personInfoEntity.Name);
+            Log.i(String.valueOf(personInfoEntity.TotalScore),"FHZ");
             valuesum_tex.setText(String.valueOf(personInfoEntity.TotalScore));
             monthsum_tex.setText(String.valueOf(personInfoEntity.TotalMonth));
             return  true;

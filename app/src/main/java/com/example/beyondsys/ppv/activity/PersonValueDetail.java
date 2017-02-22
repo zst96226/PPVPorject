@@ -3,7 +3,10 @@ package com.example.beyondsys.ppv.activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -23,8 +26,10 @@ import android.widget.Toast;
 import com.anupcowkur.reservoir.Reservoir;
 import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.bussiness.ImgBusiness;
 import com.example.beyondsys.ppv.bussiness.WorkValueBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.APIEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
@@ -45,6 +50,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -64,6 +70,9 @@ public class PersonValueDetail extends AppCompatActivity {
      private SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
     private  String  nowTime=sdf.format(new  java.util.Date());
     private  String  SelectTime;
+    private  String  SelectPersonId;
+    private ImageView person_img;
+    File file;
     private Handler handler=new Handler()
     {
         public void handleMessage(Message msg)
@@ -81,18 +90,19 @@ public class PersonValueDetail extends AppCompatActivity {
                             if(valueDetailResult.AccessResult==0)
                             {
                                 valueDetailList=valueDetailResult.ScoredetailsList;
-                                Reservoir.putAsync(LocalDataLabel.WorkValueDetail+SelectTime, valueDetailList, new ReservoirPutCallback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        Log.i("设置list date=："+SelectTime,"FHZ");
-                                       setListData(SelectTime);
-                                    }
-
-                                    @Override
-                                    public void onFailure(Exception e) {
-
-                                    }
-                                });
+                                Log.i("设置list date=："+SelectTime,"FHZ");
+                                setListData(SelectTime);
+//                                Reservoir.putAsync(LocalDataLabel.WorkValueDetail+SelectPersonId+SelectTime, valueDetailList, new ReservoirPutCallback() {
+//                                    @Override
+//                                    public void onSuccess() {
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onFailure(Exception e) {
+//
+//                                    }
+//                                });
 //                              //  JSONArray jsonArr=(JSONArray)valueDetailResult.ScoredetailsList;
 //                                if(jsonArr!=null&&jsonArr.length()!=0)
 //                                {
@@ -137,8 +147,9 @@ public class PersonValueDetail extends AppCompatActivity {
         setContentView(R.layout.activity_person_value_detail);
         init();
         //setListData(nowTime);
-        showData(nowTime);
+      //  showData(nowTime);
         setListener();
+        setService(nowTime);
     }
 
     private void  init()
@@ -153,8 +164,44 @@ public class PersonValueDetail extends AppCompatActivity {
         monthSum=(TextView)findViewById(R.id.monthsum_tex);
         valueSum=(TextView)findViewById(R.id.valuesum_tex);
         personName=(TextView)findViewById(R.id.personname_tex);
+        person_img=(ImageView)findViewById(R.id.person_img);
         SelectTime=nowTime;
+        Intent intent=getIntent();
+        Bundle bundle=intent.getExtras();
+        SelectPersonId=bundle.getString("personId");
+        WorkValueResultParams workValue=(WorkValueResultParams)bundle.getSerializable("Item");
+        personName.setText(workValue.Name);
+        ImgBusiness imgBusiness=new ImgBusiness();
+        Bitmap bitmap = imgBusiness.setImg("123.png");
+        //Bitmap bitmap = setImg("123.png");
+        person_img.setImageBitmap(bitmap);
+        monthSum.setText(String.valueOf(workValue.Month));
+        valueSum.setText(String.valueOf(workValue.BasicScore+workValue.CheckedScore));
+
+        //intent.getSerializableExtra("Item")
     }
+//    private Bitmap setImg(String ImageName) {
+//        File fileDir;
+//        Bitmap bitmap = null;
+//        // Drawable drawable=null;
+//        String path = Environment.getExternalStorageDirectory() + "/listviewImg/";// 文件目录
+//        fileDir = new File(path);
+//        if (!fileDir.exists()) {
+//            Log.i("exit", "qq");
+//            fileDir.mkdirs();
+//        }
+//        String picurl = APIEntity.ImagePath + ImageName;
+//        file = new File(fileDir, ImageName);
+//        if (!file.exists()) {// 如果本地图片不存在则从网上下载
+//            ImgBusiness imgBusiness = new ImgBusiness();
+//            imgBusiness.downloadImg(picurl, ImageName);
+//        } else {// 图片存在则填充到view上
+//            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+//            // drawable =new BitmapDrawable(bitmap);
+//        }
+//        return bitmap;
+//    }
+
     private void setListData(String date)
     {
         SimpleAdapter adapter = new SimpleAdapter(this, getData(date), R.layout.valuedetailstyle, new String[]{"itemImg","itemId", "itemName", "planValue", "trueValue"},
@@ -179,8 +226,9 @@ private  boolean  setmCache(String date)
         {
             Type resultType = new TypeToken<List<WorkValueResultParams>>() {
             }.getType();
-            valueDetailList=Reservoir.get(LocalDataLabel.WorkValueDetail+date,resultType);
+            valueDetailList=Reservoir.get(LocalDataLabel.WorkValueDetail+SelectPersonId+date,resultType);
             Log.i("设置list date=："+date,"FHZ");
+            Log.i("setcache","FHZ");
             setListData(date);
             return  true;
         }
@@ -194,12 +242,9 @@ private  boolean  setmCache(String date)
     private  void  setService(String date)
     {
         WorkValueBusiness workValueBusiness=new WorkValueBusiness();
-        String id="";
         String  TeamID="";
         String TicketID="";
-        Intent intent=getIntent();
-        Bundle bundle=intent.getExtras();
-        id=bundle.getString("personId");
+
         List<TeamEntity> label=null;
         try{
             if(Reservoir.contains(LocalDataLabel.Label))
@@ -221,7 +266,8 @@ private  boolean  setmCache(String date)
         } catch (Exception e) {
             e.printStackTrace();
         }
-        workValueBusiness.GetWorkValueContext(handler,id,TeamID,date,TicketID,1);
+        Log.i("setservice","FHZ");
+        workValueBusiness.GetWorkValueContext(handler,SelectPersonId,TeamID,date,TicketID,1);
     }
     private void setListener()
     {
@@ -284,7 +330,8 @@ private  boolean  setmCache(String date)
 
              }
              textView.setText(SelectTime);
-             showData(SelectTime);
+            // showData(SelectTime);
+             setService(SelectTime);
          }
      });
         lastone.setOnClickListener(new View.OnClickListener() {
@@ -320,7 +367,8 @@ private  boolean  setmCache(String date)
                     SelectTime=dateFormat(oldTime, +1);
                 }
                 textView.setText(SelectTime);
-               showData(SelectTime);
+              // showData(SelectTime);
+                setService(SelectTime);
             }
         });
         nextone.setOnClickListener(new View.OnClickListener() {

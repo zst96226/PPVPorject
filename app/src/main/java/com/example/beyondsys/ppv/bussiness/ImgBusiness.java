@@ -1,5 +1,7 @@
 package com.example.beyondsys.ppv.bussiness;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -109,4 +111,28 @@ public class ImgBusiness
         }.start();
     }
 
+
+/* 返回bitmap   ImageName 为  人员ID.png */
+    public Bitmap setImg(String ImageName) {
+        File fileDir;
+        Bitmap bitmap = null;
+        File file;
+        // Drawable drawable=null;
+        String path = Environment.getExternalStorageDirectory() + "/listviewImg/";// 文件目录
+        fileDir = new File(path);
+        if (!fileDir.exists()) {
+            Log.i("exit", "qq");
+            fileDir.mkdirs();
+        }
+        String picurl = APIEntity.ImagePath + ImageName;
+        file = new File(fileDir, ImageName);
+        if (!file.exists()) {// 如果本地图片不存在则从网上下载
+            ImgBusiness imgBusiness = new ImgBusiness();
+            imgBusiness.downloadImg(picurl, ImageName);
+        } else {// 图片存在则填充到view上
+            bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            // drawable =new BitmapDrawable(bitmap);
+        }
+        return bitmap;
+    }
 }

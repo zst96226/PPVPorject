@@ -62,6 +62,7 @@ public class PersonInfo extends AppCompatActivity {
     File file;
     private UserInfoResultParams personInfoEntity, newInfo;
     private UIDEntity uidEntity;
+    private  ImgBusiness imgBusiness;
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.UploadImg) {
@@ -199,6 +200,7 @@ public class PersonInfo extends AppCompatActivity {
     }
 
     private void init() {
+        imgBusiness=new ImgBusiness();
         infoModify = (LinearLayout) findViewById(R.id.infoModify);
         back = (ImageView) this.findViewById(R.id.dttail_back);
         myImgLayout = (RelativeLayout) findViewById(R.id.myImg_layout);
@@ -277,7 +279,8 @@ private  void setData()
                 myIDEdt.setText(personInfoEntity.IDNo);
                 myDesEdt.setText(personInfoEntity.Sign);
                 //个人头像未完成
-                Bitmap userBitmap=setImg(personInfoEntity.UserID);
+
+                Bitmap userBitmap=imgBusiness.setImg(personInfoEntity.UserID+".png");
                 myImg.setImageBitmap(userBitmap);
                 return  true;
             }
@@ -290,35 +293,35 @@ private  void setData()
         OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
         oneSelfBusiness.GetOneSelf(handler);
     }
-    private Bitmap setImg(String id)
-    {
-        File fileDir;
-        Bitmap bitmap=null;
-        // Drawable drawable=null;
-        String path = Environment.getExternalStorageDirectory()
-                + "/listviewImg/";// 文件目录
-        fileDir = new File(path);
-        if (!fileDir.exists()) {
-            Log.i("exit","qq");
-            fileDir.mkdirs();
-        }
-        String picurl="http://120.26.37.247:8181/File/"+id+".png";
-        String      name=id+".png";
-        file = new File(fileDir, name);
-        if (!file.exists())
-        {// 如果本地图片不存在则从网上下载
-            Log.i("wwwwwwwww","qq");
-            ImgBusiness imgBusiness=new ImgBusiness();
-            imgBusiness.downloadImg(picurl,name);
-            Log.i("end", "qq");
-        } else {// 图片存在则填充到view上
-            Log.i("ttttt", "qq");
-            bitmap = BitmapFactory
-                    .decodeFile(file.getAbsolutePath());
-            // drawable =new BitmapDrawable(bitmap);
-        }
-        return bitmap;
-    }
+//    private Bitmap setImg(String id)
+//    {
+//        File fileDir;
+//        Bitmap bitmap=null;
+//        // Drawable drawable=null;
+//        String path = Environment.getExternalStorageDirectory()
+//                + "/listviewImg/";// 文件目录
+//        fileDir = new File(path);
+//        if (!fileDir.exists()) {
+//            Log.i("exit","qq");
+//            fileDir.mkdirs();
+//        }
+//        String picurl="http://120.26.37.247:8181/File/"+id+".png";
+//        String      name=id+".png";
+//        file = new File(fileDir, name);
+//        if (!file.exists())
+//        {// 如果本地图片不存在则从网上下载
+//            Log.i("wwwwwwwww","qq");
+//            ImgBusiness imgBusiness=new ImgBusiness();
+//            imgBusiness.downloadImg(picurl,name);
+//            Log.i("end", "qq");
+//        } else {// 图片存在则填充到view上
+//            Log.i("ttttt", "qq");
+//            bitmap = BitmapFactory
+//                    .decodeFile(file.getAbsolutePath());
+//            // drawable =new BitmapDrawable(bitmap);
+//        }
+//        return bitmap;
+//    }
     public void isModify(View v) {
         modifyImg = (ImageView) findViewById(R.id.infoModify_img);
         if (!editFlag) {
