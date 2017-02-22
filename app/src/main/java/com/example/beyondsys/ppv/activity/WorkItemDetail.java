@@ -86,7 +86,7 @@ public class WorkItemDetail extends AppCompatActivity {
                             {
                                 case 0:
                                     /*获得详细信息*/
-                                    List<WorkDetailResult> list=Result.ScoredetailsList;
+                                    List<WorkDetailResult> list=Result.WorkDetailsOutputParams;
                                     if(list!=null)
                                     {
                                         /*显示工作详细信息*/
@@ -101,6 +101,16 @@ public class WorkItemDetail extends AppCompatActivity {
                                     break;
                             }
                         }
+                    } catch (Exception e) {
+                    }
+                } else {
+                    Toast.makeText(WorkItemDetail.this, "没有获取到当前工作项信息", Toast.LENGTH_SHORT).show();
+                }
+            }else if(msg.what==ThreadAndHandlerLabel.GetChildWorkItem){
+                if (msg.obj != null) {
+                    Log.i("工作子项返回值:"+msg.obj.toString(),"zst_test");
+                    try {
+
                     } catch (Exception e) {
                     }
                 } else {
@@ -548,17 +558,19 @@ public class WorkItemDetail extends AppCompatActivity {
 
     /*获取服务端数据*/
     private void GetDataForService() {
-        /*获取当前项详细信息*/
         if (WorkID.equals("") || TKID.equals("")) {
             Toast.makeText(WorkItemDetail.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
             /*清除其余活动中Activity以及全部缓存显示登录界面*/
         }
         else
         {
+            /*获取当前项详细信息*/
             WorkItemBusiness business=new WorkItemBusiness();
-            business.GetWorkItemContent(handler,WorkID);
+            business.GetWorkItemContent(handler,WorkID,TKID);
+            /*获取子项*/
+            business.GetChildWorkItem(handler,WorkID,TKID,1);
         }
-        /*获取子项*/
+
     }
 
     /*设置下拉菜单相关*/

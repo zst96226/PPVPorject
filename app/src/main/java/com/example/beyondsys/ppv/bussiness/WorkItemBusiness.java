@@ -87,10 +87,52 @@ public class WorkItemBusiness {
     }
 
     /*获取工作项详细信息*/
-    public void GetWorkItemContent(final Handler handler,  String WorkItemID) {
-        /*获取缓存*/
-       // UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
-  //      UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
+    public void GetWorkItemContent(final Handler handler, String WorkItemID, String proof) {
+        GetWorkItemContentPerson person = new GetWorkItemContentPerson();
+        person.TicketID = proof;
+        person.WorkItemID = WorkItemID;
+        final String JsonParams = GsonUtil.getGson().toJson(person);
+        Log.i("提交对象：" + JsonParams, "zst_test");
+        new Thread() {
+            public void run() {
+                /*根据命名空间和方法得到SoapObject对象*/
+                SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
+                soapObject.addProperty("actionid", APIEntity.GETlWORKITEMCONTEXT);
+                soapObject.addProperty("jsonvalue", JsonParams);
+                // 通过SOAP1.1协议得到envelop对象
+                SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+                // 将soapObject对象设置为envelop对象，传出消息
+                envelop.bodyOut = soapObject;
+                envelop.dotNet = true;
+                HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
+                // 开始调用远程方法
+                try {
+                    httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
+                    Log.i("提交对象：" + JsonParams, "zst_test");
+                    // 得到远程方法返回的SOAP对象
+                    SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+                    Message msg = Message.obtain();
+                    msg.what = ThreadAndHandlerLabel.GetWorkItemContext;
+                    msg.obj = result;
+                    handler.sendMessage(msg);
+                } catch (IOException | XmlPullParserException e) {
+                    e.printStackTrace();
+                    Message msg = Message.obtain();
+                    msg.what = ThreadAndHandlerLabel.CallAPIError;
+                    handler.sendMessage(msg);
+                }
+            }
+        }.start();
+    }
+
+    /*获取工作项详细信息参数*/
+    private class GetWorkItemContentPerson implements Serializable {
+        public String TicketID;
+        public String WorkItemID;
+    }
+
+    /*创建新工作项*/
+    public void AddWorkItem(final Handler handler, WorkItemEntity workItemEntity) {
         UserLoginResultEntity entity = null;
         try {
             if (Reservoir.contains(LocalDataLabel.Proof)) {
@@ -100,71 +142,11 @@ public class WorkItemBusiness {
             e.printStackTrace();
         }
         if (entity != null) {
-            GetWorkItemContentPerson person = new GetWorkItemContentPerson();
-            person.TicketID = entity.TicketID;
-            person.WorkItemID = WorkItemID;
-            final String JsonParams = GsonUtil.getGson().toJson(person);
-            Log.i("提交对象：" + JsonParams, "FHZ");
-            new Thread() {
-                public void run() {
-                /*根据命名空间和方法得到SoapObject对象*/
-                    SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
-                    soapObject.addProperty("actionid", APIEntity.GETlWORKITEMCONTEXT);
-                    soapObject.addProperty("jsonvalue", JsonParams);
-                    // 通过SOAP1.1协议得到envelop对象
-                    SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-                    // 将soapObject对象设置为envelop对象，传出消息
-                    envelop.bodyOut = soapObject;
-                    envelop.dotNet = true;
-                    HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
-                    // 开始调用远程方法
-                    try {
-                        httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
-                        // 得到远程方法返回的SOAP对象
-                        SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
-                        Message msg = Message.obtain();
-                        msg.what = ThreadAndHandlerLabel.GetWorkItemContext;
-                        msg.obj = result;
-                        handler.sendMessage(msg);
-                    } catch (IOException | XmlPullParserException e) {
-                        e.printStackTrace();
-                        Message msg = Message.obtain();
-                        msg.what = ThreadAndHandlerLabel.CallAPIError;
-                        handler.sendMessage(msg);
-                    }
-                }
-            }.start();
-        } else {
-            Message msg = Message.obtain();
-            msg.what = ThreadAndHandlerLabel.LocalNotdata;
-            handler.sendMessage(msg);
-        }
-
-    }
-
-    /*获取工作项详细信息参数*/
-    private class GetWorkItemContentPerson implements Serializable {
-        public String TicketID;
-        public String WorkItemID;
-    }
-    /*创建新工作项*/
-    public    void AddWorkItem(final Handler handler, WorkItemEntity workItemEntity)
-    {
-        UserLoginResultEntity entity = null;
-        try {
-            if (Reservoir.contains(LocalDataLabel.Proof)) {
-                entity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if(entity!=null)
-        {
-            final JSONObject JsonParams = AddWorkItemPerson(workItemEntity,entity.TicketID);
+            final JSONObject JsonParams = AddWorkItemPerson(workItemEntity, entity.TicketID);
             Log.i("创建工作项提交对象：" + JsonParams, "FHZ");
             System.out.println("jsonObject直接创建json:" + JsonParams);
-            new Thread(){
-                public  void run(){
+            new Thread() {
+                public void run() {
                     //////
                     /*根据命名空间和方法得到SoapObject对象*/
                     SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
@@ -181,9 +163,9 @@ public class WorkItemBusiness {
                         httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
                         // 得到远程方法返回的SOAP对象
                         SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
-                        Log.i("创建工作项：senmes" , "FHZ");
+                        Log.i("创建工作项：senmes", "FHZ");
                         Message msg = Message.obtain();
-                        msg.what =ThreadAndHandlerLabel.AddWorkItem ;
+                        msg.what = ThreadAndHandlerLabel.AddWorkItem;
                         msg.obj = result;
                         handler.sendMessage(msg);
                     } catch (IOException | XmlPullParserException e) {
@@ -202,13 +184,14 @@ public class WorkItemBusiness {
             handler.sendMessage(msg);
         }
     }
+
     /*创建新工作项提交参数*/
-    private JSONObject AddWorkItemPerson(WorkItemEntity workItem,String TicketID){
+    private JSONObject AddWorkItemPerson(WorkItemEntity workItem, String TicketID) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("TicketID",TicketID);
+            jsonObject.put("TicketID", TicketID);
             JSONObject newItem = new JSONObject();
-            newItem.put("TheTimeStamp",  workItem.TheTimeStamp);
+            newItem.put("TheTimeStamp", workItem.TheTimeStamp);
             newItem.put("Assigned2", workItem.Assigned2);
             newItem.put("Belong2", workItem.Belong2);
             newItem.put("BID", workItem.BID);
@@ -216,15 +199,15 @@ public class WorkItemBusiness {
             newItem.put("Checker", workItem.Checker);
             newItem.put("Category", workItem.Category);
             newItem.put("ClosingTime", workItem.ClosingTime);
-            newItem.put("Creater",workItem.Creater);
-            newItem.put("CreateTime",workItem.CreateTime);
-            newItem.put("FID",workItem.FID);
-            newItem.put("HardScale",workItem.HardScale);
-            newItem.put("Description",workItem.Description);
+            newItem.put("Creater", workItem.Creater);
+            newItem.put("CreateTime", workItem.CreateTime);
+            newItem.put("FID", workItem.FID);
+            newItem.put("HardScale", workItem.HardScale);
+            newItem.put("Description", workItem.Description);
             newItem.put("ID", workItem.ID);
-            newItem.put("Name",workItem.Name);
-            newItem.put("Status",workItem.Status);
-         jsonObject.put("WorkItem",newItem);
+            newItem.put("Name", workItem.Name);
+            newItem.put("Status", workItem.Status);
+            jsonObject.put("WorkItem", newItem);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -232,60 +215,44 @@ public class WorkItemBusiness {
         return jsonObject;
     }
 
-
     /*获取子工作项*/
-    public void GetChildWorkItem(final Handler handler,  String WorkItemID, int pagenum) {
-        /*获取缓存*/
-      //  UserLoginResultEntity entity = (UserLoginResultEntity) mCache.getAsObject(LocalDataLabel.Proof);
-        UserLoginResultEntity entity = null;
-        try {
-            if (Reservoir.contains(LocalDataLabel.Proof)) {
-                entity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (entity != null) {
-            ChildWorkItemPerson person = new ChildWorkItemPerson();
-            person.proof = entity.TicketID;
-            person.WorkItemid = WorkItemID;
-            person.pageNum = pagenum;
-            final String JsonParams = GsonUtil.getGson().toJson(person);
-            Log.i("提交对象：" + JsonParams, "FHZ");
-            new Thread() {
-                public void run() {
+    public void GetChildWorkItem(final Handler handler, String WorkItemID, String TickID, int pagenum) {
+
+        ChildWorkItemPerson person = new ChildWorkItemPerson();
+        person.proof = TickID;
+        person.WorkItemid = WorkItemID;
+        person.pageNum = pagenum;
+        final String JsonParams = GsonUtil.getGson().toJson(person);
+        Log.i("提交对象：" + JsonParams, "FHZ");
+        new Thread() {
+            public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
-                    SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
-                    soapObject.addProperty("actionid", APIEntity.GETCHILDWORKITEM);
-                    soapObject.addProperty("jsonvalue", JsonParams);
-                    // 通过SOAP1.1协议得到envelop对象
-                    SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-                    // 将soapObject对象设置为envelop对象，传出消息
-                    envelop.bodyOut = soapObject;
-                    envelop.dotNet = true;
-                    HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
-                    // 开始调用远程方法
-                    try {
-                        httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
-                        // 得到远程方法返回的SOAP对象
-                        SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
-                        Message msg = Message.obtain();
-                        msg.what = ThreadAndHandlerLabel.GetChildWorkItem;
-                        msg.obj = result;
-                        handler.sendMessage(msg);
-                    } catch (IOException | XmlPullParserException e) {
-                        e.printStackTrace();
-                        Message msg = Message.obtain();
-                        msg.what = ThreadAndHandlerLabel.CallAPIError;
-                        handler.sendMessage(msg);
-                    }
+                SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
+                soapObject.addProperty("actionid", APIEntity.GETCHILDWORKITEM);
+                soapObject.addProperty("jsonvalue", JsonParams);
+                // 通过SOAP1.1协议得到envelop对象
+                SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+                // 将soapObject对象设置为envelop对象，传出消息
+                envelop.bodyOut = soapObject;
+                envelop.dotNet = true;
+                HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
+                // 开始调用远程方法
+                try {
+                    httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
+                    // 得到远程方法返回的SOAP对象
+                    SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+                    Message msg = Message.obtain();
+                    msg.what = ThreadAndHandlerLabel.GetChildWorkItem;
+                    msg.obj = result;
+                    handler.sendMessage(msg);
+                } catch (IOException | XmlPullParserException e) {
+                    e.printStackTrace();
+                    Message msg = Message.obtain();
+                    msg.what = ThreadAndHandlerLabel.CallAPIError;
+                    handler.sendMessage(msg);
                 }
-            }.start();
-        } else {
-            Message msg = Message.obtain();
-            msg.what = ThreadAndHandlerLabel.LocalNotdata;
-            handler.sendMessage(msg);
-        }
+            }
+        }.start();
     }
 
     /*获取子工作项参数*/

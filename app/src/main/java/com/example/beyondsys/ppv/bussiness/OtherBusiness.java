@@ -42,7 +42,7 @@ public class OtherBusiness {
             person.proof = entity.TicketID;
             person.teamid=TeamID;
             final String JsonParams = GsonUtil.getGson().toJson(person);
-            Log.i("获取团队下全部人员信息提交对象：" + JsonParams, "FHZ");
+            Log.i("提交值："+JsonParams,"zst_test");
             new Thread() {
                 public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
@@ -60,7 +60,6 @@ public class OtherBusiness {
                         httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
                         // 得到远程方法返回的SOAP对象
                         SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
-                        Log.i("获取团队下全部人员信息sendmes" , "FHZ");
                         Message msg = Message.obtain();
                         msg.what = ThreadAndHandlerLabel.GetAllStaff;
                         msg.obj = result;

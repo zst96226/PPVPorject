@@ -9,25 +9,28 @@ import java.util.Date;
 public class WorkDetailResult implements Serializable {
     public WorkDetailResult()
     {
-        AssignerID = null;
-        AssignerName = null;
-        CheckerID = null;
-        CheckerName = null;
-        CreateTime = null;
-        ModifierID = null;
-        ModifierName = null;
-        ModifyTime = null;
+        AssignerID = "";
+        AssignerName = "";
+        CheckerID = "";
+        CheckerName = "";
+        CreateTime = "";
+        ModifierID = "";
+        ModifierName = "";
+        ModifyTime = "";
         Status = 0;
-        Deadline = null;
-        Description = null;
+        Deadline = "";
+        Description = "";
         AccessResult = -3;
-        Creater = null;
-        CreaterID =null;
-        WorkName = null;
+        Creater = "";
+        CreaterID ="";
+        WorkName = "";
         BusinessValue = 0;
         TheTimeStamp = 0;
         Category = 0;
-        FID=null;
+        FID="";
+        Belong2ID="";
+        Belong2Name="";
+        Remark="";
     }
 
     public String AssignerID ;
@@ -36,12 +39,12 @@ public class WorkDetailResult implements Serializable {
     public String  CheckerName ;
     public String  Creater ;
     public String  CreaterID ;
-    public Date CreateTime ;
+    public String CreateTime ;
     public String  ModifierID ;
     public String  ModifierName ;
-    public Date ModifyTime ;
+    public String ModifyTime ;
     public int Status ;
-    public Date Deadline;
+    public String Deadline;
     public String  Description ;
     public String  WorkName ;
     public int AccessResult ;
@@ -49,4 +52,7 @@ public class WorkDetailResult implements Serializable {
     public int TheTimeStamp;
     public int Category;
     public String FID;
+    public String Belong2ID;
+    public String Belong2Name;
+    public String Remark;
 }

@@ -57,25 +57,15 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.GetAllStaff) {
+                Log.i("sta1","zst_test");
                 if (msg.obj != null) {
-                    Log.i("获取团队成员返回值：" + msg.obj, "FHZ");
                     String jsonStr = msg.obj.toString();
                     /*解析Json*/
                     try {
                         UserInTeamResult result = JsonEntity.ParseJsonForUserInTeamResult(jsonStr);
                         if (result != null) {
                             if (result.AccessResult == 0) {
-                                Reservoir.putAsync(LocalDataLabel.AllUserInTeam, result.teamUsers, new ReservoirPutCallback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        //setData();
-                                    }
-
-                                    @Override
-                                    public void onFailure(Exception e) {
-
-                                    }
-                                });
+                                Reservoir.putAsync(LocalDataLabel.AllUserInTeam, result.teamUsers);
                             }
                         }
                     } catch (Exception e) {
@@ -93,11 +83,13 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ppv);
 
+
+        GetAllUserForTeam();
+
         initView();
 
         initData();
 
-        GetAllUserForTeam();
     }
 
     public   void GetAllUserForTeam() {
@@ -113,22 +105,8 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
         }
         if (label != null) {
             String TeamID = label.get(0).TeamID;
-            try
-            {
-                if(Reservoir.contains(LocalDataLabel.AllUserInTeam))
-                {
-                    Log.i(" userinteam  SETCAche","FHZ");
-                    Type resultType = new TypeToken<List<UserInTeam>>() {
-                    }.getType();
-                    List<UserInTeam> entityList = Reservoir.get(LocalDataLabel.AllUserInTeam, resultType);
-                    if(entityList==null||entityList.size()==0)
-                    {
-                        OtherBusiness other = new OtherBusiness();
-                        other.GetAllStaffForTeam(handler, TeamID);
-                    }
-                }
-            }catch (Exception e){}
-            return;
+            OtherBusiness other = new OtherBusiness();
+            other.GetAllStaffForTeam(handler, TeamID);
         }
     }
 
