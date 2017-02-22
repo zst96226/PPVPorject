@@ -41,8 +41,8 @@ public class WorkItemEntity implements Serializable {
         this.Description=null;
         this.Category=0;
         this.Status=0;
-        this.Assigned2=null;
-        this.Belong2=null;
+        this.Assigned2="";
+        this.Belong2="";
         this.Checker=null;
         this.ClosingTime=null;
         this.Creater=null;

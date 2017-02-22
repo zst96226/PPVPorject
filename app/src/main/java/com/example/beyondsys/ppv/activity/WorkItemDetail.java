@@ -33,6 +33,7 @@ import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.SubWorkItemParams;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UIDEntity;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.entities.WorkDetailResult;
 import com.example.beyondsys.ppv.entities.WorkItemChildResultParams;
@@ -58,11 +59,14 @@ public class WorkItemDetail extends AppCompatActivity {
     String TKID = "";
     String TeamID = "";
     String WorkID = "";
+    String UID="";
     List<SubWorkItemParams> chid = new ArrayList<>();
+    PopupMenuForWorkItem popWindow = null;
 
     ListPopupWindow Assign_pop, Checker_pop, Head_pop, Status_pop;
     ArrayList<String> Userlist = new ArrayList<String>();
-    ArrayList<String> Statrlist = new ArrayList<>();
+    ArrayList<String> UserIDlist = new ArrayList<String>();
+    ArrayList<String> Statrlist = new ArrayList<String>();
     ImageView back;
     ImageView wid_show_chid;
     ImageView returen;
@@ -73,7 +77,6 @@ public class WorkItemDetail extends AppCompatActivity {
     private EditText name_edt, assign2_edt, checker_edt, status_edt, Head_edt, value_edt, closingtime_edt, des_edt;
     private TextView wid_workname, wid_workvalue, starttime_tex, endtime_tex, creater_tex, creatertime_tex, modifier_tex, modifytime_tex;
     private RelativeLayout del_layout;
-    private Button del_ok, del_cancel;
     private boolean isdel = false;
     String[] typeList = new String[]{"事项", "任务"};
     private String CurItemId = "", CurItemType = typeList[0];
@@ -91,6 +94,8 @@ public class WorkItemDetail extends AppCompatActivity {
                                     if (list != null) {
                                         /*显示工作详细信息*/
                                         ShowWorkContext(list.get(0));
+                                        /*判断权限显示*/
+                                        SetPermissions(list.get(0));
                                     }
                                     break;
                                 case -1:
@@ -161,8 +166,6 @@ public class WorkItemDetail extends AppCompatActivity {
 
         GetDataForService();
 
-        SetPermissions();
-
         Listener();
 
         SetPopAdapter();
@@ -170,6 +173,7 @@ public class WorkItemDetail extends AppCompatActivity {
 
     /*UI绑定*/
     private void initView() {
+        popWindow = new PopupMenuForWorkItem(WorkItemDetail.this);
         back = (ImageView) this.findViewById(R.id.wid_back);
         wid_show_chid = (ImageView) findViewById(R.id.wid_show_chid);
         menu = (ImageView) findViewById(R.id.anwi_menu);
@@ -182,9 +186,6 @@ public class WorkItemDetail extends AppCompatActivity {
         assign2_edt = (EditText) findViewById(R.id.wid_Assigned2_edt);
         checker_edt = (EditText) findViewById(R.id.wid_Checker_edt);
         status_edt = (EditText) findViewById(R.id.wid_Status_edt);
-        del_layout = (RelativeLayout) findViewById(R.id.del_choose_layout);
-        del_ok = (Button) findViewById(R.id.del_ok);
-        del_cancel = (Button) findViewById(R.id.del_cancel);
         Head_edt = (EditText) findViewById(R.id.wid_Head_edt);
         wid_workname = (TextView) findViewById(R.id.wid_workname);
         wid_workvalue = (TextView) findViewById(R.id.wid_workvalue);
@@ -304,26 +305,6 @@ public class WorkItemDetail extends AppCompatActivity {
                 }
             }
         });
-        del_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //检测是否有选中项，则删除
-                if (child_list.getVisibility() == View.GONE) {
-                    child_list.setVisibility(View.VISIBLE);
-                    SetList();
-                    wid_show_chid.setImageResource(R.drawable.arrow_up_float);
-                }
-                for (int i = 0; i < child_list.getCount(); i++) {
-                    View view = child_list.getChildAt(i);
-                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.child_che);
-                    ImageView img = (ImageView) view.findViewById(R.id.child_img);
-                    img.setVisibility(View.VISIBLE);
-                    checkBox.setVisibility(View.GONE);
-                }
-                isdel = false;
-                del_layout.setVisibility(View.GONE);
-            }
-        });
         returen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -335,7 +316,6 @@ public class WorkItemDetail extends AppCompatActivity {
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                final PopupMenuForWorkItem popWindow = new PopupMenuForWorkItem(WorkItemDetail.this);
                 popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
                 popWindow.add_child.setOnClickListener(new View.OnClickListener() {
 
@@ -347,7 +327,6 @@ public class WorkItemDetail extends AppCompatActivity {
                         startActivity(intent);
                         intent.putExtra("FatherID", CurItemId);
                         intent.putExtra("FatherType", "");
-                        popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
                     }
                 });
                 popWindow.del_child.setOnClickListener(new View.OnClickListener() {
@@ -371,7 +350,6 @@ public class WorkItemDetail extends AppCompatActivity {
                                 img.setVisibility(View.VISIBLE);
                                 checkBox.setVisibility(View.GONE);
                             }
-                            popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
                             return;
                         }
                         Log.e("isdel=false", "aa");
@@ -398,7 +376,6 @@ public class WorkItemDetail extends AppCompatActivity {
                         Log.e("list for end", "aa");
                         del_layout.setVisibility(View.VISIBLE);
                         Log.e("dellayout", "aa");
-                        popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
 
                     }
                 });
@@ -409,7 +386,6 @@ public class WorkItemDetail extends AppCompatActivity {
                         // do something you need here
                         // 该项状态置为废除
                         status_edt.setText("废除");
-                        popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
                     }
                 });
                 popWindow.submit.setOnClickListener(new View.OnClickListener() {
@@ -418,7 +394,6 @@ public class WorkItemDetail extends AppCompatActivity {
                     public void onClick(View arg0) {
                         // do something you need here
                         // 提交修改结果
-                        popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
                     }
                 });
                 popWindow.change_status.setOnClickListener(new View.OnClickListener() {
@@ -427,7 +402,6 @@ public class WorkItemDetail extends AppCompatActivity {
                     public void onClick(View arg0) {
                         // do something you need here
                         // 改变状态，进入下一状态
-                        popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
                     }
                 });
             }
@@ -491,7 +465,20 @@ public class WorkItemDetail extends AppCompatActivity {
     }
 
     /*权限设置*/
-    private void SetPermissions() {
+    private void SetPermissions(WorkDetailResult result) {
+        if (result.Belong2ID.equals(""))
+        {
+            if (result.CreaterID.equals(UID))
+            {
+            }
+        }
+        else
+        {
+            if (result.Belong2ID.equals(UID))
+            {
+
+            }
+        }
     }
 
     /*设置子项List样式*/
@@ -571,6 +558,14 @@ public class WorkItemDetail extends AppCompatActivity {
                 }.getType();
                 List<TeamEntity> entity = Reservoir.get(LocalDataLabel.Label, resultType);
                 TeamID = entity.get(0).TeamID;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            if (Reservoir.contains(LocalDataLabel.UserID)) {
+                UIDEntity entity = Reservoir.get(LocalDataLabel.UserID, UIDEntity.class);
+                UID = entity.UID;
             }
         } catch (Exception e) {
             e.printStackTrace();

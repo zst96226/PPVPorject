@@ -59,6 +59,7 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
             if (msg.what == ThreadAndHandlerLabel.GetAllStaff) {
                 if (msg.obj != null) {
                     String jsonStr = msg.obj.toString();
+                    System.out.print("全部人员："+jsonStr);
                     /*解析Json*/
                     try {
                         UserInTeamResult result = JsonEntity.ParseJsonForUserInTeamResult(jsonStr);

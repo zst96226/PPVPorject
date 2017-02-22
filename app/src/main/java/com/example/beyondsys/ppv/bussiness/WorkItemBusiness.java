@@ -92,8 +92,7 @@ public class WorkItemBusiness {
         person.TicketID = proof;
         person.WorkItemID = WorkItemID;
         final String JsonParams = GsonUtil.getGson().toJson(person);
-        Log.i("详细信息提交对象：" + JsonParams, "zst_test");
-        System.out.print("详细信息提交对象：" + JsonParams);
+        Log.i("zst_test", "详细信息提交对象：" + JsonParams);
         new Thread() {
             public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
@@ -109,12 +108,11 @@ public class WorkItemBusiness {
                 // 开始调用远程方法
                 try {
                     httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
-                    Log.i("连接API成功~", "zst_test");
+                    Log.i("zst_test", "详细信息连接API");
                     // 得到远程方法返回的SOAP对象
-//                    SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
-                    System.out.print("详细信息拿到了什么：" + envelop.getResponse());
-                    SoapObject result = (SoapObject) envelop.getResponse();
-                    Log.i("获取返回值成功~", "zst_test");
+                    SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+//                    SoapObject result = (SoapObject) envelop.getResponse();
+                    Log.i("zst_test","详细信息返回值：" + result);
                     Message msg = Message.obtain();
                     msg.what = ThreadAndHandlerLabel.GetWorkItemContext;
                     msg.obj = result;
