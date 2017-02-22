@@ -92,7 +92,8 @@ public class WorkItemBusiness {
         person.TicketID = proof;
         person.WorkItemID = WorkItemID;
         final String JsonParams = GsonUtil.getGson().toJson(person);
-        Log.i("提交对象：" + JsonParams, "zst_test");
+        Log.i("详细信息提交对象：" + JsonParams, "zst_test");
+        System.out.print("详细信息提交对象：" + JsonParams);
         new Thread() {
             public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
@@ -108,15 +109,19 @@ public class WorkItemBusiness {
                 // 开始调用远程方法
                 try {
                     httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
-                    Log.i("提交对象：" + JsonParams, "zst_test");
+                    Log.i("连接API成功~", "zst_test");
                     // 得到远程方法返回的SOAP对象
-                    SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+//                    SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+                    System.out.print("详细信息拿到了什么：" + envelop.getResponse());
+                    SoapObject result = (SoapObject) envelop.getResponse();
+                    Log.i("获取返回值成功~", "zst_test");
                     Message msg = Message.obtain();
                     msg.what = ThreadAndHandlerLabel.GetWorkItemContext;
                     msg.obj = result;
                     handler.sendMessage(msg);
                 } catch (IOException | XmlPullParserException e) {
                     e.printStackTrace();
+                    Log.i("获取工作项详细信息连接API失败？", "zst_test");
                     Message msg = Message.obtain();
                     msg.what = ThreadAndHandlerLabel.CallAPIError;
                     handler.sendMessage(msg);
@@ -217,13 +222,13 @@ public class WorkItemBusiness {
 
     /*获取子工作项*/
     public void GetChildWorkItem(final Handler handler, String WorkItemID, String TickID, int pagenum) {
-
         ChildWorkItemPerson person = new ChildWorkItemPerson();
-        person.proof = TickID;
-        person.WorkItemid = WorkItemID;
-        person.pageNum = pagenum;
+        person.TicketID = TickID;
+        person.WorkItemIdD = WorkItemID;
+        person.PageNum = pagenum;
         final String JsonParams = GsonUtil.getGson().toJson(person);
-        Log.i("提交对象：" + JsonParams, "FHZ");
+        Log.i("子工作项提交对象：" + JsonParams, "FHZ");
+        System.out.print("子工作项提交对象：" + JsonParams);
         new Thread() {
             public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
@@ -257,9 +262,9 @@ public class WorkItemBusiness {
 
     /*获取子工作项参数*/
     private class ChildWorkItemPerson implements Serializable {
-        public String proof;
-        public String WorkItemid;
-        public int pageNum;
+        public String TicketID;
+        public String WorkItemIdD;
+        public int PageNum;
     }
 
 }

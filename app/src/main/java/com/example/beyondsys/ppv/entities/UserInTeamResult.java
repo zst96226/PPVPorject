@@ -9,7 +9,7 @@ import java.util.List;
 public class UserInTeamResult implements Serializable {
     public  UserInTeamResult()
     {
-        teamUsers = null;
+        teamUsers  = null;
         AccessResult = -3;
     }
 

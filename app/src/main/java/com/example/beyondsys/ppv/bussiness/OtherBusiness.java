@@ -39,8 +39,8 @@ public class OtherBusiness {
         }
         if (entity!=null){
             AllStaffPerson person = new AllStaffPerson();
-            person.proof = entity.TicketID;
-            person.teamid=TeamID;
+            person.TicketID = entity.TicketID;
+            person.TeamID=TeamID;
             final String JsonParams = GsonUtil.getGson().toJson(person);
             Log.i("提交值："+JsonParams,"zst_test");
             new Thread() {
@@ -81,7 +81,7 @@ public class OtherBusiness {
 
     /*获取团队下全部人员信息参数*/
     private class AllStaffPerson implements Serializable{
-        public String proof;
-        public String teamid;
+        public String TicketID ;
+        public String TeamID;
     }
 }

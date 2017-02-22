@@ -57,7 +57,6 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.GetAllStaff) {
-                Log.i("sta1","zst_test");
                 if (msg.obj != null) {
                     String jsonStr = msg.obj.toString();
                     /*解析Json*/

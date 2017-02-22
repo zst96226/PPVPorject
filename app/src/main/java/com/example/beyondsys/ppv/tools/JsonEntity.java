@@ -6,6 +6,7 @@ import com.example.beyondsys.ppv.activity.PersonInfo;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.AccAndPwd;
 import com.example.beyondsys.ppv.entities.AddWorkItemResult;
+import com.example.beyondsys.ppv.entities.ChildWorkItemEntity;
 import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.LogOutResult;
@@ -259,6 +260,19 @@ public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
         }
     }
 
+    public static ChildWorkItemEntity ParseJsonForChildWorkItemEntity(String result)
+    {
+        ChildWorkItemEntity Result=null;
+        Gson gson=new Gson();
+        java.lang.reflect.Type type = new TypeToken<ChildWorkItemEntity>() {}.getType();
+        Result=gson.fromJson(result, type);
+        if(Result!=null)
+        {
+            return Result;
+        }else{
+            return null;
+        }
+    }
 
     public static AccAndPwd ParseJsonForAccAndPwd(String str)
     {

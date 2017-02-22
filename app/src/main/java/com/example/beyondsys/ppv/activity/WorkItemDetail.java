@@ -28,12 +28,14 @@ import com.anupcowkur.reservoir.Reservoir;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.WorkItemBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
+import com.example.beyondsys.ppv.entities.ChildWorkItemEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.SubWorkItemParams;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.entities.WorkDetailResult;
+import com.example.beyondsys.ppv.entities.WorkItemChildResultParams;
 import com.example.beyondsys.ppv.entities.WorkItemContextentity;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
 import com.example.beyondsys.ppv.entities.WorkItemResultParams;
@@ -53,9 +55,10 @@ import java.util.Map;
 
 public class WorkItemDetail extends AppCompatActivity {
 
-    String TKID="";
-    String TeamID="";
-    String WorkID="";
+    String TKID = "";
+    String TeamID = "";
+    String WorkID = "";
+    List<SubWorkItemParams> chid = new ArrayList<>();
 
     ListPopupWindow Assign_pop, Checker_pop, Head_pop, Status_pop;
     ArrayList<String> Userlist = new ArrayList<String>();
@@ -67,14 +70,13 @@ public class WorkItemDetail extends AppCompatActivity {
     ImageView work_img, work_status;
     LinearLayout main_workitem;
     ListView child_list;
-    private EditText name_edt, assign2_edt, checker_edt, status_edt, Head_edt,value_edt,closingtime_edt,des_edt;
-    private TextView wid_workname, wid_workvalue, starttime_tex, endtime_tex,creater_tex,creatertime_tex,modifier_tex,modifytime_tex;
+    private EditText name_edt, assign2_edt, checker_edt, status_edt, Head_edt, value_edt, closingtime_edt, des_edt;
+    private TextView wid_workname, wid_workvalue, starttime_tex, endtime_tex, creater_tex, creatertime_tex, modifier_tex, modifytime_tex;
     private RelativeLayout del_layout;
     private Button del_ok, del_cancel;
     private boolean isdel = false;
     String[] typeList = new String[]{"事项", "任务"};
     private String CurItemId = "", CurItemType = typeList[0];
-    private List<SubWorkItemParams> SubItemList = null;
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.GetWorkItemContext) {
@@ -82,13 +84,11 @@ public class WorkItemDetail extends AppCompatActivity {
                     try {
                         WorkItemContextentity Result = JsonEntity.ParseJsonForWorkItemContextentity(msg.obj.toString());
                         if (Result != null) {
-                            switch (Result.AccessResult)
-                            {
+                            switch (Result.AccessResult) {
                                 case 0:
                                     /*获得详细信息*/
-                                    List<WorkDetailResult> list=Result.WorkDetailsOutputParams;
-                                    if(list!=null)
-                                    {
+                                    List<WorkDetailResult> list = Result.WorkDetailsOutputParams;
+                                    if (list != null) {
                                         /*显示工作详细信息*/
                                         ShowWorkContext(list.get(0));
                                     }
@@ -106,10 +106,31 @@ public class WorkItemDetail extends AppCompatActivity {
                 } else {
                     Toast.makeText(WorkItemDetail.this, "没有获取到当前工作项信息", Toast.LENGTH_SHORT).show();
                 }
-            }else if(msg.what==ThreadAndHandlerLabel.GetChildWorkItem){
+            } else if (msg.what == ThreadAndHandlerLabel.GetChildWorkItem) {
                 if (msg.obj != null) {
-                    Log.i("工作子项返回值:"+msg.obj.toString(),"zst_test");
+                    Log.i("工作子项返回值:" + msg.obj.toString(), "zst_test");
                     try {
+                        ChildWorkItemEntity entity = JsonEntity.ParseJsonForChildWorkItemEntity(msg.obj.toString());
+                        if (entity != null) {
+                            switch (entity.AccessResult) {
+                                case 0:
+                                    /*获得当前工作项子项详细信息*/
+                                    chid = entity.WorkSubItemParams;
+                                    if (chid != null) {
+                                        /*显示子项*/
+                                        SetList();
+                                    }
+                                    break;
+                                case -1:
+                                    Toast.makeText(WorkItemDetail.this, "请求失败，请重新尝试", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case -3:
+                                    Toast.makeText(WorkItemDetail.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
+                        } else {
+                            Toast.makeText(WorkItemDetail.this, "没有获取到当前工作项信息", Toast.LENGTH_SHORT).show();
+                        }
 
                     } catch (Exception e) {
                     }
@@ -117,7 +138,7 @@ public class WorkItemDetail extends AppCompatActivity {
                     Toast.makeText(WorkItemDetail.this, "没有获取到当前工作项信息", Toast.LENGTH_SHORT).show();
                 }
             } else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
-                Toast.makeText(WorkItemDetail.this, "修改失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+                Toast.makeText(WorkItemDetail.this, "请求网络失败，请检查网络连接", Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -169,13 +190,13 @@ public class WorkItemDetail extends AppCompatActivity {
         wid_workvalue = (TextView) findViewById(R.id.wid_workvalue);
         starttime_tex = (TextView) findViewById(R.id.starttime_tex);
         endtime_tex = (TextView) findViewById(R.id.endtime_tex);
-        creater_tex=(TextView)findViewById(R.id.wid_Creater_txt);
-        creatertime_tex=(TextView)findViewById(R.id.wid_CreateTime_txt);
-        modifier_tex=(TextView)findViewById(R.id.wid_Modifier_txt);
-        modifytime_tex=(TextView)findViewById(R.id.wid_ModifyTime_txt);
-        value_edt=(EditText)findViewById(R.id.wid_Value_edt);
-        closingtime_edt=(EditText)findViewById(R.id.wid_Value_edt);
-        des_edt=(EditText)findViewById(R.id.wid_Description_edt);
+        creater_tex = (TextView) findViewById(R.id.wid_Creater_txt);
+        creatertime_tex = (TextView) findViewById(R.id.wid_CreateTime_txt);
+        modifier_tex = (TextView) findViewById(R.id.wid_Modifier_txt);
+        modifytime_tex = (TextView) findViewById(R.id.wid_ModifyTime_txt);
+        value_edt = (EditText) findViewById(R.id.wid_Value_edt);
+        closingtime_edt = (EditText) findViewById(R.id.wid_Value_edt);
+        des_edt = (EditText) findViewById(R.id.wid_Description_edt);
     }
 
     /*获取跳转传递信息*/
@@ -187,7 +208,7 @@ public class WorkItemDetail extends AppCompatActivity {
         } else {
             work_img.setImageResource(R.drawable.b);
         }
-        WorkID=WorkItem.WorkID;
+        WorkID = WorkItem.WorkID;
         wid_workname.setText(WorkItem.WorkName);
         wid_workvalue.setText(WorkItem.Workscore + "");
         switch (WorkItem.Status) {
@@ -224,7 +245,7 @@ public class WorkItemDetail extends AppCompatActivity {
     }
 
     /*显示工作详细信息*/
-    private void ShowWorkContext(WorkDetailResult result){
+    private void ShowWorkContext(WorkDetailResult result) {
         name_edt.setText(result.WorkName);
         assign2_edt.setText(result.AssignerName);
         checker_edt.setText(result.CheckerName);
@@ -234,7 +255,7 @@ public class WorkItemDetail extends AppCompatActivity {
         modifier_tex.setText(result.ModifierName);
         modifytime_tex.setText(result.ModifyTime.toString());
         status_edt.setText(result.Status);
-        value_edt.setText(result.BusinessValue+"");
+        value_edt.setText(result.BusinessValue + "");
         closingtime_edt.setText(result.Deadline.toString());
         des_edt.setText(result.Description);
     }
@@ -252,7 +273,7 @@ public class WorkItemDetail extends AppCompatActivity {
             public void onClick(View v) {
                 if (child_list.getVisibility() == View.GONE) {
                     child_list.setVisibility(View.VISIBLE);
-                    SetList(CurItemId);
+                    SetList();
                     wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                 } else {
                     child_list.setVisibility(View.GONE);
@@ -289,7 +310,7 @@ public class WorkItemDetail extends AppCompatActivity {
                 //检测是否有选中项，则删除
                 if (child_list.getVisibility() == View.GONE) {
                     child_list.setVisibility(View.VISIBLE);
-                    SetList(CurItemId);
+                    SetList();
                     wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                 }
                 for (int i = 0; i < child_list.getCount(); i++) {
@@ -340,7 +361,7 @@ public class WorkItemDetail extends AppCompatActivity {
                             del_layout.setVisibility(View.GONE);
                             if (child_list.getVisibility() == View.GONE) {
                                 child_list.setVisibility(View.VISIBLE);
-                                SetList(CurItemId);
+                                SetList();
                                 wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                             }
                             for (int i = 0; i < child_list.getCount(); i++) {
@@ -358,7 +379,7 @@ public class WorkItemDetail extends AppCompatActivity {
                         if (child_list.getVisibility() == View.GONE) {
                             Log.e("list gone", "aa");
                             child_list.setVisibility(View.VISIBLE);
-                            SetList(CurItemId);
+                            SetList();
                             wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                         }
                         Log.e("list for", "aa");
@@ -474,63 +495,63 @@ public class WorkItemDetail extends AppCompatActivity {
     }
 
     /*设置子项List样式*/
-    private void SetList(String CurItemId) {
-        SimpleAdapter adapter = new SimpleAdapter(this, getData(CurItemId), R.layout.child_list_item, new String[]{"workImg", "workId", "workName", "workValue", "workState", "strartTime", "endingTime"},
+    private void SetList() {
+        SimpleAdapter adapter = new SimpleAdapter(this, getData(), R.layout.child_list_item, new String[]{"workImg", "workId", "workName", "workValue", "workState", "strartTime", "endingTime"},
                 new int[]{R.id.work_img, R.id.workid_tex, R.id.workname_tex, R.id.workvalue_tex, R.id.work_state_img, R.id.strarttime_tex, R.id.endtime_tex});
         child_list.setAdapter(adapter);
     }
 
     /*设置子项List数据*/
-    private List<Map<String, Object>> getData(String CurItemId) {
+    private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-//        Map<String, Object> map = new HashMap<String, Object>();
-//        List<SubWorkItemParams> subWorkItemParamses = SubItemList;
-//        if (subWorkItemParamses != null && subWorkItemParamses.size() != 0) {
-//            for (SubWorkItemParams subItem : subWorkItemParamses) {
-//                if (workItemEntity.Category == 0) {
-//                    map.put("workimg", R.drawable.b);
-//                } else {
-//                    map.put("workimg", R.drawable.t);
-//                }
-//                //根据状态不同图片不同
-//                switch (workItemEntity.Status) {
-//                    case 0:
-//                        map.put("workState", R.drawable.status0);
-//                        break;
-//                    case 1:
-//                        map.put("workState", R.drawable.status1);
-//                        break;
-//                    case 2:
-//                        map.put("workState", R.drawable.status2);
-//                        break;
-//                    case 3:
-//                        map.put("workState", R.drawable.status3);
-//                        break;
-//                    case 4:
-//                        map.put("workState", R.drawable.status4);
-//                        break;
-//                    case 5:
-//                        map.put("workState", R.drawable.status5);
-//                        break;
-//                    case 6:
-//                        map.put("workState", R.drawable.status6);
-//                        break;
-//                    case 7:
-//                        map.put("workState", R.drawable.status7);
-//                        break;
-//                    default:
-//                        map.put("workState", R.drawable.status0);
-//                        break;
-//                }
-//                map.put("workId", subItem.WorkID);
-//                map.put("workName", subItem.WorkName);
-//                map.put("endingTime", subItem.EndTime);
-//                map.put("workValue", subItem.Score);
-//                map.put("strartTime", subItem.StartTime);
-//                list.add(map);
-//            }
-//
-//        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        List<SubWorkItemParams> subWorkItemParamses = chid;
+        if (subWorkItemParamses != null && subWorkItemParamses.size() != 0) {
+            for (SubWorkItemParams subItem : subWorkItemParamses) {
+                if (subItem.WorkType == 0) {
+                    map.put("workimg", R.drawable.b);
+                } else {
+                    map.put("workimg", R.drawable.t);
+                }
+                //根据状态不同图片不同
+                switch (subItem.Status) {
+                    case 0:
+                        map.put("workState", R.drawable.status0);
+                        break;
+                    case 1:
+                        map.put("workState", R.drawable.status1);
+                        break;
+                    case 2:
+                        map.put("workState", R.drawable.status2);
+                        break;
+                    case 3:
+                        map.put("workState", R.drawable.status3);
+                        break;
+                    case 4:
+                        map.put("workState", R.drawable.status4);
+                        break;
+                    case 5:
+                        map.put("workState", R.drawable.status5);
+                        break;
+                    case 6:
+                        map.put("workState", R.drawable.status6);
+                        break;
+                    case 7:
+                        map.put("workState", R.drawable.status7);
+                        break;
+                    default:
+                        map.put("workState", R.drawable.status0);
+                        break;
+                }
+                map.put("workId", subItem.WorkID);
+                map.put("workName", subItem.WorkName);
+                map.put("endingTime", subItem.EndTime);
+                map.put("workValue", subItem.Score);
+                map.put("strartTime", subItem.StartTime);
+                list.add(map);
+            }
+
+        }
         return list;
     }
 
@@ -561,14 +582,12 @@ public class WorkItemDetail extends AppCompatActivity {
         if (WorkID.equals("") || TKID.equals("")) {
             Toast.makeText(WorkItemDetail.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
             /*清除其余活动中Activity以及全部缓存显示登录界面*/
-        }
-        else
-        {
+        } else {
             /*获取当前项详细信息*/
-            WorkItemBusiness business=new WorkItemBusiness();
-            business.GetWorkItemContent(handler,WorkID,TKID);
+            WorkItemBusiness business = new WorkItemBusiness();
+            business.GetWorkItemContent(handler, WorkID, TKID);
             /*获取子项*/
-            business.GetChildWorkItem(handler,WorkID,TKID,1);
+            business.GetChildWorkItem(handler, WorkID, TKID, 1);
         }
 
     }
