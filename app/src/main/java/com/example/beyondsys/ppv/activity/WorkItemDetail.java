@@ -1,5 +1,6 @@
 package com.example.beyondsys.ppv.activity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,13 +45,18 @@ import com.example.beyondsys.ppv.entities.WorkItemResultParams;
 import com.example.beyondsys.ppv.entities.WorkValueEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
+import com.example.beyondsys.ppv.tools.ListPopupWindowAdapter;
 import com.example.beyondsys.ppv.tools.PopupMenuForWorkItem;
 import com.google.gson.reflect.TypeToken;
 
 import org.w3c.dom.Text;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +73,7 @@ public class WorkItemDetail extends AppCompatActivity {
     ListPopupWindow Assign_pop, Checker_pop, Head_pop, Status_pop;
     ArrayList<String> Userlist = new ArrayList<String>();
     ArrayList<String> UserIDlist = new ArrayList<String>();
-    ArrayList<String> Statrlist = new ArrayList<String>();
+    ArrayList<String> statusList = new ArrayList<String>();
     ImageView back;
     ImageView wid_show_chid;
     ImageView returen;
@@ -74,22 +81,29 @@ public class WorkItemDetail extends AppCompatActivity {
     ImageView work_img, work_status;
     LinearLayout main_workitem;
     ListView child_list;
-    private EditText name_edt, assign2_edt, checker_edt, status_edt, Head_edt, value_edt, closingtime_edt, des_edt;
+
+    private EditText name_edt,des_edt, value_edt;
+     private TextView assign2_edt, checker_edt, status_edt, Head_edt, closingtime_edt;
     private TextView wid_workname, wid_workvalue, starttime_tex, endtime_tex, creater_tex, creatertime_tex, modifier_tex, modifytime_tex;
     private RelativeLayout del_layout;
     private boolean isdel = false;
+    private  int staflag;
     String[] typeList = new String[]{"事项", "任务"};
     private String CurItemId = "", CurItemType = typeList[0];
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.GetWorkItemContext) {
                 if (msg.obj != null) {
+                    Log.i("获得详细信息 0","FHZ");
                     try {
                         WorkItemContextentity Result = JsonEntity.ParseJsonForWorkItemContextentity(msg.obj.toString());
+                        Log.i("获得详细信息 0","FHZ");
                         if (Result != null) {
-                            switch (Result.AccessResult) {
+                            int flag=Result.AccessResult;
+                            switch (flag) {
                                 case 0:
                                     /*获得详细信息*/
+                                    Log.i("获得详细信息 0","FHZ");
                                     List<WorkDetailResult> list = Result.WorkDetailsOutputParams;
                                     if (list != null) {
                                         /*显示工作详细信息*/
@@ -164,11 +178,11 @@ public class WorkItemDetail extends AppCompatActivity {
 
         ShowWorkItem();
 
-        GetDataForService();
+        GetDataForService(WorkID);
 
         Listener();
 
-        SetPopAdapter();
+       // SetPopAdapter();
     }
 
     /*UI绑定*/
@@ -183,10 +197,10 @@ public class WorkItemDetail extends AppCompatActivity {
         work_status = (ImageView) findViewById(R.id.work_state_img);
         work_img = (ImageView) findViewById(R.id.work_img);
         name_edt = (EditText) findViewById(R.id.wid_workname_edt);
-        assign2_edt = (EditText) findViewById(R.id.wid_Assigned2_edt);
-        checker_edt = (EditText) findViewById(R.id.wid_Checker_edt);
-        status_edt = (EditText) findViewById(R.id.wid_Status_edt);
-        Head_edt = (EditText) findViewById(R.id.wid_Head_edt);
+        assign2_edt = (TextView) findViewById(R.id.wid_Assigned2_edt);
+        checker_edt = (TextView)findViewById(R.id.wid_Checker_edt);
+        status_edt = (TextView) findViewById(R.id.wid_Status_edt);
+        Head_edt = (TextView) findViewById(R.id.wid_Head_edt);
         wid_workname = (TextView) findViewById(R.id.wid_workname);
         wid_workvalue = (TextView) findViewById(R.id.wid_workvalue);
         starttime_tex = (TextView) findViewById(R.id.starttime_tex);
@@ -196,14 +210,33 @@ public class WorkItemDetail extends AppCompatActivity {
         modifier_tex = (TextView) findViewById(R.id.wid_Modifier_txt);
         modifytime_tex = (TextView) findViewById(R.id.wid_ModifyTime_txt);
         value_edt = (EditText) findViewById(R.id.wid_Value_edt);
-        closingtime_edt = (EditText) findViewById(R.id.wid_Value_edt);
+        closingtime_edt = (TextView) findViewById(R.id.wid_ClosingTime_edt);
         des_edt = (EditText) findViewById(R.id.wid_Description_edt);
+        Userlist.add("空");
+        UserIDlist.add("");
+        statusList.add("已作废");
+        statusList.add("新建未指派");
+        statusList.add("指派待确认");
+        statusList.add("确认待开始");
+        statusList.add("进行中");
+        statusList.add("提交待确认");
+        statusList.add("确认待测试");
+        statusList.add("迭代中");
+        statusList.add("迭代完待结束");
+        statusList.add("完成");
+        popWindow.add_child.setVisibility(View.GONE);
+        popWindow.del_child.setVisibility(View.GONE);
+        popWindow.del_father.setVisibility(View.GONE);
+        popWindow.submit.setVisibility(View.GONE);
+        popWindow.change_status.setVisibility(View.GONE);
     }
 
     /*获取跳转传递信息*/
     private void ShowWorkItem() {
         Intent intent = getIntent();
+        staflag=intent.getIntExtra("status",0);
         WorkItemResultParams WorkItem = (WorkItemResultParams) intent.getSerializableExtra("Item");
+        CurItemId=WorkItem.WorkID;
         if (WorkItem.Category == 0) {
             work_img.setImageResource(R.drawable.t);
         } else {
@@ -259,6 +292,45 @@ public class WorkItemDetail extends AppCompatActivity {
         value_edt.setText(result.BusinessValue + "");
         closingtime_edt.setText(result.Deadline.toString());
         des_edt.setText(result.Description);
+
+        if (result.Category == 0) {
+            work_img.setImageResource(R.drawable.t);
+        } else {
+            work_img.setImageResource(R.drawable.b);
+        }
+        wid_workname.setText(result.WorkName);
+        wid_workvalue.setText(result.BusinessValue + "");
+        switch (result.Status) {
+            case 0:
+                work_status.setImageResource(R.drawable.status0);
+                break;
+            case 1:
+                work_status.setImageResource(R.drawable.status1);
+                break;
+            case 2:
+                work_status.setImageResource(R.drawable.status2);
+                break;
+            case 3:
+                work_status.setImageResource(R.drawable.status3);
+                break;
+            case 4:
+                work_status.setImageResource(R.drawable.status4);
+                break;
+            case 5:
+                work_status.setImageResource(R.drawable.status5);
+                break;
+            case 6:
+                work_status.setImageResource(R.drawable.status6);
+                break;
+            case 7:
+                work_status.setImageResource(R.drawable.status7);
+                break;
+            default:
+                work_status.setImageResource(R.drawable.status0);
+                break;
+        }
+        starttime_tex.setText(result.CreateTime.substring(0, 10));
+        endtime_tex.setText(result.Deadline.substring(0, 10));
     }
 
     /*事件监听相关*/
@@ -290,6 +362,7 @@ public class WorkItemDetail extends AppCompatActivity {
                 TextView itemId = (TextView) view.findViewById(R.id.workid_tex);
                 if (itemId != null) {
                     CurItemId = itemId.getText().toString().trim();
+                    GetDataForService(CurItemId);
                 }
                 if (isdel == true) {
                     //判断选择框是否可见 选中
@@ -316,6 +389,12 @@ public class WorkItemDetail extends AppCompatActivity {
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                if (staflag == 2 || staflag == 3) {
+                    return;
+                }
+                if (staflag == 1) {
+                    popWindow.del_child.setVisibility(View.GONE);
+                }
                 popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
                 popWindow.add_child.setOnClickListener(new View.OnClickListener() {
 
@@ -324,9 +403,9 @@ public class WorkItemDetail extends AppCompatActivity {
                         //do something you need here
                         //跳转添加子项界面
                         Intent intent = new Intent(WorkItemDetail.this, AddNewWorkItem.class);
-                        startActivity(intent);
                         intent.putExtra("FatherID", CurItemId);
                         intent.putExtra("FatherType", "");
+                        startActivity(intent);
                     }
                 });
                 popWindow.del_child.setOnClickListener(new View.OnClickListener() {
@@ -335,6 +414,9 @@ public class WorkItemDetail extends AppCompatActivity {
                     public void onClick(View arg0) {
                         // do something before signing out
                         //删除选中的子项
+                        if (child_list.getCount() == 0) {
+                            return;
+                        }
                         if (isdel != false) {
                             isdel = false;
                             del_layout.setVisibility(View.GONE);
@@ -463,20 +545,139 @@ public class WorkItemDetail extends AppCompatActivity {
             }
         });
     }
+    protected void showDatePickDlg() {
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(WorkItemDetail.this, new DatePickerDialog.OnDateSetListener() {
 
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                monthOfYear=monthOfYear+1;
+                String dateStr="",monStr="",dayStr="";
+                if(monthOfYear<10)
+                {
+                    monStr="0" + monthOfYear;
+                }else{
+                    monStr=String.valueOf(monthOfYear);
+                }
+                if(dayOfMonth<10)
+                {
+                    dayStr="0"+dayOfMonth;
+                }else{
+                    dayStr=String.valueOf(dayOfMonth);
+                }
+                dateStr=year + "-" + monStr + "-" +dayStr;
+                Log.i(dateStr+"dateStr","FHZ");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String nowStr=sdf.format(new  java.util.Date());
+                Log.i(nowStr+"nowStr","FHZ");
+                Date nowTime=null,dateTime=null;
+                try {
+                    nowTime =sdf.parse(nowStr);
+                    dateTime=sdf.parse(dateStr);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if(nowTime.getTime()>=dateTime.getTime())
+                {
+                    closingtime_edt.setText("");
+                }else{
+                    closingtime_edt.setText(dateStr);
+                }
+
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+
+    }
+
+/*工作项可修改*/
+    private  void ItemEditable()
+    {
+        name_edt.isInEditMode();
+        value_edt.isInEditMode();
+        closingtime_edt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickDlg();
+            }
+        });
+        assign2_edt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("click", "FHZ");
+                SetPopAdapter();
+                Assign_pop.show();
+                Log.i("click SHOW", "FHZ");
+            }
+        });
+        checker_edt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SetPopAdapter();
+                Checker_pop.show();
+            }
+        });
+        Head_edt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SetPopAdapter();
+                Head_pop.show();
+            }
+        });
+        status_edt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SetPopAdapter();
+                Status_pop.show();
+            }
+        });
+
+    }
+    /*状态可修改*/
+    private  void statusEditable()
+    {
+        status_edt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SetPopAdapter();
+                Status_pop.show();
+            }
+        });
+    }
     /*权限设置*/
     private void SetPermissions(WorkDetailResult result) {
+        Log.i("权限设置 diaoyong","FHZ");
+        if(result.AssignerID.equals(UID))
+        {
+            popWindow.add_child.setVisibility(View.VISIBLE);
+            popWindow.del_child.setVisibility(View.VISIBLE);
+            popWindow.change_status.setVisibility(View.VISIBLE);
+            Log.i("权限设置 ass", "FHZ");
+            statusEditable();
+        }
         if (result.Belong2ID.equals(""))
         {
             if (result.CreaterID.equals(UID))
             {
+                //可编辑
+                popWindow.add_child.setVisibility(View.VISIBLE);
+                popWindow.del_child.setVisibility(View.VISIBLE);
+                popWindow.del_father.setVisibility(View.VISIBLE);
+                popWindow.submit.setVisibility(View.VISIBLE);
+                Log.i("权限设置 crea", "FHZ");
+                ItemEditable();
             }
         }
         else
         {
             if (result.Belong2ID.equals(UID))
             {
-
+                popWindow.add_child.setVisibility(View.VISIBLE);
+                popWindow.del_child.setVisibility(View.VISIBLE);
+                popWindow.del_father.setVisibility(View.VISIBLE);
+                popWindow.submit.setVisibility(View.VISIBLE);
+                Log.i("权限设置 belo", "FHZ");
             }
         }
     }
@@ -573,24 +774,30 @@ public class WorkItemDetail extends AppCompatActivity {
     }
 
     /*获取服务端数据*/
-    private void GetDataForService() {
-        if (WorkID.equals("") || TKID.equals("")) {
+    private void GetDataForService( String curItemId) {
+        if (curItemId.equals("") || TKID.equals("")) {
             Toast.makeText(WorkItemDetail.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
             /*清除其余活动中Activity以及全部缓存显示登录界面*/
         } else {
             /*获取当前项详细信息*/
             WorkItemBusiness business = new WorkItemBusiness();
-            business.GetWorkItemContent(handler, WorkID, TKID);
+            business.GetWorkItemContent(handler, curItemId, TKID);
             /*获取子项*/
-            business.GetChildWorkItem(handler, WorkID, TKID, 1);
+            business.GetChildWorkItem(handler, curItemId, TKID, 1);
         }
 
     }
 
     /*设置下拉菜单相关*/
     private void SetPopAdapter() {
+        ListPopupWindowAdapter mListPopupWindowAdapter=new ListPopupWindowAdapter(Userlist,this);
+        ListPopupWindowAdapter statusPopupWindowAdapter=new ListPopupWindowAdapter(statusList,this);
         Assign_pop = new ListPopupWindow(this);
-        Assign_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Userlist));
+        Assign_pop.setAdapter(mListPopupWindowAdapter);
+        Assign_pop.setWidth(Assign_pop.getWidth());
+        Assign_pop.setHeight(200);
+
+       // Assign_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Userlist));
         Assign_pop.setAnchorView(assign2_edt);
         Assign_pop.setModal(true);
         Assign_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -598,12 +805,14 @@ public class WorkItemDetail extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String item = Userlist.get(position);
                 assign2_edt.setText(item);
-                assign2_edt.setSelection(item.length());
                 Assign_pop.dismiss();
             }
         });
         Checker_pop = new ListPopupWindow(this);
-        Checker_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Userlist));
+       // mListPopupWindowAdapter=new ListPopupWindowAdapter(Userlist,this);
+        Checker_pop.setAdapter(mListPopupWindowAdapter);
+        Checker_pop.setWidth(Checker_pop.getWidth());
+        Checker_pop.setHeight(200);
         Checker_pop.setAnchorView(checker_edt);
         Checker_pop.setModal(true);
         Checker_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -611,12 +820,14 @@ public class WorkItemDetail extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String item = Userlist.get(position);
                 checker_edt.setText(item);
-                checker_edt.setSelection(item.length());
                 Checker_pop.dismiss();
             }
         });
         Head_pop = new ListPopupWindow(this);
-        Head_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Userlist));
+        //mListPopupWindowAdapter=new ListPopupWindowAdapter(Userlist,this);
+        Head_pop.setAdapter(mListPopupWindowAdapter);
+        Head_pop.setWidth(Head_pop.getWidth());
+        Head_pop.setHeight(200);
         Head_pop.setAnchorView(Head_edt);
         Head_pop.setModal(true);
         Head_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -624,20 +835,21 @@ public class WorkItemDetail extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String item = Userlist.get(position);
                 Head_edt.setText(item);
-                Head_edt.setSelection(item.length());
                 Head_pop.dismiss();
             }
         });
         Status_pop = new ListPopupWindow(this);
-        Status_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Statrlist));
+        Status_pop.setAdapter(statusPopupWindowAdapter);
+        Status_pop.setWidth(Status_pop.getWidth());
+        Status_pop.setHeight(200);
+       // Status_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, statusList));
         Status_pop.setAnchorView(status_edt);
         Status_pop.setModal(true);
         Status_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String item = Statrlist.get(position);
+                String item = statusList.get(position);
                 status_edt.setText(item);
-                status_edt.setSelection(item.length());
                 Status_pop.dismiss();
             }
         });

@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +16,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.Toast;
 
 import com.example.beyondsys.ppv.R;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EstimateValueActivity extends AppCompatActivity {
     private LinearLayout count_layout,step1_layout,step2_layout,step3_layout,step4_layout,step5_layout,step6_layout,step7_layout,step8_layout,step9_layout,step10_layout;
@@ -96,6 +105,18 @@ public class EstimateValueActivity extends AppCompatActivity {
         step10_max=(EditText)findViewById(R.id.step10_max);
         step10_min=(EditText)findViewById(R.id.step10_min);
         step10_scale=(EditText)findViewById(R.id.step10_scale);
+        back=(ImageView)this.findViewById(R.id.anwi_back);
+        ok=(ImageView)this.findViewById(R.id.anwi_ok);
+        setPricePoint(step1_scale);
+        setPricePoint(step2_scale);
+        setPricePoint(step3_scale);
+        setPricePoint(step4_scale);
+        setPricePoint(step5_scale);
+        setPricePoint(step6_scale);
+        setPricePoint(step7_scale);
+        setPricePoint(step8_scale);
+        setPricePoint(step9_scale);
+        setPricePoint(step10_scale);
 //        ok_but=(Button)findViewById(R.id.ok_dut);
 //        cancel_but=(Button)findViewById(R.id.cancel_but);
         stepCount_num.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -105,7 +126,7 @@ public class EstimateValueActivity extends AppCompatActivity {
                 stepShow();
             }
         });
-        back=(ImageView)this.findViewById(R.id.anwi_back);
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,10 +136,53 @@ public class EstimateValueActivity extends AppCompatActivity {
                 builder.setPositiveButton("保存", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.e("aaaa"+getStepDetail(), "qqww");
+                        double result=0.00;
+                        Log.e("aaaa" + getStepDetail(), "qqww");
+                        ArrayList<String> valueParam=param();
+                        if(valueParam==null||valueParam.size()==0)
+                        {
+                            Log.i("kong  ","FHZ");
+                        }else{
+                            Log.i(" not kong  ","FHZ");
+                            for (int i=0;i<valueParam.size()-3;i=i+3)
+                            {
+                                String maxStr=valueParam.get(i);
+                                String minStr=valueParam.get(i+1);
+                                String scaleStr=valueParam.get(i+2);
+                                Double max,min,scale;
+                                if(maxStr!=null&&!maxStr.isEmpty())
+                                {
+                                    max= Double.valueOf(maxStr);
+                                }else
+                                {
+                                    max=0.00;
+                                }
+                                if(minStr!=null&&!minStr.isEmpty())
+                                {
+                                    min=Double.valueOf(minStr);
+                                }else{
+                                    min=0.00;
+                                }
+                                if(scaleStr!=null&&!scaleStr.isEmpty())
+                                {
+                                    scale=Double.valueOf(scaleStr);
+                                }else{
+                                    scale=1.00;
+                                }
+                                result += computValue(max,min,scale);
+                                Log.i("max:" + max, "FHZ");
+                                Log.i("min:"+min,"FHZ");
+                                Log.i("scale:"+scale,"FHZ");
+                                Log.i("result:"+result,"FHZ");
+                            }
+                        }
                         Intent rIntent = new Intent();
-                        rIntent.putExtra("stepCount", getStepCount());
-                        rIntent.putExtra("stepDetail", getStepDetail());
+                        Bundle bundle = new Bundle();
+                        bundle.putString("stepCount",String.valueOf(getStepCount()));
+                        bundle.putString("stepDetail", getStepDetail());
+                        bundle.putString("valueParam", String.valueOf(result));
+                        //bundle.putSerializable("valueParam", (Serializable) getValueParam());
+                        rIntent.putExtras(bundle);
                         setResult(1, rIntent);
                         finish();
                     }
@@ -129,6 +193,7 @@ public class EstimateValueActivity extends AppCompatActivity {
                         Intent rIntent = new Intent();
                         rIntent.putExtra("stepCount",getStepCount());
                         rIntent.putExtra("stepDetail", "");
+                        rIntent.putExtra("valueParam","");
                         setResult(2, rIntent);
                         finish();
                     }
@@ -136,20 +201,235 @@ public class EstimateValueActivity extends AppCompatActivity {
                 builder.show();
             }
         });
-        ok=(ImageView)this.findViewById(R.id.anwi_ok);
+
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("aaaa"+getStepDetail(), "qqww");
+                double result=0.00;
+                Log.e("aaaa" + getStepDetail(), "qqww");
+                ArrayList<String> valueParam=param();
+                if(valueParam==null||valueParam.size()==0)
+                {
+                    Log.i("kong  ","FHZ");
+                }else{
+                    Log.i(" not kong  ","FHZ");
+                    for (int i=0;i<valueParam.size()-3;i=i+3)
+                    {
+                        String maxStr=valueParam.get(i);
+                        String minStr=valueParam.get(i+1);
+                        String scaleStr=valueParam.get(i+2);
+                        Double max,min,scale;
+                        if(maxStr!=null&&!maxStr.isEmpty())
+                        {
+                            max= Double.valueOf(maxStr);
+                        }else
+                        {
+                            max=0.00;
+                        }
+                        if(minStr!=null&&!minStr.isEmpty())
+                        {
+                            min=Double.valueOf(minStr);
+                        }else{
+                            min=0.00;
+                        }
+                        if(scaleStr!=null&&!scaleStr.isEmpty())
+                        {
+                            scale=Double.valueOf(scaleStr);
+                        }else{
+                            scale=1.00;
+                        }
+                        result += computValue(max,min,scale);
+                        Log.i("max:" + max, "FHZ");
+                        Log.i("min:"+min,"FHZ");
+                        Log.i("scale:"+scale,"FHZ");
+                        Log.i("result:"+result,"FHZ");
+                    }
+                }
                 Intent rIntent = new Intent();
-                rIntent.putExtra("stepCount", getStepCount());
-                rIntent.putExtra("stepDetail", getStepDetail());
+                Bundle bundle = new Bundle();
+                bundle.putString("stepCount",String.valueOf(getStepCount()));
+                bundle.putString("stepDetail", getStepDetail());
+                bundle.putString("valueParam", String.valueOf(result));
+                //bundle.putSerializable("valueParam", (Serializable) getValueParam());
+                rIntent.putExtras(bundle);
+
                 setResult(1, rIntent);
                 finish();
             }
         });
     }
+    private  double computValue(double max,double min,double scale )
+    {
+        double  value=0;
+        value=((max/scale)+(min*scale))/2;
+        String s=String.valueOf(value);
+        if(s.contains("."))
+        {
+            if (s.length() - 1 - s.indexOf(".") > 2) {
+                s = (String) s.subSequence(0, s.toString().indexOf(".") + 3);
+                value=Double.valueOf(s);
+            }
+        }
+        return  value;
+    }
+    public static void setPricePoint(final EditText editText) {
+        editText.addTextChangedListener(new TextWatcher() {
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                if (s.toString().contains(".")) {
+                    if (s.length() - 1 - s.toString().indexOf(".") > 2) {
+                        s = s.toString().subSequence(0,
+                                s.toString().indexOf(".") + 3);
+                        editText.setText(s);
+                        editText.setSelection(s.length());
+                    }
+                }
+                if (s.toString().trim().substring(0).equals(".")) {
+                    s = "0" + s;
+                    editText.setText(s);
+                    editText.setSelection(2);
+                }
+
+                if (s.toString().startsWith("0")
+                        && s.toString().trim().length() > 1) {
+                    if (!s.toString().substring(1, 2).equals(".")) {
+                        editText.setText(s.subSequence(0, 1));
+                        editText.setSelection(1);
+                        return;
+                    }
+                }
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+                if(!s.toString().isEmpty())
+                {
+                    double d=Double.valueOf(s.toString().trim());
+                    if(d>2.0||d<0.5)
+                    {
+                        editText.setText("1");
+                        editText.setSelection(1);
+                    }
+                }
+
+
+            }
+
+        });
+
+    }
+
+    public  ArrayList<String> param()
+    {
+        ArrayList<String> list=new ArrayList<String>();
+        list.add((step1_max.getText().toString().isEmpty())?(""):(step1_max.getText().toString().trim()));
+        list.add((step1_min.getText().toString().isEmpty())?(""):(step1_min.getText().toString().trim()));
+        list.add((step1_scale.getText().toString().isEmpty())?(""):(step1_scale.getText().toString().trim()));
+
+        list.add((step2_max.getText().toString().isEmpty())?(""):(step2_max.getText().toString().trim()));
+        list.add((step2_min.getText().toString().isEmpty())?(""):(step2_min.getText().toString().trim()));
+        list.add((step2_scale.getText().toString().isEmpty())?(""):(step2_scale.getText().toString().trim()));
+
+        list.add((step3_max.getText().toString().isEmpty())?(""):(step3_max.getText().toString().trim()));
+        list.add((step3_min.getText().toString().isEmpty())?(""):(step3_min.getText().toString().trim()));
+        list.add((step3_scale.getText().toString().isEmpty())?(""):(step3_scale.getText().toString().trim()));
+
+        list.add((step4_max.getText().toString().isEmpty())?(""):(step4_max.getText().toString().trim()));
+        list.add((step4_min.getText().toString().isEmpty())?(""):(step4_min.getText().toString().trim()));
+        list.add((step4_scale.getText().toString().isEmpty())?(""):(step4_scale.getText().toString().trim()));
+
+        list.add((step5_max.getText().toString().isEmpty())?(""):(step5_max.getText().toString().trim()));
+        list.add((step5_min.getText().toString().isEmpty())?(""):(step5_min.getText().toString().trim()));
+        list.add((step5_scale.getText().toString().isEmpty())?(""):(step5_scale.getText().toString().trim()));
+
+        list.add((step6_max.getText().toString().isEmpty())?(""):(step6_max.getText().toString().trim()));
+        list.add((step6_min.getText().toString().isEmpty())?(""):(step6_min.getText().toString().trim()));
+        list.add((step6_scale.getText().toString().isEmpty())?(""):(step6_scale.getText().toString().trim()));
+
+        list.add((step7_max.getText().toString().isEmpty())?(""):(step7_max.getText().toString().trim()));
+        list.add((step7_min.getText().toString().isEmpty())?(""):(step7_min.getText().toString().trim()));
+        list.add((step7_scale.getText().toString().isEmpty())?(""):(step7_scale.getText().toString().trim()));
+
+        list.add((step8_max.getText().toString().isEmpty())?(""):(step8_max.getText().toString().trim()));
+        list.add((step8_min.getText().toString().isEmpty())?(""):(step8_min.getText().toString().trim()));
+        list.add((step8_scale.getText().toString().isEmpty())?(""):(step8_scale.getText().toString().trim()));
+
+        list.add((step9_max.getText().toString().isEmpty())?(""):(step9_max.getText().toString().trim()));
+        list.add((step9_min.getText().toString().isEmpty())?(""):(step9_min.getText().toString().trim()));
+        list.add((step9_scale.getText().toString().isEmpty())?(""):(step9_scale.getText().toString().trim()));
+
+        list.add((step10_max.getText().toString().isEmpty())?(""):(step10_max.getText().toString().trim()));
+        list.add((step10_min.getText().toString().isEmpty())?(""):(step10_min.getText().toString().trim()));
+        list.add((step10_scale.getText().toString().isEmpty())?(""):(step10_scale.getText().toString().trim()));
+
+        return list;
+    }
+    public List<Map<String,Object>> getValueParam()
+    {
+        List<Map<String,Object>> mylist=new ArrayList<>();
+            Map<String, Object> map1 = new HashMap<String, Object>();
+            map1.put("max",step1_max.getText().toString().trim());
+            map1.put("min",step1_min.getText().toString().trim());
+            map1.put("scale",step1_scale.getText().toString().trim());
+            mylist.add(map1);
+        Map<String, Object> map2 = new HashMap<String, Object>();
+        map2.put("max",step2_max.getText().toString().trim());
+        map2.put("min",step2_min.getText().toString().trim());
+        map2.put("scale", step2_scale.getText().toString().trim());
+        mylist.add(map2);
+        Map<String, Object> map3 = new HashMap<String, Object>();
+        map3.put("max",step3_max.getText().toString().trim());
+        map3.put("min",step3_min.getText().toString().trim());
+        map3.put("scale",step3_scale.getText().toString().trim());
+        mylist.add(map3);
+        Map<String, Object> map4 = new HashMap<String, Object>();
+        map4.put("max",step4_max.getText().toString().trim());
+        map4.put("min",step4_min.getText().toString().trim());
+        map4.put("scale",step4_scale.getText().toString().trim());
+        mylist.add(map4);
+        Map<String, Object> map5 = new HashMap<String, Object>();
+        map5.put("max",step5_max.getText().toString().trim());
+        map5.put("min",step5_min.getText().toString().trim());
+        map5.put("scale",step5_scale.getText().toString().trim());
+        mylist.add(map5);
+        Map<String, Object> map6 = new HashMap<String, Object>();
+        map6.put("max",step6_max.getText().toString().trim());
+        map6.put("min",step6_min.getText().toString().trim());
+        map6.put("scale",step6_scale.getText().toString().trim());
+        mylist.add(map6);
+        Map<String, Object> map7 = new HashMap<String, Object>();
+        map7.put("max",step7_max.getText().toString().trim());
+        map7.put("min",step7_min.getText().toString().trim());
+        map7.put("scale",step7_scale.getText().toString().trim());
+        mylist.add(map7);
+        Map<String, Object> map8 = new HashMap<String, Object>();
+        map8.put("max",step8_max.getText().toString().trim());
+        map8.put("min",step8_min.getText().toString().trim());
+        map8.put("scale",step8_scale.getText().toString().trim());
+        mylist.add(map8);
+        Map<String, Object> map9 = new HashMap<String, Object>();
+        map9.put("max",step9_max.getText().toString().trim());
+        map9.put("min",step9_min.getText().toString().trim());
+        map9.put("scale",step9_scale.getText().toString().trim());
+        mylist.add(map9);
+        Map<String, Object> map10 = new HashMap<String, Object>();
+        map10.put("max",step10_max.getText().toString().trim());
+        map10.put("min",step10_min.getText().toString().trim());
+        map10.put("scale",step10_scale.getText().toString().trim());
+        mylist.add(map10);
+
+        return mylist;
+    }
     public int getStepCount()
     {
         return stepCount;

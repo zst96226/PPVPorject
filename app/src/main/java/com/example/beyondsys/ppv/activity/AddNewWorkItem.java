@@ -1,7 +1,9 @@
 package com.example.beyondsys.ppv.activity;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,20 +39,27 @@ import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UIDEntity;
 import com.example.beyondsys.ppv.entities.UserInTeam;
 import com.example.beyondsys.ppv.entities.UserInTeamResult;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
 import com.example.beyondsys.ppv.tools.InputScoreDialog;
 import com.example.beyondsys.ppv.tools.JsonEntity;
+import com.example.beyondsys.ppv.tools.ListPopupWindowAdapter;
 import com.example.beyondsys.ppv.tools.PopupMenuForWorkItem;
 import com.example.beyondsys.ppv.tools.Tools;
 import com.example.beyondsys.ppv.tools.ValidaService;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.Map;
 
 public class AddNewWorkItem extends Activity {
 
@@ -58,21 +67,17 @@ public class AddNewWorkItem extends Activity {
     private LinearLayout inputScore_layout,ok_layout;
     private InputScoreDialog dialog;
     private TextView input_score,show_score;
-    ArrayList< String> list =new ArrayList<String>();// new String[]{"空","张三", "李四", "王五", "赵六"};
+    ArrayList<String> listID =new ArrayList<String>();// new String[]{"空","张三", "李四", "王五", "赵六"};
+    ArrayList<String> list =new ArrayList<String>();
     ArrayList< String> typeList=new ArrayList<String>();//new String[]{"事项","任务"};
     ArrayList< String> statusList= new ArrayList<String>();
-    private  enum status_enum{
-        invaild(0),creat_assigned(1),assigned_yes(2),yes_begin(3),prosessing(4),
-        submit_check(5),check_test(6),iteration(7),iteration_end(8),isend(9);
-        private final int val;
-        status_enum(int  value)
-        {
-            val = value;
-        }
-    }
-
-    EditText input_AssignedTo, input_Head, input_Checker,input_CloseTime,input_type,input_Name,input_status,input_des;
+    EditText input_Name,input_des;
+    private  TextView  input_AssignedTo, input_Head, input_Checker,
+            input_CloseTime,input_type,input_status;
     ListPopupWindow AssignedTo_pop, Head_pop, Checker_pop,Type_pop;
+    private Context mContext;
+    private ListPopupWindowAdapter mListPopupWindowAdapter;
+    private String UID;
     private Handler handler=new Handler()
     {
         public void handleMessage(Message msg) {
@@ -122,15 +127,23 @@ public class AddNewWorkItem extends Activity {
                 String jsonStr = msg.obj.toString();
                 if(msg.obj!=null&& !jsonStr.equals("anyType{}"))
                 {
+                    Log.i("添加工作项返回值：" + msg.obj, "FHZ");
                     try{
-                        AddWorkItemResult addWorkItemResult =JsonEntity.ParseJsonForAddResult(jsonStr);
-                        if(addWorkItemResult!=null)
+                        int flag=Integer.parseInt(msg.obj.toString());
+                        if(flag==0)
                         {
-                            if(addWorkItemResult.result==0)
-                            {
-                                Toast.makeText(AddNewWorkItem.this, "新建成功", Toast.LENGTH_SHORT).show();
-                            }
+                            Toast.makeText(AddNewWorkItem.this, "新建成功", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(AddNewWorkItem.this, "新建失败", Toast.LENGTH_SHORT).show();
                         }
+//                        AddWorkItemResult addWorkItemResult =JsonEntity.ParseJsonForAddResult(jsonStr);
+//                        if(addWorkItemResult!=null)
+//                        {
+//                            if(addWorkItemResult.result==0)
+//                            {
+//                                Toast.makeText(AddNewWorkItem.this, "新建成功", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
                     }catch (Exception e){}
 
                 }else{
@@ -150,29 +163,32 @@ public class AddNewWorkItem extends Activity {
         setContentView(R.layout.activity_add_new_work_item);
 
         InitView();
-        Listener();
         setCache();
         initDate();
-        SetPopWinForAssignedTo();
-        SetPopWinForHead();
+        Listener();
+
+
         SetPopWinForChecker();
         setPopWinForType();
     }
 
     private void InitView() {
+        mContext=this;
         back = (ImageView) this.findViewById(R.id.anwi_back);
         inputScore_layout = (LinearLayout) findViewById(R.id.inputScore_layout);
         input_score = (TextView) findViewById(R.id.input_score);
         show_score = (TextView) findViewById(R.id.showScore_tex);
-        input_AssignedTo = (EditText) findViewById(R.id.input_AssignedTo);
-        input_Head = (EditText) findViewById(R.id.input_Head);
-        input_Checker = (EditText) findViewById(R.id.input_Checker);
-        input_CloseTime=(EditText)findViewById(R.id.input_endtime);
-        input_type=(EditText)findViewById(R.id.input_Type);
-        ok_layout=(LinearLayout)findViewById(R.id.ok_layout);
-        input_Name=(EditText)findViewById(R.id.input_titlename);
-        input_status=(EditText)findViewById(R.id.input_state);
+        input_AssignedTo = (TextView) findViewById(R.id.input_AssignedTo);
+        input_Head = (TextView) findViewById(R.id.input_Head);
+        input_Checker = (TextView) findViewById(R.id.input_Checker);
+        input_CloseTime=(TextView)findViewById(R.id.input_endtime);
+        input_type=(TextView) findViewById(R.id.input_Type);
+        ok_layout=(LinearLayout) findViewById(R.id.ok_layout);
+        input_Name=(EditText) findViewById(R.id.input_titlename);
+        input_status=(TextView) findViewById(R.id.input_state);
+        input_des=(EditText)findViewById(R.id.input_des);
         list.add("空");
+        listID.add("");
         typeList.add("事项");
         typeList.add("任务");
         statusList.add("已作废");
@@ -185,10 +201,11 @@ public class AddNewWorkItem extends Activity {
         statusList.add("迭代中");
         statusList.add("迭代完待结束");
         statusList.add("完成");
+        setStatus();
         input_type.setText(typeList.get(0));
-        input_CloseTime = (EditText) findViewById(R.id.input_endtime);
-        input_type = (EditText) findViewById(R.id.input_Type);
-        input_des=(EditText)findViewById(R.id.input_des);
+
+
+
     }
 
     private  void initDate()
@@ -205,19 +222,26 @@ public class AddNewWorkItem extends Activity {
             if (FType.equals(typeList.get(1)))
             {
                 input_type.setText(typeList.get(1));
-                Type_pop.dismiss();
             }
         }
-
+        try {
+            if (Reservoir.contains(LocalDataLabel.UserID)) {
+                UIDEntity entity = Reservoir.get(LocalDataLabel.UserID, UIDEntity.class);
+                UID = entity.UID;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private  boolean setCache()
     {
+        Log.i(" userinteam  SetCAche","aa");
         try
         {
             if(Reservoir.contains(LocalDataLabel.AllUserInTeam))
             {
-                Log.i(" userinteam  SetCAche","FHZ");
+                Log.i(" userinteam  SetCAche","aa");
                 Type resultType = new TypeToken<List<UserInTeam>>() {
                 }.getType();
                 List<UserInTeam> entityList = Reservoir.get(LocalDataLabel.AllUserInTeam, resultType);
@@ -226,6 +250,8 @@ public class AddNewWorkItem extends Activity {
                     for (UserInTeam user: entityList)
                     {
                         list.add(user.UserName);
+                        listID.add(user.UserID);
+                        Log.i(" userinteam", "aa");
                     }
                     return  true;
                 }
@@ -269,7 +295,39 @@ public class AddNewWorkItem extends Activity {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                input_CloseTime.setText(year + "-" + monthOfYear + "-" + dayOfMonth);
+                 monthOfYear=monthOfYear+1;
+                String dateStr="",monStr="",dayStr="";
+                if(monthOfYear<10)
+                {
+                    monStr="0" + monthOfYear;
+                }else{
+                    monStr=String.valueOf(monthOfYear);
+                }
+                if(dayOfMonth<10)
+                {
+                    dayStr="0"+dayOfMonth;
+                }else{
+                    dayStr=String.valueOf(dayOfMonth);
+                }
+                dateStr=year + "-" + monStr + "-" +dayStr;
+                Log.i(dateStr+"dateStr","FHZ");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String nowStr=sdf.format(new  java.util.Date());
+                Log.i(nowStr+"nowStr","FHZ");
+                Date nowTime=null,dateTime=null;
+                try {
+                  nowTime =sdf.parse(nowStr);
+                  dateTime=sdf.parse(dateStr);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if(nowTime.getTime()>=dateTime.getTime())
+                {
+                    input_CloseTime.setText("");
+                }else{
+                    input_CloseTime.setText(dateStr);
+                }
+
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
@@ -281,12 +339,19 @@ public class AddNewWorkItem extends Activity {
         int  Status,Category,TheTimeStamp;
         double  BusinessValue,HardScale;
         ID= Tools.GetGUID();
-        ClosingTime=input_CloseTime.getText().toString().trim();
+        if(input_CloseTime.getText().toString().trim().equals("")||input_CloseTime.getText().toString().trim().isEmpty())
+        {
+            Toast.makeText(AddNewWorkItem.this, "结束日期要大于今天！", Toast.LENGTH_SHORT).show();
+            return     null;
+        }else{
+            ClosingTime=input_CloseTime.getText().toString().trim();
+        }
+//        ClosingTime="2017-01-02";
         Name=input_Name.getText().toString().trim();
         boolean checkName= ValidaService.isTitleLength(Name);
         if(!checkName)
         {
-            Toast.makeText(AddNewWorkItem.this, "标题为2~50个字符！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddNewWorkItem.this, "标题在2~50字符之间！", Toast.LENGTH_SHORT).show();
             return     null;
         }
 
@@ -298,24 +363,26 @@ public class AddNewWorkItem extends Activity {
         {
             Category=1;
         }
-        //其他参数未写完
-        Assigned2=input_AssignedTo.getText().toString().trim();
-        if(Assigned2.equals("空"))
+        if(input_AssignedTo.getText().toString().trim().equals("空")||input_AssignedTo.getText().toString().trim().isEmpty())
         {
             Assigned2="";
+        }else{
+            Assigned2=listID.get(list.indexOf(input_AssignedTo.getText().toString().trim()));
         }
-
-        Belong2=input_Head.getText().toString().trim();
-        if(Belong2.equals("空"))
+        if(input_Head.getText().toString().trim().equals("空")||input_Head.getText().toString().trim().isEmpty())
         {
             Belong2="";
+        }else{
+            Belong2=listID.get(list.indexOf(input_Head.getText().toString().trim()));
         }
 
         Checker=input_Checker.getText().toString().trim();
-        if(Checker.equals("空"))
+        if(input_Checker.getText().toString().trim().equals("空")||input_Checker.getText().toString().trim().isEmpty())
         {
 
             Checker="";
+        }else{
+            Checker=listID.get(list.indexOf(input_Checker.getText().toString().trim()));
         }
 
         Description=input_des.getText().toString().trim();
@@ -324,8 +391,7 @@ public class AddNewWorkItem extends Activity {
         Bundle bundle = intent.getExtras();
         //传递FID过来
         String FatherID=bundle.getString("FatherID").trim();
-        String FatherType=bundle.getString("FatherType").trim();
-        if(!FatherID.isEmpty())
+        if(FatherID.isEmpty())
         {
             FID="";
         }else{
@@ -366,8 +432,13 @@ public class AddNewWorkItem extends Activity {
         }
         TheTimeStamp=1;
         //难度和分数未完成
-        BusinessValue=100;
-        HardScale=2;
+        if(!show_score.getText().toString().equals("点击估算分值"))
+        {
+            BusinessValue=Double.valueOf(show_score.getText().toString().trim());
+        } else{
+            BusinessValue=0.00;
+        }
+        HardScale=1.0;
         WorkItemEntity workItem=new WorkItemEntity();
         workItem.TheTimeStamp=TheTimeStamp;
         workItem.Assigned2=Assigned2;
@@ -378,7 +449,7 @@ public class AddNewWorkItem extends Activity {
         workItem.Category=Category;
         workItem.ClosingTime=ClosingTime;
         workItem.CreateTime="";
-        workItem.Creater=ID;
+        workItem.Creater=UID;
         workItem.FID=FID;
         workItem.HardScale=HardScale;
         workItem.Description=Description;
@@ -387,14 +458,16 @@ public class AddNewWorkItem extends Activity {
         workItem.Status=Status;
         return  workItem;
     }
-    private void Listener() {
+
+
+    private  void setStatus() {
         input_AssignedTo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus)
                 {
                     String  asssigned=input_AssignedTo.getText().toString().trim();
-                    if(asssigned.isEmpty()||asssigned.equals("空"))
+                    if(asssigned.isEmpty()||asssigned.equals("空")||asssigned.equals(""))
                     {
                         input_status.setText(statusList.get(1));
                     }else
@@ -404,6 +477,9 @@ public class AddNewWorkItem extends Activity {
                 }
             }
         });
+    }
+    private void Listener() {
+
         ok_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -411,9 +487,13 @@ public class AddNewWorkItem extends Activity {
                 //拼装要提交的WorkItemEntity
                 //调用服务提交
                 //handler中判断提交结果
+
                 WorkItemEntity workItem= submitEntity();
-                WorkItemBusiness workItemBusiness=new WorkItemBusiness();
-                workItemBusiness.AddWorkItem(handler,workItem);
+                if(workItem!=null)
+                {
+                    WorkItemBusiness workItemBusiness=new WorkItemBusiness();
+                    workItemBusiness.AddWorkItem(handler,workItem);
+                }
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -422,7 +502,7 @@ public class AddNewWorkItem extends Activity {
                 finish();
             }
         });
-        inputScore_layout.setOnClickListener(new View.OnClickListener() {
+        show_score.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //  showDialog();
@@ -435,31 +515,47 @@ public class AddNewWorkItem extends Activity {
                 showDatePickDlg();
             }
         });
-        input_type.setOnTouchListener(new View.OnTouchListener() {
+        input_type.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getX() >= (v.getWidth() - ((EditText) v)
-                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        Intent intent = getIntent();
-                        Bundle bundle = intent.getExtras();
-                        //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
-                        String FID=bundle.getString("FatherID").trim();
-                        String FType=bundle.getString("FatherType").trim();
-                        if(!FID.isEmpty())
-                        {
-                            if(FType!=typeList.get(1))
-                            {
-                                Type_pop.show();
-                            }
-                        }
-                        return true;
+            public void onClick(View v) {
+                Intent intent = getIntent();
+                Bundle bundle = intent.getExtras();
+                //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
+                String FID = bundle.getString("FatherID").trim();
+                String FType = bundle.getString("FatherType").trim();
+                if (!FID.isEmpty()) {
+                    if (FType != typeList.get(1)) {
+                        setPopWinForType();
+                        Type_pop.show();
                     }
                 }
-                return false;
+
             }
         });
+//        input_type.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                final int DRAWABLE_RIGHT = 2;
+//                if (event.getAction() == MotionEvent.ACTION_UP) {
+//                    if (event.getX() >= (v.getWidth() - ((EditText) v)
+//                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+//                        Intent intent = getIntent();
+//                        Bundle bundle = intent.getExtras();
+//                        //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
+//                        String FID = bundle.getString("FatherID").trim();
+//                        String FType = bundle.getString("FatherType").trim();
+//                        if (!FID.isEmpty()) {
+//                            if (FType != typeList.get(1)) {
+//                                Type_pop.setAnchorView(v);
+//                                Type_pop.show();
+//                            }
+//                        }
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
         input_type.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -475,56 +571,65 @@ public class AddNewWorkItem extends Activity {
                 Intent intent = getIntent();
                 Bundle bundle = intent.getExtras();
                 //传递FID过来
-                String FID=bundle.getString("FatherID").trim();
-                String FType=bundle.getString("FatherType").trim();
-                if(FID==null)
-                {
+                String FID = bundle.getString("FatherID").trim();
+                String FType = bundle.getString("FatherType").trim();
+                if (FID == null) {
                     input_type.setText(typeList.get(0));
-                }else{
-                    if(FType==typeList.get(1))
-                    {
+                } else {
+                    if (FType == typeList.get(1)) {
                         input_type.setText(typeList.get(1));
-                    }else{
+                    } else {
                         String inputstr = input_type.getText().toString();
                         int strlen = inputstr.length();
                         for (int i = 0; i < typeList.size(); i++) {
-                            if (typeList.get(i).length() >strlen) {
+                            if (typeList.get(i).length() > strlen) {
                                 String str = typeList.get(i).substring(0, strlen);
                                 if (str.equals(inputstr)) {
                                     input_type.setText(typeList.get(i));
-                                    input_type.setSelection(typeList.get(i).length());
+                                    // input_type.setSelection(typeList.get(i).length());
                                 }
                             }
                         }
                     }
                 }
-                for (String str: typeList)
-                {
-                    if(input_type.getText().toString().trim().equals(str))
-                    {
-                        return;
-                    }else
-                    {
-                        input_type.setText("");
-                    }
-                }
+//                for (String str: typeList)
+//                {
+//                    if(input_type.getText().toString().trim().equals(str))
+//                    {
+//                        return;
+//                    }else
+//                    {
+//                        input_type.setText("");
+//                    }
+//                }
             }
         });
-        input_AssignedTo.setOnTouchListener(new View.OnTouchListener() {
+        input_AssignedTo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getX() >= (v.getWidth() - ((EditText) v)
-                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        AssignedTo_pop.show();
-
-                        return true;
-                    }
-                }
-                return false;
+            public void onClick(View v) {
+                Log.i("click", "FHZ");
+                SetPopWinForAssignedTo();
+                //AssignedTo_pop.setAnchorView(v);
+                AssignedTo_pop.show();
+                Log.i("click SHOW", "FHZ");
             }
         });
+//        input_AssignedTo.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                final int DRAWABLE_RIGHT = 2;
+//                if (event.getAction() == MotionEvent.ACTION_UP) {
+//                    if (event.getX() >= (v.getWidth() - ((EditText) v)
+//                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+//                        AssignedTo_pop.setAnchorView(v);
+//                        AssignedTo_pop.show();
+//
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
         input_AssignedTo.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -545,36 +650,44 @@ public class AddNewWorkItem extends Activity {
                         String str = list.get(i).substring(0, strlen);
                         if (str.equals(inputstr)) {
                             input_AssignedTo.setText(list.get(i));
-                            input_AssignedTo.setSelection(list.get(i).length());
+                           // input_AssignedTo.setSelection(list.get(i).length());
                         }
                     }
                 }
-                for (String str: list)
-                {
-                    if(input_AssignedTo.getText().toString().trim().equals(str))
-                    {
-                        return;
-                    }else
-                    {
-                        input_AssignedTo.setText("");
-                    }
-                }
+//                for (String str: list)
+//                {
+//                    if(input_AssignedTo.getText().toString().trim().equals(str))
+//                    {
+//                        return;
+//                    }else
+//                    {
+//                        input_AssignedTo.setText("");
+//                    }
+//                }
             }
         });
-        input_Head.setOnTouchListener(new View.OnTouchListener() {
+        input_Head.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getX() >= (v.getWidth() - ((EditText) v)
-                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        Head_pop.show();
-                        return true;
-                    }
-                }
-                return false;
+            public void onClick(View v) {
+                SetPopWinForHead();
+                Head_pop.show();
             }
         });
+//        input_Head.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                final int DRAWABLE_RIGHT = 2;
+//                if (event.getAction() == MotionEvent.ACTION_UP) {
+//                    if (event.getX() >= (v.getWidth() - ((EditText) v)
+//                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+//                        Head_pop.setAnchorView(v);
+//                        Head_pop.show();
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
         input_Head.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -595,36 +708,44 @@ public class AddNewWorkItem extends Activity {
                         String str = list.get(i).substring(0, strlen);
                         if (str.equals(inputstr)) {
                             input_Head.setText(list.get(i));
-                            input_Head.setSelection(list.get(i).length());
+                          //  input_Head.setSelection(list.get(i).length());
                         }
                     }
                 }
-                for (String str: list)
-                {
-                    if( input_Head.getText().toString().trim().equals(str))
-                    {
-                        return;
-                    }else
-                    {
-                        input_Head.setText("");
-                    }
-                }
+//                for (String str: list)
+//                {
+//                    if( input_Head.getText().toString().trim().equals(str))
+//                    {
+//                        return;
+//                    }else
+//                    {
+//                        input_Head.setText("");
+//                    }
+//                }
             }
         });
-        input_Checker.setOnTouchListener(new View.OnTouchListener() {
+        input_Checker.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getX() >= (v.getWidth() - ((EditText) v)
-                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        Checker_pop.show();
-                        return true;
-                    }
-                }
-                return false;
+            public void onClick(View v) {
+                SetPopWinForChecker();
+                Checker_pop.show();
             }
         });
+//        input_Checker.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                final int DRAWABLE_RIGHT = 2;
+//                if (event.getAction() == MotionEvent.ACTION_UP) {
+//                    if (event.getX() >= (v.getWidth() - ((EditText) v)
+//                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+//                        Checker_pop.setAnchorView(v);
+//                        Checker_pop.show();
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
         input_Checker.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -645,47 +766,47 @@ public class AddNewWorkItem extends Activity {
                         String str =list.get(i).substring(0, strlen);
                         if (str.equals(inputstr)) {
                             input_Checker.setText(list.get(i));
-                            input_Checker.setSelection(list.get(i).length());
+                           // input_Checker.setSelection(list.get(i).length());
                         }
                     }
                 }
-                for (String str: list)
-                {
-                    if(input_Checker.getText().toString().trim().equals(str))
-                    {
-                        return;
-                    }else
-                    {
-                        input_Checker.setText("");
-                    }
-                }
+//                for (String str: list)
+//                {
+//                    if(input_Checker.getText().toString().trim().equals(str))
+//                    {
+//                        return;
+//                    }else
+//                    {
+//                        input_Checker.setText("");
+//                    }
+//                }
             }
         });
     }
 
-    private void showDialog() {
-        dialog = new InputScoreDialog(AddNewWorkItem.this);
-        dialog.setOkListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //确定键
-                Log.e("qqwwok", "qqww");
-                if (inputCheck()) {
-                    Log.e("qqww调用1", "qqww");
-                    inputShow();
-                }
-                //提示输入有误
-                dialog.dismiss();
-            }
-        });
-        dialog.setCancelListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
+//    private void showDialog() {
+//        dialog = new InputScoreDialog(AddNewWorkItem.this);
+//        dialog.setOkListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //确定键
+//                Log.e("qqwwok", "qqww");
+//
+//                    Log.e("qqww调用1", "qqww");
+//                    inputShow();
+//
+//                //提示输入有误
+//                dialog.dismiss();
+//            }
+//        });
+//        dialog.setCancelListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//            }
+//        });
+//        dialog.show();
+//    }
 
     private void estimateValue() {
         Intent estimate = new Intent(AddNewWorkItem.this, EstimateValueActivity.class);
@@ -693,35 +814,45 @@ public class AddNewWorkItem extends Activity {
         startActivityForResult(estimate, 1);
     }
 
-    private boolean inputCheck() {
-        //对各价值估算各输入框进行输入验证
-        return true;
-    }
+//    private boolean inputCheck() {
+//        //对各价值估算各输入框进行输入验证
+//        return true;
+//    }
 
-    private void inputShow() {
-        //将合法输入填充到控件上
-        input_score.setText(dialog.getStepDetail());
-    }
+//    private void inputShow() {
+//        //将合法输入填充到控件上
+//        input_score.setText(dialog.getStepDetail());
+//    }
 
     private void SetPopWinForAssignedTo() {
-        AssignedTo_pop = new ListPopupWindow(this);
-        AssignedTo_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list));
+        AssignedTo_pop = new ListPopupWindow( mContext);
+        //自定义Adapter
+        mListPopupWindowAdapter=new ListPopupWindowAdapter(list, mContext);
+        AssignedTo_pop.setAdapter(mListPopupWindowAdapter);
+        //mListPopupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.ic_launcher));
+        AssignedTo_pop.setWidth(input_AssignedTo.getWidth());
+        AssignedTo_pop.setHeight(200);
+//        AssignedTo_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list));
         AssignedTo_pop.setAnchorView(input_AssignedTo);
         AssignedTo_pop.setModal(true);
         AssignedTo_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String item =list.get(position);
+                String item = list.get(position);
                 input_AssignedTo.setText(item);
-                input_AssignedTo.setSelection(item.length());
+                // input_AssignedTo.setSelection(item.length());
                 AssignedTo_pop.dismiss();
             }
         });
     }
-    private  void setPopWinForType()
-    {
+    private  void setPopWinForType() {
         Type_pop=new ListPopupWindow(this);
-        Type_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, typeList));
+        mListPopupWindowAdapter=new ListPopupWindowAdapter(list, mContext);
+        Type_pop.setAdapter(mListPopupWindowAdapter);
+        //mListPopupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.ic_launcher));
+        Type_pop.setWidth( Type_pop.getWidth());
+        Type_pop.setHeight(200);
+//        Type_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, typeList));
         Type_pop.setAnchorView(input_type);
         Type_pop.setModal(true);
         Type_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -729,14 +860,19 @@ public class AddNewWorkItem extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String item=typeList.get(position);
                 input_type.setText(item);
-                input_type.setSelection(item.length());
+              //  input_type.setSelection(item.length());
                 Type_pop.dismiss();
             }
         });
     }
     private void SetPopWinForHead() {
         Head_pop = new ListPopupWindow(this);
-        Head_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list));
+        mListPopupWindowAdapter=new ListPopupWindowAdapter(list, mContext);
+        Head_pop.setAdapter(mListPopupWindowAdapter);
+        //mListPopupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.ic_launcher));
+        Head_pop.setWidth( Head_pop.getWidth());
+        Head_pop.setHeight(200);
+//        Head_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list));
         Head_pop.setAnchorView(input_Head);
         Head_pop.setModal(true);
         Head_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -744,7 +880,7 @@ public class AddNewWorkItem extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String item =list.get(position);
                 input_Head.setText(item);
-                input_Head.setSelection(item.length());
+              //  input_Head.setSelection(item.length());
                 Head_pop.dismiss();
             }
         });
@@ -752,7 +888,12 @@ public class AddNewWorkItem extends Activity {
 
     private void SetPopWinForChecker() {
         Checker_pop = new ListPopupWindow(this);
-        Checker_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list));
+        mListPopupWindowAdapter=new ListPopupWindowAdapter(list, mContext);
+        Checker_pop.setAdapter(mListPopupWindowAdapter);
+        //mListPopupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.ic_launcher));
+        Checker_pop.setWidth(  Checker_pop.getWidth());
+        Checker_pop.setHeight(200);
+//        Checker_pop.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list));
         Checker_pop.setAnchorView(input_Checker);
         Checker_pop.setModal(true);
         Checker_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -760,7 +901,7 @@ public class AddNewWorkItem extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String item = list.get(position);
                 input_Checker.setText(item);
-                input_Checker.setSelection(item.length());
+                // input_Checker.setSelection(item.length());
                 Checker_pop.dismiss();
             }
         });
@@ -774,9 +915,12 @@ public class AddNewWorkItem extends Activity {
                 if (resultCode == 1) {
                     input_score.setText(data.getStringExtra("stepDetail"));
                     //分值计算接口
-                    show_score.setText("1000分");
+//                   List<Map<String,Object>> valueParam=( List<Map<String,Object>>)data.getSerializableExtra("valueParam");
+                  // Log.i("1MAX:" + valueParam.get(0).get("max"),"FHZ");
+                    String value=data.getStringExtra("valueParam");
+                    show_score.setText(value);
                 } else {
-                    input_score.setText("未估算分值");
+                    input_score.setText("点击估算分值");
                 }
                 break;
             default:

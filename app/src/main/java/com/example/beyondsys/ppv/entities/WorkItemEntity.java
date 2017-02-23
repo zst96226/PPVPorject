@@ -32,27 +32,27 @@ public class WorkItemEntity implements Serializable {
     public String Remark;//备注
 
     public WorkItemEntity(){
-        this.BID=null;
-        this.ID=null;
-        this.FID=null;
+        this.BID="";
+        this.ID="";
+        this.FID="";
         this.TheTimeStamp=0;
-        this.RID=null;
-        this.Name=null;
-        this.Description=null;
+        this.RID="";
+        this.Name="";
+        this.Description="";
         this.Category=0;
         this.Status=0;
         this.Assigned2="";
         this.Belong2="";
-        this.Checker=null;
-        this.ClosingTime=null;
-        this.Creater=null;
-        this.CreateTime=null;
-        this.Modifier=null;
-        this.ModifyTime=null;
+        this.Checker="";
+        this.ClosingTime="";
+        this.Creater="";
+        this.CreateTime="";
+        this.Modifier="";
+        this.ModifyTime="";
         this.BusinessValue=0.00;
         this.BasicScore=0.00;
         this.CheckedScore=0.00;
         this.HardScale=0.00;
-        this.Remark=null;
+        this.Remark="";
     }
 }

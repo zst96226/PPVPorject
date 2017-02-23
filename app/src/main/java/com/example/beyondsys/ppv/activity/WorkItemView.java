@@ -198,6 +198,7 @@ public class WorkItemView extends Fragment {
                     if (entity.WorkID.equals(Id)) {
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("Item", entity);
+                        bundle.putInt("status",stflag);
                         intent.putExtras(bundle);
                         startActivity(intent);
                     }
@@ -211,10 +212,12 @@ public class WorkItemView extends Fragment {
                 setdefault();
                 if (assignme == reflag) {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt_2);
+                    undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
                     reflag = aboutme;
                     GetDataForService();
                 } else {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt);
+                    undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
                     reflag = assignme;
                     GetDataForService();
                 }

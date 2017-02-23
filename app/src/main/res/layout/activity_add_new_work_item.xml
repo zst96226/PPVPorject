@@ -96,12 +96,15 @@
                     android:textSize="12sp"
                     android:gravity="center"
                     android:layout_marginLeft="10sp"/>
-                <EditText
+                <TextView
                     android:id="@+id/input_Type"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10sp"
                     android:singleLine="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textSize="12sp"
                     android:layout_marginRight="10sp"
                     android:drawableRight="@drawable/arrow_down_float"
                     android:maxLines="20"/>
@@ -120,12 +123,15 @@
                     android:textSize="12sp"
                     android:gravity="center"
                     android:layout_marginLeft="10sp"/>
-                <EditText
+                <TextView
                     android:id="@+id/input_AssignedTo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10sp"
                     android:singleLine="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textSize="12sp"
                     android:layout_marginRight="10sp"
                     android:drawableRight="@drawable/arrow_down_float"
                     android:maxLines="20"/>
@@ -144,11 +150,14 @@
                     android:textSize="12sp"
                     android:gravity="center"
                     android:layout_marginLeft="10sp"/>
-                <EditText
+                <TextView
                     android:id="@+id/input_Head"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:singleLine="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textSize="12sp"
                     android:layout_marginLeft="10sp"
                     android:layout_marginRight="10sp"
                     android:drawableRight="@drawable/arrow_down_float"
@@ -168,11 +177,14 @@
                     android:textSize="12sp"
                     android:gravity="center"
                     android:layout_marginLeft="10sp"/>
-                <EditText
+                <TextView
                     android:id="@+id/input_Checker"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:singleLine="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textSize="12sp"
                     android:layout_marginLeft="10sp"
                     android:layout_marginRight="10sp"
                     android:drawableRight="@drawable/arrow_down_float"
@@ -192,16 +204,19 @@
                     android:textSize="12sp"
                     android:gravity="center"
                     android:layout_marginLeft="10sp"/>
-                <EditText
+                <TextView
                     android:id="@+id/input_state"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:singleLine="true"
                     android:layout_marginLeft="10sp"
                     android:editable="false"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textSize="12sp"
                     android:layout_marginRight="10sp"
                     android:maxLines="20"
-                    android:text=""/>
+                    android:text="新建未指派"/>
             </LinearLayout>
 
             <LinearLayout
@@ -218,7 +233,7 @@
                     android:gravity="center"
                     android:editable="false"
                     android:layout_marginLeft="10sp"/>
-                <EditText
+                <TextView
                     android:id="@+id/input_endtime"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -226,6 +241,9 @@
                     android:layout_marginLeft="10sp"
                     android:layout_marginRight="10sp"
                     android:editable="false"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textSize="12sp"
                     android:drawableRight="@drawable/arrow_down_float"
                     android:maxLines="20"/>
             </LinearLayout>
@@ -269,7 +287,7 @@
                             android:gravity="center"
                             android:textSize="12sp"
                             android:textColor="@color/mainFont"
-                            android:text="xxx分值"/>
+                            android:text="点击估算分值"/>
 
                     </LinearLayout>
                     <LinearLayout
@@ -280,7 +298,8 @@
                             android:id="@+id/input_score"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:isScrollContainer="true"/>
+                            android:scrollbars="vertical"
+                            android:scrollbarStyle="insideOverlay"/>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -318,7 +337,7 @@
                         android:maxLines="5"
                         android:maxLength="200"
                         android:textSize="12sp"
-                        android:focusable="false"
+                        android:focusable="true"
                         android:gravity="top"
                         android:hint="描述为0~200个字符"/>
                 </LinearLayout>

@@ -58,14 +58,24 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.GetAllStaff) {
                 if (msg.obj != null) {
-                    String jsonStr = msg.obj.toString();
+                    final String jsonStr = msg.obj.toString();
                     System.out.print("全部人员："+jsonStr);
                     /*解析Json*/
                     try {
                         UserInTeamResult result = JsonEntity.ParseJsonForUserInTeamResult(jsonStr);
                         if (result != null) {
                             if (result.AccessResult == 0) {
-                                Reservoir.putAsync(LocalDataLabel.AllUserInTeam, result.teamUsers);
+                                Reservoir.putAsync(LocalDataLabel.AllUserInTeam, result.teamUsers, new ReservoirPutCallback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.i("cache",jsonStr);
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+
+                                    }
+                                });
                             }
                         }
                     } catch (Exception e) {
