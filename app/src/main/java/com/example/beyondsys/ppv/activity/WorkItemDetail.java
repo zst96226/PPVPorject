@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.anupcowkur.reservoir.Reservoir;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.WorkItemBusiness;
+import com.example.beyondsys.ppv.bussiness.WorkValueBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.ChildWorkItemEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
@@ -36,6 +37,7 @@ import com.example.beyondsys.ppv.entities.SubWorkItemParams;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UIDEntity;
+import com.example.beyondsys.ppv.entities.UserInTeam;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.entities.WorkDetailResult;
 import com.example.beyondsys.ppv.entities.WorkItemChildResultParams;
@@ -47,6 +49,8 @@ import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.ListPopupWindowAdapter;
 import com.example.beyondsys.ppv.tools.PopupMenuForWorkItem;
+import com.example.beyondsys.ppv.tools.Tools;
+import com.example.beyondsys.ppv.tools.ValidaService;
 import com.google.gson.reflect.TypeToken;
 
 import org.w3c.dom.Text;
@@ -74,6 +78,7 @@ public class WorkItemDetail extends AppCompatActivity {
     ArrayList<String> Userlist = new ArrayList<String>();
     ArrayList<String> UserIDlist = new ArrayList<String>();
     ArrayList<String> statusList = new ArrayList<String>();
+    ArrayList<String>  StatusChooses = new ArrayList<String>();
     ImageView back;
     ImageView wid_show_chid;
     ImageView returen;
@@ -86,31 +91,34 @@ public class WorkItemDetail extends AppCompatActivity {
      private TextView assign2_edt, checker_edt, status_edt, Head_edt, closingtime_edt;
     private TextView wid_workname, wid_workvalue, starttime_tex, endtime_tex, creater_tex, creatertime_tex, modifier_tex, modifytime_tex;
     private RelativeLayout del_layout;
+    private Button del_ok, del_cancel;
     private boolean isdel = false;
     private  int staflag;
     String[] typeList = new String[]{"事项", "任务"};
-    private String CurItemId = "", CurItemType = typeList[0];
+    private String CurItemId = "",CurFID="",CurBID="", CurItemType = typeList[0];
+    private  WorkDetailResult CurDetail;
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.GetWorkItemContext) {
                 if (msg.obj != null) {
-                    Log.i("获得详细信息 0","FHZ");
+                    Log.i("获得详细信息 0"+msg.obj,"FHZ");
                     try {
-                        WorkItemContextentity Result = JsonEntity.ParseJsonForWorkItemContextentity(msg.obj.toString());
+                        WorkDetailResult Result = JsonEntity.ParseJsonForWorkDetailResult(msg.obj.toString());
                         Log.i("获得详细信息 0","FHZ");
                         if (Result != null) {
                             int flag=Result.AccessResult;
                             switch (flag) {
                                 case 0:
                                     /*获得详细信息*/
-                                    Log.i("获得详细信息 0","FHZ");
-                                    List<WorkDetailResult> list = Result.WorkDetailsOutputParams;
-                                    if (list != null) {
-                                        /*显示工作详细信息*/
-                                        ShowWorkContext(list.get(0));
+                                    Log.i("显示详细信息","FHZ");
+                                    CurFID=Result.FID;
+                                    CurBID=Result.BID;
+                                    CurDetail=Result;
+                                   /*显示工作详细信息*/
+                                    ShowWorkContext(Result);
+                                    Log.i("判断权限显示", "FHZ");
                                         /*判断权限显示*/
-                                        SetPermissions(list.get(0));
-                                    }
+                                    SetPermissions(Result);
                                     break;
                                 case -1:
                                     Toast.makeText(WorkItemDetail.this, "请求失败，请重新尝试", Toast.LENGTH_SHORT).show();
@@ -127,16 +135,18 @@ public class WorkItemDetail extends AppCompatActivity {
                 }
             } else if (msg.what == ThreadAndHandlerLabel.GetChildWorkItem) {
                 if (msg.obj != null) {
-                    Log.i("工作子项返回值:" + msg.obj.toString(), "zst_test");
+                    Log.i( "zst_test","工作子项返回值:" + msg.obj.toString());
                     try {
                         ChildWorkItemEntity entity = JsonEntity.ParseJsonForChildWorkItemEntity(msg.obj.toString());
+                        Log.i( "zst_test","工作子项解析成功");
                         if (entity != null) {
                             switch (entity.AccessResult) {
                                 case 0:
                                     /*获得当前工作项子项详细信息*/
-                                    chid = entity.WorkSubItemParams;
+                                    chid = entity.subItem;
                                     if (chid != null) {
                                         /*显示子项*/
+                                        Log.i( "zst_test","工作子项setList");
                                         SetList();
                                     }
                                     break;
@@ -156,6 +166,30 @@ public class WorkItemDetail extends AppCompatActivity {
                 } else {
                     Toast.makeText(WorkItemDetail.this, "没有获取到当前工作项信息", Toast.LENGTH_SHORT).show();
                 }
+            }else if(msg.what == ThreadAndHandlerLabel.UpdateWorkItem){
+                if (msg.obj != null) {
+                    Log.i("获得修改信息返回值"+msg.obj,"FHZ");
+                    try {
+
+                            int flag=Integer.parseInt(msg.obj.toString());
+                            switch (flag) {
+                                case 0:
+                                    Toast.makeText(WorkItemDetail.this, "修改成功！", Toast.LENGTH_SHORT).show();
+                                    Log.i("修改信息成功", "FHZ");
+                                    break;
+                                case -1:
+                                    Toast.makeText(WorkItemDetail.this, "请求失败，请重新尝试", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case -3:
+                                    Toast.makeText(WorkItemDetail.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
+
+                    } catch (Exception e) {
+                    }
+                } else {
+                    Toast.makeText(WorkItemDetail.this, "没有获取到修改工作项返回值", Toast.LENGTH_SHORT).show();
+                }
             } else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
                 Toast.makeText(WorkItemDetail.this, "请求网络失败，请检查网络连接", Toast.LENGTH_SHORT).show();
             }
@@ -173,6 +207,8 @@ public class WorkItemDetail extends AppCompatActivity {
         }
 
         initView();
+
+        setCache();
 
         GetDataForCache();
 
@@ -212,6 +248,9 @@ public class WorkItemDetail extends AppCompatActivity {
         value_edt = (EditText) findViewById(R.id.wid_Value_edt);
         closingtime_edt = (TextView) findViewById(R.id.wid_ClosingTime_edt);
         des_edt = (EditText) findViewById(R.id.wid_Description_edt);
+        del_layout = (RelativeLayout) findViewById(R.id.del_choose_layout);
+        del_ok = (Button) findViewById(R.id.del_ok);
+        del_cancel = (Button) findViewById(R.id.del_cancel);
         Userlist.add("空");
         UserIDlist.add("");
         statusList.add("已作废");
@@ -224,11 +263,40 @@ public class WorkItemDetail extends AppCompatActivity {
         statusList.add("迭代中");
         statusList.add("迭代完待结束");
         statusList.add("完成");
+        StatusChooses.add(statusList.get(0));
+        StatusChooses.add(statusList.get(6));
+        StatusChooses.add(statusList.get(9));
         popWindow.add_child.setVisibility(View.GONE);
         popWindow.del_child.setVisibility(View.GONE);
         popWindow.del_father.setVisibility(View.GONE);
         popWindow.submit.setVisibility(View.GONE);
         popWindow.change_status.setVisibility(View.GONE);
+    }
+
+    private  boolean setCache()
+    {
+        Log.i(" userinteam  SetCAche", "aa");
+        try
+        {
+            if(Reservoir.contains(LocalDataLabel.AllUserInTeam))
+            {
+                Log.i(" userinteam  SetCAche","aa");
+                Type resultType = new TypeToken<List<UserInTeam>>() {
+                }.getType();
+                List<UserInTeam> entityList = Reservoir.get(LocalDataLabel.AllUserInTeam, resultType);
+                if(entityList!=null&&entityList.size()!=0)
+                {
+                    for (UserInTeam user: entityList)
+                    {
+                        Userlist.add(user.UserName);
+                        UserIDlist.add(user.UserID);
+                        Log.i(" userinteam", "aa");
+                    }
+                    return  true;
+                }
+            }
+        }catch (Exception e){}
+        return  false;
     }
 
     /*获取跳转传递信息*/
@@ -237,6 +305,7 @@ public class WorkItemDetail extends AppCompatActivity {
         staflag=intent.getIntExtra("status",0);
         WorkItemResultParams WorkItem = (WorkItemResultParams) intent.getSerializableExtra("Item");
         CurItemId=WorkItem.WorkID;
+        CurFID=WorkItem.FID;
         if (WorkItem.Category == 0) {
             work_img.setImageResource(R.drawable.t);
         } else {
@@ -270,6 +339,12 @@ public class WorkItemDetail extends AppCompatActivity {
             case 7:
                 work_status.setImageResource(R.drawable.status7);
                 break;
+            case 8:
+                work_status.setImageResource(R.drawable.status8);
+                break;
+            case 9:
+                work_status.setImageResource(R.drawable.status9);
+                break;
             default:
                 work_status.setImageResource(R.drawable.status0);
                 break;
@@ -283,12 +358,11 @@ public class WorkItemDetail extends AppCompatActivity {
         name_edt.setText(result.WorkName);
         assign2_edt.setText(result.AssignerName);
         checker_edt.setText(result.CheckerName);
-        //Head_edt.setText(result.Nam);
+        Head_edt.setText(result.Belong2Name);
         creater_tex.setText(result.Creater);
         creatertime_tex.setText(result.CreateTime.toString());
         modifier_tex.setText(result.ModifierName);
         modifytime_tex.setText(result.ModifyTime.toString());
-        status_edt.setText(result.Status);
         value_edt.setText(result.BusinessValue + "");
         closingtime_edt.setText(result.Deadline.toString());
         des_edt.setText(result.Description);
@@ -303,34 +377,52 @@ public class WorkItemDetail extends AppCompatActivity {
         switch (result.Status) {
             case 0:
                 work_status.setImageResource(R.drawable.status0);
+                status_edt.setText(statusList.get(0));
                 break;
             case 1:
                 work_status.setImageResource(R.drawable.status1);
+                status_edt.setText(statusList.get(1));
                 break;
             case 2:
                 work_status.setImageResource(R.drawable.status2);
+                status_edt.setText(statusList.get(2));
                 break;
             case 3:
                 work_status.setImageResource(R.drawable.status3);
+                status_edt.setText(statusList.get(3));
                 break;
             case 4:
                 work_status.setImageResource(R.drawable.status4);
+                status_edt.setText(statusList.get(4));
                 break;
             case 5:
                 work_status.setImageResource(R.drawable.status5);
+                status_edt.setText(statusList.get(5));
                 break;
             case 6:
                 work_status.setImageResource(R.drawable.status6);
+                status_edt.setText(statusList.get(6));
                 break;
             case 7:
                 work_status.setImageResource(R.drawable.status7);
+                status_edt.setText(statusList.get(7));
+                break;
+            case 8:
+                work_status.setImageResource(R.drawable.status8);
+                status_edt.setText(statusList.get(8));
+                break;
+            case 9:
+                work_status.setImageResource(R.drawable.status9);
+                status_edt.setText(statusList.get(9));
                 break;
             default:
                 work_status.setImageResource(R.drawable.status0);
+                status_edt.setText(statusList.get(0));
                 break;
         }
         starttime_tex.setText(result.CreateTime.substring(0, 10));
         endtime_tex.setText(result.Deadline.substring(0, 10));
+        Log.i("显示返回", "FHZ");
     }
 
     /*事件监听相关*/
@@ -378,11 +470,58 @@ public class WorkItemDetail extends AppCompatActivity {
                 }
             }
         });
+        del_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //检测是否有选中项，则该项状态为作废
+
+                if (child_list.getVisibility() == View.GONE) {
+                    child_list.setVisibility(View.VISIBLE);
+                   // SetList(CurItemId);
+                    wid_show_chid.setImageResource(R.drawable.arrow_up_float);
+                }
+                for (int i = 0; i < child_list.getCount(); i++) {
+                    View view = child_list.getChildAt(i);
+                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.child_che);
+                    ImageView img = (ImageView) view.findViewById(R.id.child_img);
+                    img.setVisibility(View.VISIBLE);
+                    checkBox.setVisibility(View.GONE);
+                }
+                isdel = false;
+                del_layout.setVisibility(View.GONE);
+            }
+        });
+        del_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (child_list.getVisibility() == View.GONE) {
+                    child_list.setVisibility(View.VISIBLE);
+                   // SetList(CurItemId);
+                    wid_show_chid.setImageResource(R.drawable.arrow_up_float);
+                }
+                for (int i = 0; i < child_list.getCount(); i++) {
+                    View view = child_list.getChildAt(i);
+                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.child_che);
+                    ImageView img = (ImageView) view.findViewById(R.id.child_img);
+                    img.setVisibility(View.VISIBLE);
+                    checkBox.setVisibility(View.GONE);
+                }
+                isdel = false;
+                del_layout.setVisibility(View.GONE);
+            }
+        });
         returen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //有父项则
                 //从缓存中取当前对象，若FID不为空，则显示父项内容
+                if(CurFID!=null&&!CurFID.isEmpty())
+                {
+                     GetDataForService(CurFID);
+                }else{
+                    finish();
+                }
 
             }
         });
@@ -393,7 +532,11 @@ public class WorkItemDetail extends AppCompatActivity {
                     return;
                 }
                 if (staflag == 1) {
-                    popWindow.del_child.setVisibility(View.GONE);
+                   // popWindow.add_child.setVisibility(View.VISIBLE);
+                   // popWindow.del_child.setVisibility(View.GONE);
+                    popWindow.del_father.setVisibility(View.GONE);
+                  //  popWindow.change_status.setVisibility(View.VISIBLE);
+                   // popWindow.submit.setVisibility(View.VISIBLE);
                 }
                 popWindow.showPopupWindow(findViewById(R.id.anwi_menu));
                 popWindow.add_child.setOnClickListener(new View.OnClickListener() {
@@ -467,7 +610,16 @@ public class WorkItemDetail extends AppCompatActivity {
                     public void onClick(View arg0) {
                         // do something you need here
                         // 该项状态置为废除
-                        status_edt.setText("废除");
+                        status_edt.setText(statusList.get(0));
+                        List<WorkItemEntity> works=new ArrayList<WorkItemEntity>();
+                        WorkItemEntity  work=submitEntity(CurDetail);
+                        if(work!=null)
+                        {
+                            works.add(work);
+                            WorkItemBusiness workItemBusiness=new WorkItemBusiness();
+                            workItemBusiness.UpdateWorkItem(handler,works);
+                        }
+                        //调用废除接口
                     }
                 });
                 popWindow.submit.setOnClickListener(new View.OnClickListener() {
@@ -476,6 +628,14 @@ public class WorkItemDetail extends AppCompatActivity {
                     public void onClick(View arg0) {
                         // do something you need here
                         // 提交修改结果
+                        List<WorkItemEntity> works=new ArrayList<WorkItemEntity>();
+                           WorkItemEntity  work=submitEntity(CurDetail);
+                        if(work!=null)
+                        {
+                            works.add(work);
+                            WorkItemBusiness workItemBusiness=new WorkItemBusiness();
+                            workItemBusiness.UpdateWorkItem(handler,works);
+                        }
                     }
                 });
                 popWindow.change_status.setOnClickListener(new View.OnClickListener() {
@@ -484,67 +644,174 @@ public class WorkItemDetail extends AppCompatActivity {
                     public void onClick(View arg0) {
                         // do something you need here
                         // 改变状态，进入下一状态
+                        String stat= status_edt.getText().toString().trim();
+                        int    index=statusList.indexOf(stat);
+                        if(stat==statusList.get(3))
+                        {
+                            stat=statusList.get(4);
+                        }else if(stat==statusList.get(4))
+                        {
+                            stat=statusList.get(5);
+                        }else if(stat==statusList.get(7))
+                        {
+                            stat=statusList.get(4);
+                        }else if(stat==statusList.get(2))
+                        {
+                            stat=statusList.get(3);
+                        }else{
+                            return;
+                        }
+                         status_edt.setText(stat);
+                        //提交服务器
                     }
                 });
             }
         });
-        assign2_edt.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getX() >= (v.getWidth() - ((EditText) v)
-                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        Assign_pop.show();
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-        checker_edt.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getX() >= (v.getWidth() - ((EditText) v)
-                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        Checker_pop.show();
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-        Head_edt.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getX() >= (v.getWidth() - ((EditText) v)
-                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        Head_pop.show();
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-        status_edt.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getX() >= (v.getWidth() - ((EditText) v)
-                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        Status_pop.show();
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
+//        assign2_edt.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                final int DRAWABLE_RIGHT = 2;
+//                if (event.getAction() == MotionEvent.ACTION_UP) {
+//                    if (event.getX() >= (v.getWidth() - ((EditText) v)
+//                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+//                        Assign_pop.show();
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
+//        checker_edt.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                final int DRAWABLE_RIGHT = 2;
+//                if (event.getAction() == MotionEvent.ACTION_UP) {
+//                    if (event.getX() >= (v.getWidth() - ((EditText) v)
+//                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+//                        Checker_pop.show();
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
+//        Head_edt.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                final int DRAWABLE_RIGHT = 2;
+//                if (event.getAction() == MotionEvent.ACTION_UP) {
+//                    if (event.getX() >= (v.getWidth() - ((EditText) v)
+//                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+//                        Head_pop.show();
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
+//        status_edt.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                final int DRAWABLE_RIGHT = 2;
+//                if (event.getAction() == MotionEvent.ACTION_UP) {
+//                    if (event.getX() >= (v.getWidth() - ((EditText) v)
+//                            .getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+//                        Status_pop.show();
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
     }
+
+    private WorkItemEntity submitEntity(WorkDetailResult result)
+    {
+        String Name,Assigned2,Belong2, Checker,Description,BID, FID,ID,ClosingTime;
+        int  Status,Category,TheTimeStamp;
+        double  BusinessValue;
+        ID= CurItemId;
+        if(closingtime_edt.getText().toString().trim().equals("")||closingtime_edt.getText().toString().trim().isEmpty())
+        {
+            Toast.makeText(WorkItemDetail.this, "结束日期要大于今天！", Toast.LENGTH_SHORT).show();
+            return     null;
+        }else{
+            ClosingTime=closingtime_edt.getText().toString().trim();
+        }
+//        ClosingTime="2017-01-02";
+        Name= name_edt.getText().toString().trim();
+        boolean checkName= ValidaService.isTitleLength(Name);
+        if(!checkName)
+        {
+            Toast.makeText(WorkItemDetail.this, "标题在2~50字符之间！", Toast.LENGTH_SHORT).show();
+            return     null;
+        }
+
+        if(assign2_edt.getText().toString().trim().equals("空")||assign2_edt.getText().toString().trim().isEmpty())
+        {
+            Assigned2="";
+        }else{
+            Assigned2=UserIDlist.get(Userlist.indexOf(assign2_edt.getText().toString().trim()));
+        }
+
+        if( Head_edt.getText().toString().trim().equals("空")|| Head_edt.getText().toString().trim().isEmpty())
+        {
+            if(assign2_edt.getText().toString().trim().equals("空")||assign2_edt.getText().toString().trim().isEmpty())
+            {
+                Belong2="";
+            }else{
+                Toast.makeText(WorkItemDetail.this, "指派后负责人不能为空！", Toast.LENGTH_SHORT).show();
+                return     null;
+            }
+        }else{
+            Belong2=UserIDlist.get(Userlist.indexOf(Head_edt.getText().toString().trim()));
+        }
+
+        Checker=checker_edt.getText().toString().trim();
+        if(checker_edt.getText().toString().trim().equals("空")||checker_edt.getText().toString().trim().isEmpty())
+        {
+
+            Checker="";
+        }else{
+            Checker=UserIDlist.get(Userlist.indexOf(checker_edt.getText().toString().trim()));
+        }
+
+        Description=des_edt.getText().toString().trim();
+
+
+        if(CurFID.isEmpty())
+        {
+            FID="";
+        }else{
+            FID=CurFID;
+        }
+
+
+        Status=statusList.indexOf(status_edt.getText().toString().trim());
+        BID=CurBID;
+        TheTimeStamp=1;
+        BusinessValue=Double.valueOf( value_edt.getText().toString().trim());
+        //难度和分数未完成
+        WorkItemEntity workItem=new WorkItemEntity();
+        workItem.TheTimeStamp=result.TheTimeStamp;
+        workItem.Assigned2=Assigned2;
+        workItem.Belong2=Belong2;
+        workItem.BusinessValue=BusinessValue;
+        workItem.Checker=Checker;
+        workItem.ClosingTime=ClosingTime;
+        workItem.Modifier=UID;
+        workItem.Checker=Checker;
+        workItem.CreateTime=result.CreateTime;
+        workItem.Creater=result.Creater;
+        workItem.FID=result.FID;
+        workItem.BID=result.BID;
+        workItem.Description=Description;
+        workItem.ID=ID;
+        workItem.Name=Name;
+        workItem.Status=Status;
+        return  workItem;
+    }
+
     protected void showDatePickDlg() {
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         Calendar calendar = Calendar.getInstance();
@@ -592,23 +859,24 @@ public class WorkItemDetail extends AppCompatActivity {
     }
 
 /*工作项可修改*/
-    private  void ItemEditable()
-    {
-        name_edt.isInEditMode();
-        value_edt.isInEditMode();
+    private  void ItemEditable() {
+        Log.e("ITEM POP", "aa");
+        name_edt.setEnabled(true);
+        value_edt.setEnabled(true);
         closingtime_edt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("  closetime click", "FHZ");
                 showDatePickDlg();
             }
         });
         assign2_edt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("click", "FHZ");
+                Log.i(" ass click", "FHZ");
                 SetPopAdapter();
                 Assign_pop.show();
-                Log.i("click SHOW", "FHZ");
+                Log.i(" ass click SHOW", "FHZ");
             }
         });
         checker_edt.setOnClickListener(new View.OnClickListener() {
@@ -628,6 +896,8 @@ public class WorkItemDetail extends AppCompatActivity {
         status_edt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("STATUS POP", "aa");
+                //根据当前状态确定状态选项 暂时未做
                 SetPopAdapter();
                 Status_pop.show();
             }
@@ -635,15 +905,13 @@ public class WorkItemDetail extends AppCompatActivity {
 
     }
     /*状态可修改*/
-    private  void statusEditable()
-    {
-        status_edt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SetPopAdapter();
-                Status_pop.show();
-            }
-        });
+    private  void StatusEditable(){
+        String stat= status_edt.getText().toString().trim();
+        int    index=statusList.indexOf(stat);
+        if(stat==statusList.get(3)||stat==statusList.get(4)||stat==statusList.get(7)||stat==statusList.get(2))
+        {
+            popWindow.change_status.setVisibility(View.VISIBLE);
+        }
     }
     /*权限设置*/
     private void SetPermissions(WorkDetailResult result) {
@@ -651,10 +919,8 @@ public class WorkItemDetail extends AppCompatActivity {
         if(result.AssignerID.equals(UID))
         {
             popWindow.add_child.setVisibility(View.VISIBLE);
-            popWindow.del_child.setVisibility(View.VISIBLE);
-            popWindow.change_status.setVisibility(View.VISIBLE);
-            Log.i("权限设置 ass", "FHZ");
-            statusEditable();
+            Log.i("权限设置 status", "FHZ");
+            StatusEditable();
         }
         if (result.Belong2ID.equals(""))
         {
@@ -662,7 +928,6 @@ public class WorkItemDetail extends AppCompatActivity {
             {
                 //可编辑
                 popWindow.add_child.setVisibility(View.VISIBLE);
-                popWindow.del_child.setVisibility(View.VISIBLE);
                 popWindow.del_father.setVisibility(View.VISIBLE);
                 popWindow.submit.setVisibility(View.VISIBLE);
                 Log.i("权限设置 crea", "FHZ");
@@ -674,7 +939,6 @@ public class WorkItemDetail extends AppCompatActivity {
             if (result.Belong2ID.equals(UID))
             {
                 popWindow.add_child.setVisibility(View.VISIBLE);
-                popWindow.del_child.setVisibility(View.VISIBLE);
                 popWindow.del_father.setVisibility(View.VISIBLE);
                 popWindow.submit.setVisibility(View.VISIBLE);
                 Log.i("权限设置 belo", "FHZ");
@@ -696,10 +960,10 @@ public class WorkItemDetail extends AppCompatActivity {
         List<SubWorkItemParams> subWorkItemParamses = chid;
         if (subWorkItemParamses != null && subWorkItemParamses.size() != 0) {
             for (SubWorkItemParams subItem : subWorkItemParamses) {
-                if (subItem.WorkType == 0) {
-                    map.put("workimg", R.drawable.b);
+                if (subItem.WorkType==0) {
+                    map.put("workImg", R.drawable.b);
                 } else {
-                    map.put("workimg", R.drawable.t);
+                    map.put("workImg", R.drawable.t);
                 }
                 //根据状态不同图片不同
                 switch (subItem.Status) {
@@ -733,9 +997,10 @@ public class WorkItemDetail extends AppCompatActivity {
                 }
                 map.put("workId", subItem.WorkID);
                 map.put("workName", subItem.WorkName);
-                map.put("endingTime", subItem.EndTime);
-                map.put("workValue", subItem.Score);
-                map.put("strartTime", subItem.StartTime);
+                map.put("endingTime", subItem.EndTime.substring(0, 10));
+                map.put("workValue", String.valueOf(subItem.Score));
+                map.put("strartTime", subItem.StartTime.substring(0, 10));
+                Log.i("zst_test", "工作子项 map");
                 list.add(map);
             }
 
@@ -791,7 +1056,7 @@ public class WorkItemDetail extends AppCompatActivity {
     /*设置下拉菜单相关*/
     private void SetPopAdapter() {
         ListPopupWindowAdapter mListPopupWindowAdapter=new ListPopupWindowAdapter(Userlist,this);
-        ListPopupWindowAdapter statusPopupWindowAdapter=new ListPopupWindowAdapter(statusList,this);
+        ListPopupWindowAdapter statusPopupWindowAdapter=new ListPopupWindowAdapter(StatusChooses,this);
         Assign_pop = new ListPopupWindow(this);
         Assign_pop.setAdapter(mListPopupWindowAdapter);
         Assign_pop.setWidth(Assign_pop.getWidth());

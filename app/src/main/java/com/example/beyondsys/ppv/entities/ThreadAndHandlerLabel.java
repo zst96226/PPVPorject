@@ -36,4 +36,6 @@ public class ThreadAndHandlerLabel {
     public static int UploadImg=13;
     /*创建工作项*/
     public  static  int AddWorkItem=14;
+    /*修改工作项*/
+    public  static int  UpdateWorkItem=15;
 }

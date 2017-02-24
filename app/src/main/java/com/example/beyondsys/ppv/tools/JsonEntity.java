@@ -246,11 +246,11 @@ public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
             return  null;
         }
     }
-    public static WorkItemContextentity ParseJsonForWorkItemContextentity(String result)
+    public static WorkDetailResult ParseJsonForWorkDetailResult(String result)
     {
-        WorkItemContextentity Result=null;
+        WorkDetailResult Result=null;
         Gson gson=new Gson();
-        java.lang.reflect.Type type = new TypeToken<AddWorkItemResult>() {}.getType();
+        java.lang.reflect.Type type = new TypeToken< WorkDetailResult>() {}.getType();
         Result=gson.fromJson(result, type);
         if(Result!=null)
         {

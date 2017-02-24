@@ -139,7 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="@string/changestatus"
+                android:text="进入下一状态"
                 android:layout_marginLeft="5sp"/>
         </LinearLayout>
     </LinearLayout>

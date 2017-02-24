@@ -259,8 +259,7 @@ public class AddNewWorkItem extends Activity {
         }catch (Exception e){}
         return  false;
     }
-    private  void setService()
-    {
+    private  void setService() {
         List<TeamEntity> label=null;
         try{
             Log.i("label try","FHZ");
@@ -371,7 +370,13 @@ public class AddNewWorkItem extends Activity {
         }
         if(input_Head.getText().toString().trim().equals("空")||input_Head.getText().toString().trim().isEmpty())
         {
-            Belong2="";
+            if(input_AssignedTo.getText().toString().trim().equals("空")||input_AssignedTo.getText().toString().trim().isEmpty())
+            {
+                Belong2="";
+            }else{
+                Toast.makeText(AddNewWorkItem.this, "指派后负责人不能为空！", Toast.LENGTH_SHORT).show();
+                return     null;
+            }
         }else{
             Belong2=listID.get(list.indexOf(input_Head.getText().toString().trim()));
         }
@@ -448,6 +453,7 @@ public class AddNewWorkItem extends Activity {
         workItem.Checker=Checker;
         workItem.Category=Category;
         workItem.ClosingTime=ClosingTime;
+        workItem.Modifier=UID;
         workItem.CreateTime="";
         workItem.Creater=UID;
         workItem.FID=FID;
@@ -614,6 +620,20 @@ public class AddNewWorkItem extends Activity {
                 Log.i("click SHOW", "FHZ");
             }
         });
+//        input_AssignedTo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if(!hasFocus)
+//                {
+//                    if(input_AssignedTo.getText().toString().trim().equals("")||input_AssignedTo.getText().toString().trim().equals("空"))
+//                    {
+//                        input_status.setText(statusList.get(1));
+//                    }else{
+//                        input_status.setText(statusList.get(2));
+//                    }
+//                }
+//            }
+//        });
 //        input_AssignedTo.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View v, MotionEvent event) {
@@ -630,6 +650,7 @@ public class AddNewWorkItem extends Activity {
 //                return false;
 //            }
 //        });
+
         input_AssignedTo.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -643,6 +664,12 @@ public class AddNewWorkItem extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if(input_AssignedTo.getText().toString().trim().equals("")||input_AssignedTo.getText().toString().trim().equals("空"))
+                {
+                    input_status.setText(statusList.get(1));
+                }else{
+                    input_status.setText(statusList.get(2));
+                }
                 String inputstr = input_AssignedTo.getText().toString();
                 int strlen = inputstr.length();
                 for (int i = 0; i < list.size(); i++) {

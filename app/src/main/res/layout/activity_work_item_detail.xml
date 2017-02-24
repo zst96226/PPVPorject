@@ -183,7 +183,30 @@
                             android:src="@drawable/arrow_down_float"/>
                     </LinearLayout>
                 </LinearLayout>
-
+            <RelativeLayout
+                android:id="@+id/del_choose_layout"
+                android:layout_width="match_parent"
+                android:layout_height="30sp"
+                android:background="@color/White"
+                android:layout_marginTop="5sp"
+                android:visibility="gone">
+                <Button
+                    android:id="@+id/del_ok"
+                    android:layout_width="100sp"
+                    android:layout_height="30sp"
+                    android:layout_marginLeft="50sp"
+                    android:layout_alignParentLeft="true"
+                    android:text="确认删除"
+                    android:background="@color/White"/>
+                <Button
+                    android:id="@+id/del_cancel"
+                    android:layout_width="100sp"
+                    android:layout_height="30sp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight= "50sp"
+                    android:text="取消删除"
+                    android:background="@color/White"/>
+            </RelativeLayout>
                 <com.example.beyondsys.ppv.tools.ListViewForScrollView
                     android:id="@+id/wid_list"
                     android:layout_width="match_parent"
@@ -215,7 +238,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="40sp"
                             android:text=""
-                            android:editable="false"
+                            android:enabled="false"
                             android:textColor="@color/blueBut"
                             android:gravity="center_vertical"/>
                     </LinearLayout>
@@ -491,7 +514,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="40sp"
                             android:text=""
-                            android:editable="false"
+                            android:enabled="false"
                             android:textColor="@color/blueBut"
                             android:gravity="center_vertical"/>
                     </LinearLayout>

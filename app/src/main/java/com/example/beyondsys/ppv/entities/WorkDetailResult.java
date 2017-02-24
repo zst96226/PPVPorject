@@ -28,9 +28,13 @@ public class WorkDetailResult implements Serializable {
         TheTimeStamp = 0;
         Category = 0;
         FID="";
+        BID="";
         Belong2ID="";
         Belong2Name="";
         Remark="";
+
+
+
     }
 
     public String AssignerID ;
@@ -52,7 +56,9 @@ public class WorkDetailResult implements Serializable {
     public int TheTimeStamp;
     public int Category;
     public String FID;
+    public  String BID;
     public String Belong2ID;
     public String Belong2Name;
     public String Remark;
+
 }

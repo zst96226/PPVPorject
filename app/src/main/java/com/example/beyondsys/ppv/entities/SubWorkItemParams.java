@@ -9,23 +9,23 @@ import java.util.Date;
 public class SubWorkItemParams implements Serializable {
     public SubWorkItemParams()
     {
-        WorkName =  null;
+        WorkName =  "";
         WorkType = 0;
-        WorkID =  null;
+        WorkID =   "";
         Score = 0;
-        StartTime =  null;
-        EndTime = null;
+        StartTime =   "";
+        EndTime =   "";
         Status = 0;
         TheTimeStamp = 0;
-        FID = null;
+        FID =   "";
     }
 
     public String WorkName;
     public int WorkType;
     public String WorkID;
     public double Score;
-    public Date StartTime;
-    public Date EndTime;
+    public String StartTime;
+    public String EndTime;
     public int Status;
     public String FID;
     public int TheTimeStamp;

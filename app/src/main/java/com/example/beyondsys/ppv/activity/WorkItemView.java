@@ -214,11 +214,13 @@ public class WorkItemView extends Fragment {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt_2);
                     undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
                     reflag = aboutme;
+                    stflag=undo;
                     GetDataForService();
                 } else {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt);
                     undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
                     reflag = assignme;
+                    stflag=undo;
                     GetDataForService();
                 }
             }
@@ -357,6 +359,12 @@ public class WorkItemView extends Fragment {
                     break;
                 case 7:
                     map.put("workState", R.drawable.status7);
+                    break;
+                case 8:
+                    map.put("workState", R.drawable.status8);
+                    break;
+                case 9:
+                    map.put("workState", R.drawable.status9);
                     break;
                 default:
                     map.put("workState", R.drawable.status0);

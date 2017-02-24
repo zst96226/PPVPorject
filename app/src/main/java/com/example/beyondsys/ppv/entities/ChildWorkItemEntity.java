@@ -9,9 +9,9 @@ import java.util.List;
  */
 public class ChildWorkItemEntity implements Serializable {
     public int AccessResult;
-    public List<SubWorkItemParams> WorkSubItemParams;
+    public List<SubWorkItemParams> subItem;
     public ChildWorkItemEntity(){
         AccessResult=-3;
-        WorkSubItemParams=new ArrayList<>();
+        subItem=new ArrayList<>();
     }
 }

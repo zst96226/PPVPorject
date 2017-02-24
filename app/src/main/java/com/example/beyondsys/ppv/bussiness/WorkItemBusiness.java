@@ -188,7 +188,7 @@ public class WorkItemBusiness {
         }
     }
 
-    /*创建新工作项提交参数*/
+    /*新建工作项提交参数*/
     private JSONObject AddWorkItemPerson(WorkItemEntity workItem, String TicketID) {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -203,6 +203,7 @@ public class WorkItemBusiness {
             newItem.put("Category", workItem.Category);
             newItem.put("ClosingTime", workItem.ClosingTime);
             newItem.put("Creater", workItem.Creater);
+            newItem.put("Modifier",workItem.Modifier);
             newItem.put("CreateTime", workItem.CreateTime);
             newItem.put("FID", workItem.FID);
             newItem.put("HardScale", workItem.HardScale);
@@ -211,6 +212,97 @@ public class WorkItemBusiness {
             newItem.put("Name", workItem.Name);
             newItem.put("Status", workItem.Status);
             jsonObject.put("WorkItem", newItem);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject;
+    }
+
+
+    /*更新工作项*/
+    public void UpdateWorkItem(final Handler handler, List<WorkItemEntity> workItemEntitys) {
+        UserLoginResultEntity entity = null;
+        try {
+            if (Reservoir.contains(LocalDataLabel.Proof)) {
+                entity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (entity != null) {
+            final JSONObject JsonParams = UpdateWorkItemPerson(workItemEntitys, entity.TicketID);
+            Log.i("更新工作项提交对象：" + JsonParams, "FHZ");
+            System.out.println("jsonObject直接创建json:" + JsonParams);
+            new Thread() {
+                public void run() {
+                    //////
+                    /*根据命名空间和方法得到SoapObject对象*/
+                    SoapObject soapObject = new SoapObject(APIEntity.NAME_SPACE, APIEntity.METHOD_NAME);
+                    soapObject.addProperty("actionid", APIEntity.UPNEWWORKITEM);
+                    soapObject.addProperty("jsonvalue", JsonParams.toString());
+                    // 通过SOAP1.1协议得到envelop对象
+                    SoapSerializationEnvelope envelop = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+                    // 将soapObject对象设置为envelop对象，传出消息
+                    envelop.bodyOut = soapObject;
+                    envelop.dotNet = true;
+                    HttpTransportSE httpSE = new HttpTransportSE(APIEntity.WSDL_URL);
+                    // 开始调用远程方法
+                    try {
+                        httpSE.call(APIEntity.NAME_SPACE + APIEntity.METHOD_NAME, envelop);
+                        // 得到远程方法返回的SOAP对象
+                        SoapPrimitive result = (SoapPrimitive) envelop.getResponse();
+                        Log.i("更新工作项：senmes", "FHZ");
+                        Message msg = Message.obtain();
+                        msg.what = ThreadAndHandlerLabel.UpdateWorkItem;
+                        msg.obj = result;
+                        handler.sendMessage(msg);
+                    } catch (IOException | XmlPullParserException e) {
+                        e.printStackTrace();
+                        Log.i("更新工作项：send exc", "FHZ");
+                        Message msg = Message.obtain();
+                        msg.what = ThreadAndHandlerLabel.CallAPIError;
+                        handler.sendMessage(msg);
+                    }
+                }
+            }.start();
+
+        } else {
+            Message msg = Message.obtain();
+            msg.what = ThreadAndHandlerLabel.LocalNotdata;
+            handler.sendMessage(msg);
+        }
+    }
+
+    /*更新工作项提交参数*/
+    private JSONObject UpdateWorkItemPerson(List<WorkItemEntity> workItemList, String TicketID) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("TicketID", TicketID);
+            List<JSONObject> workItems = new ArrayList<JSONObject>();
+            for (WorkItemEntity workItem:workItemList) {
+                JSONObject newItem = new JSONObject();
+                newItem.put("TheTimeStamp", workItem.TheTimeStamp);
+                newItem.put("Assigned2", workItem.Assigned2);
+                newItem.put("Belong2", workItem.Belong2);
+                newItem.put("BID", workItem.BID);
+                newItem.put("BusinessValue", workItem.BusinessValue);
+                newItem.put("Checker", workItem.Checker);
+                newItem.put("ClosingTime", workItem.ClosingTime);
+                newItem.put("Creater", workItem.Creater);
+                newItem.put("CreateTime", workItem.CreateTime);
+                newItem.put("Modifier",workItem.Modifier);
+                newItem.put("Checker",workItem.Checker);
+                newItem.put("FID", workItem.FID);
+                newItem.put("HardScale", workItem.HardScale);
+                newItem.put("Description", workItem.Description);
+                newItem.put("ID", workItem.ID);
+                newItem.put("Name", workItem.Name);
+                newItem.put("Status", workItem.Status);
+
+                workItems.add(newItem);
+            }
+             jsonObject.put("WorkItems", workItems);
         } catch (JSONException e) {
             e.printStackTrace();
         }
