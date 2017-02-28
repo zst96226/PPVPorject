@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -176,6 +177,8 @@ public class WorkItemDetail extends AppCompatActivity {
                                 case 0:
                                     Toast.makeText(WorkItemDetail.this, "修改成功！", Toast.LENGTH_SHORT).show();
                                     Log.i("修改信息成功", "FHZ");
+                                  //
+                                    GetDataForService(CurItemId);
                                     break;
                                 case -1:
                                     Toast.makeText(WorkItemDetail.this, "请求失败，请重新尝试", Toast.LENGTH_SHORT).show();
@@ -307,9 +310,9 @@ public class WorkItemDetail extends AppCompatActivity {
         CurItemId=WorkItem.WorkID;
         CurFID=WorkItem.FID;
         if (WorkItem.Category == 0) {
-            work_img.setImageResource(R.drawable.t);
-        } else {
             work_img.setImageResource(R.drawable.b);
+        } else {
+            work_img.setImageResource(R.drawable.t);
         }
         WorkID = WorkItem.WorkID;
         wid_workname.setText(WorkItem.WorkName);
@@ -360,17 +363,17 @@ public class WorkItemDetail extends AppCompatActivity {
         checker_edt.setText(result.CheckerName);
         Head_edt.setText(result.Belong2Name);
         creater_tex.setText(result.Creater);
-        creatertime_tex.setText(result.CreateTime.toString());
+        creatertime_tex.setText(result.CreateTime.toString().substring(0, 10));
         modifier_tex.setText(result.ModifierName);
-        modifytime_tex.setText(result.ModifyTime.toString());
+        modifytime_tex.setText(result.ModifyTime.toString().substring(0, 10));
         value_edt.setText(result.BusinessValue + "");
-        closingtime_edt.setText(result.Deadline.toString());
+        closingtime_edt.setText(result.Deadline.toString().substring(0, 10));
         des_edt.setText(result.Description);
 
         if (result.Category == 0) {
-            work_img.setImageResource(R.drawable.t);
-        } else {
             work_img.setImageResource(R.drawable.b);
+        } else {
+            work_img.setImageResource(R.drawable.t);
         }
         wid_workname.setText(result.WorkName);
         wid_workvalue.setText(result.BusinessValue + "");
@@ -548,7 +551,8 @@ public class WorkItemDetail extends AppCompatActivity {
                         Intent intent = new Intent(WorkItemDetail.this, AddNewWorkItem.class);
                         intent.putExtra("FatherID", CurItemId);
                         intent.putExtra("FatherType", "");
-                        startActivity(intent);
+                        //startActivity(intent);
+                        startActivityForResult(intent,1);
                     }
                 });
                 popWindow.del_child.setOnClickListener(new View.OnClickListener() {
@@ -610,16 +614,17 @@ public class WorkItemDetail extends AppCompatActivity {
                     public void onClick(View arg0) {
                         // do something you need here
                         // 该项状态置为废除
+                        submitService();
                         status_edt.setText(statusList.get(0));
-                        List<WorkItemEntity> works=new ArrayList<WorkItemEntity>();
-                        WorkItemEntity  work=submitEntity(CurDetail);
-                        if(work!=null)
-                        {
-                            works.add(work);
-                            WorkItemBusiness workItemBusiness=new WorkItemBusiness();
-                            workItemBusiness.UpdateWorkItem(handler,works);
-                        }
-                        //调用废除接口
+//                        List<WorkItemEntity> works=new ArrayList<WorkItemEntity>();
+//                        WorkItemEntity  work=submitEntity(CurDetail);
+//                        if(work!=null)
+//                        {
+//                            works.add(work);
+//                            WorkItemBusiness workItemBusiness=new WorkItemBusiness();
+//                            workItemBusiness.UpdateWorkItem(handler,works);
+//                        }
+
                     }
                 });
                 popWindow.submit.setOnClickListener(new View.OnClickListener() {
@@ -628,14 +633,7 @@ public class WorkItemDetail extends AppCompatActivity {
                     public void onClick(View arg0) {
                         // do something you need here
                         // 提交修改结果
-                        List<WorkItemEntity> works=new ArrayList<WorkItemEntity>();
-                           WorkItemEntity  work=submitEntity(CurDetail);
-                        if(work!=null)
-                        {
-                            works.add(work);
-                            WorkItemBusiness workItemBusiness=new WorkItemBusiness();
-                            workItemBusiness.UpdateWorkItem(handler,works);
-                        }
+                      submitService();
                     }
                 });
                 popWindow.change_status.setOnClickListener(new View.OnClickListener() {
@@ -661,8 +659,10 @@ public class WorkItemDetail extends AppCompatActivity {
                         }else{
                             return;
                         }
-                         status_edt.setText(stat);
                         //提交服务器
+                         submitService();
+                         status_edt.setText(stat);
+
                     }
                 });
             }
@@ -725,6 +725,18 @@ public class WorkItemDetail extends AppCompatActivity {
 //        });
     }
 
+
+    private  void   submitService( )
+    {
+        List<WorkItemEntity> works=new ArrayList<WorkItemEntity>();
+        WorkItemEntity  work=submitEntity(CurDetail);
+        if(work!=null)
+        {
+            works.add(work);
+            WorkItemBusiness workItemBusiness=new WorkItemBusiness();
+            workItemBusiness.UpdateWorkItem(handler,works);
+        }
+    }
     private WorkItemEntity submitEntity(WorkDetailResult result)
     {
         String Name,Assigned2,Belong2, Checker,Description,BID, FID,ID,ClosingTime;
@@ -791,24 +803,31 @@ public class WorkItemDetail extends AppCompatActivity {
         BID=CurBID;
         TheTimeStamp=1;
         BusinessValue=Double.valueOf( value_edt.getText().toString().trim());
-        //难度和分数未完成
+      //  难度和分数未完成
         WorkItemEntity workItem=new WorkItemEntity();
         workItem.TheTimeStamp=result.TheTimeStamp;
         workItem.Assigned2=Assigned2;
         workItem.Belong2=Belong2;
         workItem.BusinessValue=BusinessValue;
         workItem.Checker=Checker;
-        workItem.ClosingTime=ClosingTime;
+        workItem.ClosingTime= ClosingTime;
         workItem.Modifier=UID;
-        workItem.Checker=Checker;
+        workItem.ModifyTime="";
         workItem.CreateTime=result.CreateTime;
         workItem.Creater=result.Creater;
         workItem.FID=result.FID;
         workItem.BID=result.BID;
+        workItem.RID="";
         workItem.Description=Description;
         workItem.ID=ID;
         workItem.Name=Name;
         workItem.Status=Status;
+        workItem.Category=result.Category;
+//        workItem.BasicScore=1000;
+//        workItem.CheckedScore=0.00;
+//        workItem.HardScale=0.00;
+        workItem.Remark="remark";
+
         return  workItem;
     }
 
@@ -941,6 +960,7 @@ public class WorkItemDetail extends AppCompatActivity {
                 popWindow.add_child.setVisibility(View.VISIBLE);
                 popWindow.del_father.setVisibility(View.VISIBLE);
                 popWindow.submit.setVisibility(View.VISIBLE);
+                ItemEditable();
                 Log.i("权限设置 belo", "FHZ");
             }
         }
@@ -956,10 +976,11 @@ public class WorkItemDetail extends AppCompatActivity {
     /*设置子项List数据*/
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        Map<String, Object> map = new HashMap<String, Object>();
+
         List<SubWorkItemParams> subWorkItemParamses = chid;
         if (subWorkItemParamses != null && subWorkItemParamses.size() != 0) {
             for (SubWorkItemParams subItem : subWorkItemParamses) {
+                Map<String, Object> map = new HashMap<String, Object>();
                 if (subItem.WorkType==0) {
                     map.put("workImg", R.drawable.b);
                 } else {
@@ -1113,10 +1134,26 @@ public class WorkItemDetail extends AppCompatActivity {
         Status_pop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String item = statusList.get(position);
+                String item = StatusChooses.get(position);
                 status_edt.setText(item);
                 Status_pop.dismiss();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1)
+        {
+            if(resultCode==1)
+            {
+                 /*获取子项*/
+                WorkItemBusiness business = new WorkItemBusiness();
+                business.GetChildWorkItem(handler, CurItemId, TKID, 1);
+            }
+
+        }
+
     }
 }

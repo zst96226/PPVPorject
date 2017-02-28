@@ -41,6 +41,7 @@ import com.example.beyondsys.ppv.entities.ModifyPwdResult;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UIDEntity;
 import com.example.beyondsys.ppv.entities.UserInTeamResult;
 import com.example.beyondsys.ppv.entities.UserInfoResultParams;
 import com.example.beyondsys.ppv.tools.CustomDialog;
@@ -71,7 +72,7 @@ private LinearLayout personInfoLayout;
     private ImageView show_team,person_img;
     private TextView teamName_tex,teamlevel_tex,personname_tex,valuesum_tex,monthsum_tex;
     private UserInfoResultParams personInfoEntity;
-    private  String TeamID,UserID;
+    private  String TeamID,UID;
   private ImgBusiness imgBusiness;
     private Handler handler=new Handler(){
         public void handleMessage(Message msg)
@@ -237,8 +238,17 @@ private LinearLayout personInfoLayout;
         valuesum_tex=(TextView)rootView.findViewById(R.id.valuesum_tex);
         monthsum_tex=(TextView)rootView.findViewById(R.id.monthsum_tex);
         person_img=(ImageView)rootView.findViewById(R.id.person_img);
-        Bitmap bitmap=imgBusiness.setImg("123.png");
-       person_img.setImageBitmap(bitmap);
+        try {
+            if (Reservoir.contains(LocalDataLabel.UserID)) {
+                UIDEntity entity = Reservoir.get(LocalDataLabel.UserID, UIDEntity.class);
+                UID = entity.UID;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String imgname=UID+".png";
+        Bitmap bitmap=imgBusiness.setImg(imgname);
+        person_img.setImageBitmap(bitmap);
         List<TeamEntity> teamList=null;
         try{
             Log.i("label try","FHZ");

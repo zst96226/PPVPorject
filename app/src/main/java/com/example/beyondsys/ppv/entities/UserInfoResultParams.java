@@ -8,16 +8,16 @@ import java.io.Serializable;
 public class UserInfoResultParams implements Serializable {
     public UserInfoResultParams()
     {
-        UserID = null;
-        IMGTarget = null;
+        UserID = "";
+        IMGTarget ="";
         TotalScore = 0;
         TotalMonth = 0;
-        Name = null;
-        EMail = null;
-        Tel = null;
-        IDNo = null;
-        Address =null;
-        Sign = null;
+        Name ="";
+        EMail = "";
+        Tel ="";
+        IDNo = "";
+        Address ="";
+        Sign ="";
         AccessResult = -3;
     }
 

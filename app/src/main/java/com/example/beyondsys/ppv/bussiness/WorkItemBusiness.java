@@ -27,7 +27,9 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhsht on 2017/2/5.工作项业务
@@ -231,7 +233,8 @@ public class WorkItemBusiness {
             e.printStackTrace();
         }
         if (entity != null) {
-            final JSONObject JsonParams = UpdateWorkItemPerson(workItemEntitys, entity.TicketID);
+           String TicketID = "7ad8876f-5044-48be-b180-ff6b31e5e60a";
+            final JSONObject JsonParams = UpdateWorkItemPerson(workItemEntitys,TicketID);
             Log.i("更新工作项提交对象：" + JsonParams, "FHZ");
             System.out.println("jsonObject直接创建json:" + JsonParams);
             new Thread() {
@@ -276,38 +279,67 @@ public class WorkItemBusiness {
 
     /*更新工作项提交参数*/
     private JSONObject UpdateWorkItemPerson(List<WorkItemEntity> workItemList, String TicketID) {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("TicketID", TicketID);
-            List<JSONObject> workItems = new ArrayList<JSONObject>();
-            for (WorkItemEntity workItem:workItemList) {
-                JSONObject newItem = new JSONObject();
-                newItem.put("TheTimeStamp", workItem.TheTimeStamp);
-                newItem.put("Assigned2", workItem.Assigned2);
-                newItem.put("Belong2", workItem.Belong2);
-                newItem.put("BID", workItem.BID);
-                newItem.put("BusinessValue", workItem.BusinessValue);
-                newItem.put("Checker", workItem.Checker);
-                newItem.put("ClosingTime", workItem.ClosingTime);
-                newItem.put("Creater", workItem.Creater);
-                newItem.put("CreateTime", workItem.CreateTime);
-                newItem.put("Modifier",workItem.Modifier);
-                newItem.put("Checker",workItem.Checker);
-                newItem.put("FID", workItem.FID);
-                newItem.put("HardScale", workItem.HardScale);
-                newItem.put("Description", workItem.Description);
-                newItem.put("ID", workItem.ID);
-                newItem.put("Name", workItem.Name);
-                newItem.put("Status", workItem.Status);
+   //     JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("TicketID", TicketID);
+//            List<JSONObject> workItems = new ArrayList<JSONObject>();
+//            for (WorkItemEntity workItem:workItemList) {
+//                JSONObject newItem = new JSONObject();
+//                newItem.put("BID", workItem.BID);
+//                newItem.put("FID", workItem.FID);
+//                newItem.put("ID", workItem.ID);
+//                newItem.put("TheTimeStamp", workItem.TheTimeStamp);
+//                newItem.put("RID",workItem.RID);
+//                newItem.put("Name", workItem.Name);
+//                newItem.put("Description", workItem.Description);
+//                newItem.put("Category",workItem.Category);
+////                 newItem.put("Status", workItem.Status);
+//                newItem.put("Assigned2", workItem.Assigned2);
+//                newItem.put("Belong2", workItem.Belong2);
+////                 newItem.put("Checker", workItem.Checker);
+//                newItem.put("ClosingTime", workItem.ClosingTime);
+//                newItem.put("Creater", workItem.Creater);
+//                newItem.put("CreateTime", workItem.CreateTime);
+////                  newItem.put("Modifier",workItem.Modifier);
+////               newItem.put("ModifyTime",workItem.ModifyTime);
+//                newItem.put("BusinessValue", workItem.BusinessValue);
+////                newItem.put("HardScale", workItem.HardScale);
+//                newItem.put("BasicScore",workItem.BasicScore);
+////                newItem.put("CheckedScore",workItem.CheckedScore);
+//                newItem.put("Remark",workItem.Remark);
+//
+//
+//                workItems.add(newItem);
+//            }
+//             jsonObject.put("WorkItems", workItems);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("TicketID", TicketID);
+        List<Map> jsonObjects = new ArrayList<Map>();
+        for (WorkItemEntity workItem:workItemList) {
+        Map<String,Object> map1 = new HashMap<String,Object>();
+            map1.put("BID", workItem.BID);
+            map1.put("FID", workItem.FID);
+            map1.put("ID", workItem.ID);
+            map1.put("TheTimeStamp", workItem.TheTimeStamp);
+            map1.put("RID",workItem.RID);
+            map1.put("Name", workItem.Name);
+            map1.put("Description", workItem.Description);
+            map1.put("Category",workItem.Category);
+            map1.put("Assigned2", workItem.Assigned2);
+            map1.put("Belong2", workItem.Belong2);
+            map1.put("ClosingTime", workItem.ClosingTime);
+            map1.put("Creater", workItem.Creater);
+            map1.put("CreateTime", workItem.CreateTime);
+            map1.put("BusinessValue", workItem.BusinessValue);
+            map1.put("Remark",workItem.Remark);
 
-                workItems.add(newItem);
-            }
-             jsonObject.put("WorkItems", workItems);
-        } catch (JSONException e) {
-            e.printStackTrace();
+            jsonObjects.add(map1);
         }
-
-        return jsonObject;
+        map.put("WorkItems", jsonObjects);
+        return  new JSONObject(map);
     }
 
     /*获取子工作项*/

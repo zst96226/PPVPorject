@@ -71,7 +71,12 @@ public class PersonInfo extends AppCompatActivity {
                 if (!msg.obj.toString().equals("") && msg.obj!=null&& !jsonStr.equals("anyType{}"))
                 {
                     Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
+                    //删除原图片保存新图
+                    deleteFile();
+                    String imgname=uidEntity.UID.toString()+".png";
+                    Log.i("imgname:"+imgname,"FHZ");
 
+                    imgBusiness.setImg(imgname);
                 }
                 else
                 {
@@ -138,7 +143,7 @@ public class PersonInfo extends AppCompatActivity {
                          UserInfoResultParams userInfoResultParams=JsonEntity.ParseJsonForUserInfoResult(jsonStr);
                          if(userInfoResultParams!=null)
                          {
-                             Log.i("获取当前用户信息返回值：保存","FHZ");
+                             Log.i("获取当前用户信息返回值：保存"+userInfoResultParams.UserID,"FHZ");
                              Reservoir.putAsync(LocalDataLabel.CurPerson, userInfoResultParams, new ReservoirPutCallback() {
                                  @Override
                                  public void onSuccess() {
@@ -230,13 +235,11 @@ public class PersonInfo extends AppCompatActivity {
         }
     }
 
-    private  void initCache()
-    {
+    private  void initCache() {
 
     }
 
-private  void setData()
-{
+    private  void setData() {
 //    personInfoEntity=(UserInfoResultParams)mCache.getAsObject(LocalDataLabel.CurPerson);
 //    if(personInfoEntity!=null)
 //    {
@@ -256,6 +259,7 @@ private  void setData()
         setService();
     }
 }
+
     private  boolean setCache()
     {
             try{
@@ -278,9 +282,10 @@ private  void setData()
                 myAdressEdt.setText(personInfoEntity.Address);
                 myIDEdt.setText(personInfoEntity.IDNo);
                 myDesEdt.setText(personInfoEntity.Sign);
-                //个人头像未完成
-
-                Bitmap userBitmap=imgBusiness.setImg(personInfoEntity.UserID+".png");
+                //个人头像
+                String imgname=uidEntity.UID+".png";
+                Log.i("imgname"+imgname,"FHZ");
+                Bitmap userBitmap=imgBusiness.setImg(imgname);
                 myImg.setImageBitmap(userBitmap);
                 return  true;
             }
@@ -494,6 +499,7 @@ private  void setData()
                 }
                 break;
             default:
+                Log.i("default","FHZ");
                 break;
         }
     }
@@ -581,5 +587,26 @@ private  void setData()
         //裁剪之后的数据是通过Intent返回
         intent.putExtra("return-data", true);
         startActivityForResult(intent, 3);
+    }
+
+    /**
+     * 删除SD卡或者手机的缓存图片和目录
+     */
+    public void deleteFile() {
+        String path = Environment.getExternalStorageDirectory() + "/listviewImg/"+ uidEntity.UID+".png";// 文件目录
+        Log.i("INFO", path  + "========================");
+        File dirFile = new File(path);
+        if(! dirFile.exists()){
+            return;
+        }
+        if (dirFile.isDirectory()) {
+            String[] children = dirFile.list();
+            for (int i = 0; i < children.length; i++) {
+                new File(dirFile, children[i]).delete();
+            }
+        }
+
+        dirFile.delete();
+        Log.i("INFO",  "=========delete========");
     }
 }

@@ -66,7 +66,8 @@ public class PersonValueDetail extends AppCompatActivity {
     private TextView textView,monthSum,valueSum,personName;
     private ImageView back,lastone,nextone,lastmonth,nextmonth;
     private  List<ValueDetailResultParam> valueDetailList;
-    private  List<ValueDetailResultParam>  personList;
+    private  List<WorkValueResultParams>  personList;
+    private WorkValueResultParams  SelectPerson;
      private SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
     private  String  nowTime=sdf.format(new  java.util.Date());
     private  String  SelectTime;
@@ -91,7 +92,9 @@ public class PersonValueDetail extends AppCompatActivity {
                             {
                                 valueDetailList=valueDetailResult.ScoredetailsList;
                                 Log.i("设置list date=："+SelectTime,"FHZ");
-                                setListData(SelectTime);
+                                String  time=SelectTime.substring(0,3)+SelectTime.substring(5,6);
+                                Log.i("设置list date=："+time,"FHZ");
+                                setService(time);
 //                                Reservoir.putAsync(LocalDataLabel.WorkValueDetail+SelectPersonId+SelectTime, valueDetailList, new ReservoirPutCallback() {
 //                                    @Override
 //                                    public void onSuccess() {
@@ -148,12 +151,14 @@ public class PersonValueDetail extends AppCompatActivity {
         init();
         //setListData(nowTime);
       //  showData(nowTime);
+        setPersonInfo();
         setListener();
-        setService(nowTime);
+        String time=nowTime.substring(0,4)+nowTime.substring(5,7);
+        Log.i("time=："+time,"FHZ");
+        setService(time);
     }
 
-    private void  init()
-    {
+    private void  init() {
         listView = (ListView) findViewById(R.id.MonthDeatil_list);
         back = (ImageView) this.findViewById(R.id.dttail_back);
         textView = (TextView) findViewById(R.id.selectTime_tex);
@@ -169,15 +174,7 @@ public class PersonValueDetail extends AppCompatActivity {
         Intent intent=getIntent();
         Bundle bundle=intent.getExtras();
         SelectPersonId=bundle.getString("personId");
-        WorkValueResultParams workValue=(WorkValueResultParams)bundle.getSerializable("Item");
-        personName.setText(workValue.Name);
-        ImgBusiness imgBusiness=new ImgBusiness();
-        Bitmap bitmap = imgBusiness.setImg("123.png");
-        //Bitmap bitmap = setImg("123.png");
-        person_img.setImageBitmap(bitmap);
-        monthSum.setText(String.valueOf(workValue.Month));
-        valueSum.setText(String.valueOf(workValue.BasicScore+workValue.CheckedScore));
-
+        SelectPerson=(WorkValueResultParams)bundle.getSerializable("Item");
         //intent.getSerializableExtra("Item")
     }
 //    private Bitmap setImg(String ImageName) {
@@ -202,15 +199,27 @@ public class PersonValueDetail extends AppCompatActivity {
 //        return bitmap;
 //    }
 
-    private void setListData(String date)
+    private  void setPersonInfo()
     {
+        personName.setText( SelectPerson.Name);
+        ImgBusiness imgBusiness=new ImgBusiness();
+        String  imgName=SelectPersonId+".png";
+        Bitmap bitmap = imgBusiness.setImg(imgName);
+        //Bitmap bitmap = setImg("123.png");
+        person_img.setImageBitmap(bitmap);
+        monthSum.setText(String.valueOf( SelectPerson.Month));
+        valueSum.setText(String.valueOf( SelectPerson.BasicScore+ SelectPerson.CheckedScore));
+
+    }
+
+    private void setListData(String date) {
         SimpleAdapter adapter = new SimpleAdapter(this, getData(date), R.layout.valuedetailstyle, new String[]{"itemImg","itemId", "itemName", "planValue", "trueValue"},
                 new int[]{R.id.Item_img,R.id.ItemId_tex, R.id.ItemName_tex, R.id.planValue, R.id.trueValue});
         listView.setAdapter(adapter);
 
     }
- private  void showData(String  date)
- {
+
+ private  void showData(String  date) {
 
      boolean isCache=setmCache(date);
      if(!isCache)
@@ -219,12 +228,12 @@ public class PersonValueDetail extends AppCompatActivity {
      }
 
  }
-private  boolean  setmCache(String date)
-{
+
+private  boolean  setmCache(String date) {
     try{
-        if(Reservoir.contains(LocalDataLabel.WorkValueDetail+date))
+        if(Reservoir.contains(LocalDataLabel.WorkValueDetail+SelectPersonId+date))
         {
-            Type resultType = new TypeToken<List<WorkValueResultParams>>() {
+            Type resultType = new TypeToken<List<ValueDetailResultParam>>() {
             }.getType();
             valueDetailList=Reservoir.get(LocalDataLabel.WorkValueDetail+SelectPersonId+date,resultType);
             Log.i("设置list date=："+date,"FHZ");
@@ -238,9 +247,20 @@ private  boolean  setmCache(String date)
     }
     return  false;
 }
-
-    private  void  setService(String date)
+    private  void  getPersonList()
     {
+        try{
+            if(Reservoir.contains(LocalDataLabel.WorkValueList))
+            {
+                Type resultType = new TypeToken<List<WorkValueResultParams>>() {
+                }.getType();
+                personList=Reservoir.get(LocalDataLabel.WorkValueList,resultType);
+                Log.i("设置personlist ：","FHZ");
+            }
+        }catch (Exception e){}
+    }
+
+    private  void  setService(String date) {
         WorkValueBusiness workValueBusiness=new WorkValueBusiness();
         String  TeamID="";
         String TicketID="";
@@ -266,11 +286,11 @@ private  boolean  setmCache(String date)
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.i("setservice","FHZ");
+        Log.i("valuedetail setservice","FHZ");
         workValueBusiness.GetWorkValueContext(handler,SelectPersonId,TeamID,date,TicketID,1);
     }
-    private void setListener()
-    {
+
+    private void setListener() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -305,39 +325,61 @@ private  boolean  setmCache(String date)
          @Override
          public void onClick(View v) {
              //判断是否为最初月份，否则减一
-             String month=monthSum.getText().toString();
-             String  oldTime=textView.getText().toString();
-             Date oldDate=null;
-             Date minDate=null;
-             String nowTime=sdf.format(new  java.util.Date());
-             Log.e("time","qq");
-             int change= Integer.parseInt(month);
-             String minTime=dateFormat(nowTime, -change);
-             Log.e("time2","qq");
+             String month = monthSum.getText().toString();
+             String oldTime = textView.getText().toString();
+             Date oldDate = null;
+             Date minDate = null;
+             String nowTime = sdf.format(new java.util.Date());
+             Log.e("time", "qq");
+             int change = Integer.parseInt(month);
+             String minTime = dateFormat(nowTime, -change);
+             Log.e("time2", "qq");
              try {
-                 oldDate=sdf.parse(oldTime);
-                 minDate=sdf.parse(minTime);
+                 oldDate = sdf.parse(oldTime);
+                 minDate = sdf.parse(minTime);
              } catch (ParseException e) {
                  e.printStackTrace();
              }
              Log.e("time3", "qq");
-             if(oldDate.getTime()<minDate.getTime()||oldDate.getTime()==minDate.getTime())
-             {
-                 SelectTime=oldTime;
-             }
-             else {
-                  SelectTime = dateFormat(oldTime, -1);
+             if (oldDate.getTime() < minDate.getTime() || oldDate.getTime() == minDate.getTime()) {
+                 SelectTime = oldTime;
+             } else {
+                 SelectTime = dateFormat(oldTime, -1);
 
              }
              textView.setText(SelectTime);
-            // showData(SelectTime);
-             setService(SelectTime);
+             // showData(SelectTime);
+             String time = SelectTime.substring(0, 4) + SelectTime.substring(5, 7);
+             setService(time);
          }
      });
         lastone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //上一个人
+                int CurIndex=0,LastIndex=0;
+                if(personList!=null||personList.size()!=0)
+                        {
+                            for (WorkValueResultParams person:personList) {
+                                if(person.UserID.equals(SelectPersonId))
+                                {
+                                    CurIndex=personList.indexOf(person);
+                                    break;
+                                }
+                            }
+                            if(CurIndex==0)
+                        {
+                            LastIndex=personList.indexOf(personList.size()-1);
+                        }else{
+                                LastIndex=CurIndex+1;
+                        }
+                            SelectPerson=personList.get(LastIndex);
+                            SelectPersonId=SelectPerson.UserID;
+                            setPersonInfo();
+                            String time=nowTime.substring(0,4)+nowTime.substring(5,7);
+                            Log.i("time=：" + time, "FHZ");
+                            setService(time);
+                }
             }
         });
         nextmonth.setOnClickListener(new View.OnClickListener() {
@@ -347,7 +389,7 @@ private  boolean  setmCache(String date)
                 String  oldTime=textView.getText().toString();
         //    SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
                 Date oldDate=null;
-                Date nowDate=null;
+                Date nowDate = null;
                 Log.e("time","qq");
                 String nowTime=sdf.format(new  java.util.Date());
                 Log.e("time2","qq");
@@ -368,17 +410,41 @@ private  boolean  setmCache(String date)
                 }
                 textView.setText(SelectTime);
               // showData(SelectTime);
-                setService(SelectTime);
+                String  time=SelectTime.substring(0,4)+SelectTime.substring(5,7);
+                setService(time);
             }
         });
         nextone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //下一个人
-
+                int CurIndex=0,NextIndex=0;
+                if(personList!=null||personList.size()!=0)
+                {
+                    for (WorkValueResultParams person:personList) {
+                        if(person.UserID.equals(SelectPersonId))
+                        {
+                            CurIndex=personList.indexOf(person);
+                            break;
+                        }
+                    }
+                    if(CurIndex==personList.indexOf(personList.size()-1))
+                    {
+                        NextIndex=0;
+                    }else{
+                        NextIndex=CurIndex+1;
+                    }
+                    SelectPerson=personList.get(NextIndex);
+                    SelectPersonId=SelectPerson.UserID;
+                    setPersonInfo();
+                    String time=nowTime.substring(0,4)+nowTime.substring(5,7);
+                    Log.i("time=："+time,"FHZ");
+                    setService(time);
+                }
             }
         });
     }
+
     private List<Map<String, Object>> getData(String date) {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         List<ValueDetailResultParam> entityList=valueDetailList;
@@ -399,13 +465,13 @@ private  boolean  setmCache(String date)
             map.put("itemId",entity.WorkID);
             map.put("itemName", entity.WorkName);
             map.put("planValue", String.valueOf(entity.IdealScore));
-            map.put("trueValue", String.valueOf(entity.BasicScore+entity.CheckedScore));
+            map.put("trueValue", String.valueOf(entity.Score));
             list.add(map);
         }
         return list;
     }
-private  List<ValueDetailResultParam> getEntities(String date)
-{
+
+private  List<ValueDetailResultParam> getEntities(String date) {
 //    WorkValueBusiness workValueBusiness=new WorkValueBusiness();
 //    String id="";
 //    Intent intent=getIntent();

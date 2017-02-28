@@ -8,18 +8,25 @@ import java.io.Serializable;
 public class ValueDetailResultParam implements Serializable {
     public  ValueDetailResultParam()
     {
-        WorkName = null;
+        BID="";
+        ID="";
+        WorkName ="";
         Category = 0;
-        WorkID = null;
+        WorkID ="";
         IdealScore = 0;
-        BasicScore = 0;
-        CheckedScore = 0;
+        Score = 0;
+        Stage=0;
+        UID="";
+        TimeSection="";
     }
-
+    public  String BID;
+    public  String ID;
     public String WorkName ;
     public int Category ;
     public String WorkID ;
     public double IdealScore;
-    public double BasicScore ;
-    public double CheckedScore ;
+    public double Score ;
+    public  int Stage;
+    public  String UID;
+    public String TimeSection ;
 }

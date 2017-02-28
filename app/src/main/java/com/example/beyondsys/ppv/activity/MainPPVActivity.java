@@ -169,7 +169,8 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
                 Intent intent = new Intent(MainPPVActivity.this, AddNewWorkItem.class);
                 intent.putExtra("FatherID", "");
                 intent.putExtra("FatherType", "");
-                startActivity(intent);
+               // startActivity(intent);
+                startActivityForResult(intent,1);
             }
         });
     }
@@ -285,5 +286,17 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
         img_workvalue.setImageResource(R.drawable.workvalue_no);
         img_worknone.setImageResource(R.drawable.none_no);
         img_oneself.setImageResource(R.drawable.oneself_no);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1)
+        {
+            if(resultCode==1)
+            {
+                //刷新
+            }
+        }
     }
 }

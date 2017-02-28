@@ -366,8 +366,8 @@ public class WorkValueView extends Fragment {
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
-                    Bitmap bitmap = imgBusiness.setImg("123.png");
-
+                    String imgname=valueEntity.UserID+".png";
+                    Bitmap bitmap = imgBusiness.setImg(imgname);
                     map.put("personImg", bitmap);
                     map.put("personId", valueEntity.UserID);
                     map.put("personName", valueEntity.Name);
@@ -385,7 +385,8 @@ public class WorkValueView extends Fragment {
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
-                    Bitmap bitmap =  imgBusiness.setImg("123.png");
+                    String imgname=valueEntity.UserID+".png";
+                    Bitmap bitmap = imgBusiness.setImg(imgname);
                     map.put("personImg", bitmap);
                     map.put("personId", valueEntity.UserID);
                     map.put("personName", valueEntity.Name);
@@ -403,7 +404,8 @@ public class WorkValueView extends Fragment {
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
-                    Bitmap bitmap = imgBusiness.setImg("123.png");
+                    String imgname=valueEntity.UserID+".png";
+                    Bitmap bitmap = imgBusiness.setImg(imgname);
                     map.put("personImg", bitmap);
                     map.put("personId", valueEntity.UserID);
                     map.put("personName", valueEntity.Name);
@@ -418,7 +420,8 @@ public class WorkValueView extends Fragment {
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
-                    Bitmap bitmap = imgBusiness.setImg("123.png");
+                    String imgname=valueEntity.UserID+".png";
+                    Bitmap bitmap = imgBusiness.setImg(imgname);
                     map.put("personImg", bitmap);
                     map.put("personId", valueEntity.UserID);
                     map.put("personName", valueEntity.Name);

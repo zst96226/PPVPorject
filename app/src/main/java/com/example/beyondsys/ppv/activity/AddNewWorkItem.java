@@ -133,6 +133,8 @@ public class AddNewWorkItem extends Activity {
                         if(flag==0)
                         {
                             Toast.makeText(AddNewWorkItem.this, "新建成功", Toast.LENGTH_SHORT).show();
+                            setResult(1);
+                            finish();
                         }else{
                             Toast.makeText(AddNewWorkItem.this, "新建失败", Toast.LENGTH_SHORT).show();
                         }
@@ -874,7 +876,7 @@ public class AddNewWorkItem extends Activity {
     }
     private  void setPopWinForType() {
         Type_pop=new ListPopupWindow(this);
-        mListPopupWindowAdapter=new ListPopupWindowAdapter(list, mContext);
+        mListPopupWindowAdapter=new ListPopupWindowAdapter(typeList, mContext);
         Type_pop.setAdapter(mListPopupWindowAdapter);
         //mListPopupWindow.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.ic_launcher));
         Type_pop.setWidth( Type_pop.getWidth());

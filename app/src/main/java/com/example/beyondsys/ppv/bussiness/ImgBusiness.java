@@ -79,10 +79,11 @@ public class ImgBusiness
                 InputStream in = null;
 
                 // 创建文件
-               // File file = new File(fileDir);
+                File file = new File(fileDir, name);
+                Log.i("creat", "qq");
                 try {
 
-                    fos = new FileOutputStream(fileDir);
+                    fos = new FileOutputStream(file);
 
                     URL url = new URL(picurl);
                     in = url.openStream();
@@ -129,7 +130,7 @@ public class ImgBusiness
         if (!file.exists()) {// 如果本地图片不存在则从网上下载
             ImgBusiness imgBusiness = new ImgBusiness();
             imgBusiness.downloadImg(picurl, ImageName);
-        } else {// 图片存在则填充到view上
+        } else {
             bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             // drawable =new BitmapDrawable(bitmap);
         }
