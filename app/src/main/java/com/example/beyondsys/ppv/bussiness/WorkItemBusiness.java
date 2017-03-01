@@ -307,7 +307,7 @@ public class WorkItemBusiness {
 //                newItem.put("BasicScore",workItem.BasicScore);
 ////                newItem.put("CheckedScore",workItem.CheckedScore);
 //                newItem.put("Remark",workItem.Remark);
-//
+////
 //
 //                workItems.add(newItem);
 //            }
@@ -330,12 +330,18 @@ public class WorkItemBusiness {
             map1.put("Category",workItem.Category);
             map1.put("Assigned2", workItem.Assigned2);
             map1.put("Belong2", workItem.Belong2);
+            map1.put("Checker", workItem.Checker);
             map1.put("ClosingTime", workItem.ClosingTime);
+            map1.put("Modifier",workItem.Modifier);
+            map1.put("ModifyTime",workItem.ModifyTime);
             map1.put("Creater", workItem.Creater);
             map1.put("CreateTime", workItem.CreateTime);
             map1.put("BusinessValue", workItem.BusinessValue);
             map1.put("Remark",workItem.Remark);
-
+            map1.put("Status", workItem.Status);
+            map1.put("HardScale", workItem.HardScale);
+            map1.put("BasicScore",workItem.BasicScore);
+            map1.put("CheckedScore",workItem.CheckedScore);
             jsonObjects.add(map1);
         }
         map.put("WorkItems", jsonObjects);

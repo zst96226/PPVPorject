@@ -501,7 +501,37 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="估算价值"
+                            android:text="估算价值："
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="10sp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/wid_Value_edt"
+                            android:layout_width="match_parent"
+                            android:layout_height="40sp"
+                            android:text=""
+                            android:textColor="@color/blueBut"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:background="@color/White"
+                    android:layout_marginTop="5sp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="基础得分："
                             android:gravity="center_vertical"
                             android:layout_marginLeft="10sp"/>
                     </LinearLayout>
@@ -510,16 +540,54 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1">
                         <EditText
-                            android:id="@+id/wid_Value_edt"
+                            android:id="@+id/BisicValue_edt"
                             android:layout_width="match_parent"
                             android:layout_height="40sp"
                             android:text=""
+                            android:maxLength="4"
+                            android:inputType="numberDecimal"
+                            android:digits="1234567890."
+                            android:singleLine="true"
                             android:enabled="false"
                             android:textColor="@color/blueBut"
                             android:gravity="center_vertical"/>
                     </LinearLayout>
                 </LinearLayout>
-
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30sp"
+                    android:background="@color/White"
+                    android:layout_marginTop="5sp"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="检查得分："
+                            android:gravity="center_vertical"
+                            android:layout_marginLeft="10sp"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0sp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+                        <EditText
+                            android:id="@+id/CheckValue_edt"
+                            android:layout_width="match_parent"
+                            android:layout_height="40sp"
+                            android:text=""
+                            android:maxLength="4"
+                            android:inputType="numberDecimal"
+                            android:digits="1234567890."
+                            android:singleLine="true"
+                            android:enabled="false"
+                            android:textColor="@color/blueBut"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="30sp"

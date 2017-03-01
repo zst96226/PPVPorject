@@ -91,10 +91,13 @@ public class PersonValueDetail extends AppCompatActivity {
                             if(valueDetailResult.AccessResult==0)
                             {
                                 valueDetailList=valueDetailResult.ScoredetailsList;
-                                Log.i("设置list date=："+SelectTime,"FHZ");
-                                String  time=SelectTime.substring(0,3)+SelectTime.substring(5,6);
-                                Log.i("设置list date=："+time,"FHZ");
-                                setService(time);
+                                Log.i("SELECTIME=："+SelectTime,"FHZ");
+                                String  time=SelectTime.substring(0,4)+SelectTime.substring(5,7);
+                                Log.i("date=："+time,"FHZ");
+                                if(valueDetailList!=null&&valueDetailList.size()!=0)
+                                {
+                                    setListData(time);
+                                }
 //                                Reservoir.putAsync(LocalDataLabel.WorkValueDetail+SelectPersonId+SelectTime, valueDetailList, new ReservoirPutCallback() {
 //                                    @Override
 //                                    public void onSuccess() {
@@ -152,6 +155,7 @@ public class PersonValueDetail extends AppCompatActivity {
         //setListData(nowTime);
       //  showData(nowTime);
         setPersonInfo();
+        getPersonList();
         setListener();
         String time=nowTime.substring(0,4)+nowTime.substring(5,7);
         Log.i("time=："+time,"FHZ");
@@ -171,6 +175,7 @@ public class PersonValueDetail extends AppCompatActivity {
         personName=(TextView)findViewById(R.id.personname_tex);
         person_img=(ImageView)findViewById(R.id.person_img);
         SelectTime=nowTime;
+        textView.setText(nowTime);
         Intent intent=getIntent();
         Bundle bundle=intent.getExtras();
         SelectPersonId=bundle.getString("personId");
@@ -247,8 +252,8 @@ private  boolean  setmCache(String date) {
     }
     return  false;
 }
-    private  void  getPersonList()
-    {
+
+    private  void  getPersonList() {
         try{
             if(Reservoir.contains(LocalDataLabel.WorkValueList))
             {
@@ -358,7 +363,7 @@ private  boolean  setmCache(String date) {
             public void onClick(View v) {
                 //上一个人
                 int CurIndex=0,LastIndex=0;
-                if(personList!=null||personList.size()!=0)
+                if(personList!=null&&personList.size()!=0)
                         {
                             for (WorkValueResultParams person:personList) {
                                 if(person.UserID.equals(SelectPersonId))
@@ -419,7 +424,7 @@ private  boolean  setmCache(String date) {
             public void onClick(View v) {
                 //下一个人
                 int CurIndex=0,NextIndex=0;
-                if(personList!=null||personList.size()!=0)
+                if(personList!=null&&personList.size()!=0)
                 {
                     for (WorkValueResultParams person:personList) {
                         if(person.UserID.equals(SelectPersonId))

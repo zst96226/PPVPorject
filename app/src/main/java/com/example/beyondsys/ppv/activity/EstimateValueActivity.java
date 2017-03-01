@@ -205,7 +205,7 @@ public class EstimateValueActivity extends AppCompatActivity {
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double result=0.00;
+                double result=0.00,sumScale=0.00;
                 Log.e("aaaa" + getStepDetail(), "qqww");
                 ArrayList<String> valueParam=param();
                 if(valueParam==null||valueParam.size()==0)
@@ -239,16 +239,25 @@ public class EstimateValueActivity extends AppCompatActivity {
                             scale=1.00;
                         }
                         result += computValue(max,min,scale);
+                        sumScale+=scale*computValue(max,min,scale);
                         Log.i("max:" + max, "FHZ");
                         Log.i("min:"+min,"FHZ");
                         Log.i("scale:"+scale,"FHZ");
                         Log.i("result:"+result,"FHZ");
                     }
+                    if(result>0)
+                    {
+                        sumScale=sumScale/result;
+                    }else{
+                        sumScale=1;
+                    }
+
                 }
                 Intent rIntent = new Intent();
                 Bundle bundle = new Bundle();
                 bundle.putString("stepCount",String.valueOf(getStepCount()));
                 bundle.putString("stepDetail", getStepDetail());
+                bundle.putString("sumScale",String.valueOf(sumScale));
                 bundle.putString("valueParam", String.valueOf(result));
                 //bundle.putSerializable("valueParam", (Serializable) getValueParam());
                 rIntent.putExtras(bundle);
@@ -312,19 +321,40 @@ public class EstimateValueActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 // TODO Auto-generated method stub
-                if(!s.toString().isEmpty())
-                {
-                    double d=Double.valueOf(s.toString().trim());
-                    if(d>2.0||d<0.5)
-                    {
-                        editText.setText("1");
-                        editText.setSelection(1);
-                    }
-                }
+//                if(!s.toString().isEmpty())
+//                {
+//                    double d=Double.valueOf(s.toString().trim());
+//                    if(d>2.0||d<0.5)
+//                    {
+//                        editText.setText("1");
+//                        editText.setSelection(1);
+//                    }
+//                }
 
 
             }
 
+        });
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus)
+                {
+                    String s=editText.getText().toString().trim();
+                    if(!s.isEmpty())
+                    {
+                        try{
+                            double d=Double.valueOf(s.trim());
+                            if(d>2.0||d<0.5)
+                            {
+                                editText.setText("1");
+                                editText.setSelection(1);
+                            }
+
+                        }catch (Exception e){}
+                    }
+                }
+            }
         });
 
     }

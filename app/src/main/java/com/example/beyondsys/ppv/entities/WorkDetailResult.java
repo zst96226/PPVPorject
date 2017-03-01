@@ -13,6 +13,8 @@ public class WorkDetailResult implements Serializable {
         AssignerName = "";
         CheckerID = "";
         CheckerName = "";
+        Creater = "";
+        CreaterID ="";
         CreateTime = "";
         ModifierID = "";
         ModifierName = "";
@@ -20,21 +22,21 @@ public class WorkDetailResult implements Serializable {
         Status = 0;
         Deadline = "";
         Description = "";
-        AccessResult = -3;
-        Creater = "";
-        CreaterID ="";
         WorkName = "";
+        AccessResult = -3;
         BusinessValue = 0;
         TheTimeStamp = 0;
         Category = 0;
         FID="";
-        BID="";
         Belong2ID="";
         Belong2Name="";
         Remark="";
-
-
-
+        BID="";
+        ID="";
+        HsrdScale=0;
+        BasicScore=0;
+        CheckedScore=0;
+         RID="";
     }
 
     public String AssignerID ;
@@ -60,5 +62,10 @@ public class WorkDetailResult implements Serializable {
     public String Belong2ID;
     public String Belong2Name;
     public String Remark;
+    public  String ID;
+    public double HsrdScale;
+    public  double BasicScore;
+    public  double CheckedScore;
+    public  String RID;
 
 }

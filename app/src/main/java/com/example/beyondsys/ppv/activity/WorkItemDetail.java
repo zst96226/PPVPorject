@@ -72,6 +72,8 @@ public class WorkItemDetail extends AppCompatActivity {
     String TeamID = "";
     String WorkID = "";
     String UID="";
+    String Remark="";
+    double BasicValue,CheckValue;
     List<SubWorkItemParams> chid = new ArrayList<>();
     PopupMenuForWorkItem popWindow = null;
 
@@ -88,8 +90,8 @@ public class WorkItemDetail extends AppCompatActivity {
     LinearLayout main_workitem;
     ListView child_list;
 
-    private EditText name_edt,des_edt, value_edt;
-     private TextView assign2_edt, checker_edt, status_edt, Head_edt, closingtime_edt;
+    private EditText name_edt,des_edt,basicvalue_edt,checkvalue_edt;
+     private TextView assign2_edt, checker_edt, status_edt, Head_edt, closingtime_edt,value_edt;
     private TextView wid_workname, wid_workvalue, starttime_tex, endtime_tex, creater_tex, creatertime_tex, modifier_tex, modifytime_tex;
     private RelativeLayout del_layout;
     private Button del_ok, del_cancel;
@@ -102,10 +104,11 @@ public class WorkItemDetail extends AppCompatActivity {
         public void handleMessage(Message msg) {
             if (msg.what == ThreadAndHandlerLabel.GetWorkItemContext) {
                 if (msg.obj != null) {
-                    Log.i("获得详细信息 0"+msg.obj,"FHZ");
+                    Log.i("获得详细信息 "+msg.obj,"FHZ");
+                    Log.i("zst","获得详细信息"+msg.obj);
                     try {
                         WorkDetailResult Result = JsonEntity.ParseJsonForWorkDetailResult(msg.obj.toString());
-                        Log.i("获得详细信息 0","FHZ");
+                        Log.i("获得详细信息 ","FHZ");
                         if (Result != null) {
                             int flag=Result.AccessResult;
                             switch (flag) {
@@ -149,6 +152,38 @@ public class WorkItemDetail extends AppCompatActivity {
                                         /*显示子项*/
                                         Log.i( "zst_test","工作子项setList");
                                         SetList();
+                                    }else{
+                                        // 当 该工作项无子项 ，基础分为零 ，用户有权限更改工作项，状态不为空且状态为 确认待测试 ，时可修改基础得分
+                                        /*查询成功 但没有子项*/
+                                        /*基础分为0*/
+                                        if(CurDetail.BasicScore==0)
+                                        {
+                                            /*有权限改*/
+                                          if(CurDetail.AssignerID.equals(UID)||(CurDetail.AssignerID.isEmpty()&&CurDetail.CreaterID.equals(UID)))
+                                          {
+
+                                              status_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                                  @Override
+                                                  public void onFocusChange(View v, boolean hasFocus) {
+                                                      if(!hasFocus)
+                                                      {   /*状态不为空且为 确认待测试*/
+                                                          if( !status_edt.getText().toString().trim().isEmpty())
+                                                          {
+                                                              if(status_edt.getText().toString().trim().equals(statusList.get(6)))
+                                                              {
+                                                                      BasicValueEdit();
+                                                              }else if(status_edt.getText().toString().trim().equals(statusList.get(9)))
+                                                              {
+                                                                     CheckValueEdit();
+                                                              };
+                                                          }
+
+                                                      }
+                                                  }
+                                              });
+                                          }
+                                        }
+
                                     }
                                     break;
                                 case -1:
@@ -182,6 +217,8 @@ public class WorkItemDetail extends AppCompatActivity {
                                     break;
                                 case -1:
                                     Toast.makeText(WorkItemDetail.this, "请求失败，请重新尝试", Toast.LENGTH_SHORT).show();
+                                    //
+                                    GetDataForService(CurItemId);
                                     break;
                                 case -3:
                                     Toast.makeText(WorkItemDetail.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
@@ -248,12 +285,14 @@ public class WorkItemDetail extends AppCompatActivity {
         creatertime_tex = (TextView) findViewById(R.id.wid_CreateTime_txt);
         modifier_tex = (TextView) findViewById(R.id.wid_Modifier_txt);
         modifytime_tex = (TextView) findViewById(R.id.wid_ModifyTime_txt);
-        value_edt = (EditText) findViewById(R.id.wid_Value_edt);
+        value_edt = (TextView) findViewById(R.id.wid_Value_edt);
         closingtime_edt = (TextView) findViewById(R.id.wid_ClosingTime_edt);
         des_edt = (EditText) findViewById(R.id.wid_Description_edt);
         del_layout = (RelativeLayout) findViewById(R.id.del_choose_layout);
         del_ok = (Button) findViewById(R.id.del_ok);
         del_cancel = (Button) findViewById(R.id.del_cancel);
+        basicvalue_edt=(EditText)findViewById(R.id.BisicValue_edt);
+        checkvalue_edt=(EditText)findViewById(R.id.CheckValue_edt);
         Userlist.add("空");
         UserIDlist.add("");
         statusList.add("已作废");
@@ -276,8 +315,7 @@ public class WorkItemDetail extends AppCompatActivity {
         popWindow.change_status.setVisibility(View.GONE);
     }
 
-    private  boolean setCache()
-    {
+    private  boolean setCache() {
         Log.i(" userinteam  SetCAche", "aa");
         try
         {
@@ -369,7 +407,8 @@ public class WorkItemDetail extends AppCompatActivity {
         value_edt.setText(result.BusinessValue + "");
         closingtime_edt.setText(result.Deadline.toString().substring(0, 10));
         des_edt.setText(result.Description);
-
+        basicvalue_edt.setText(String.valueOf(result.BasicScore));
+        checkvalue_edt.setText(String.valueOf(result.CheckedScore));
         if (result.Category == 0) {
             work_img.setImageResource(R.drawable.b);
         } else {
@@ -726,8 +765,7 @@ public class WorkItemDetail extends AppCompatActivity {
     }
 
 
-    private  void   submitService( )
-    {
+    private  void   submitService( ) {
         List<WorkItemEntity> works=new ArrayList<WorkItemEntity>();
         WorkItemEntity  work=submitEntity(CurDetail);
         if(work!=null)
@@ -737,12 +775,11 @@ public class WorkItemDetail extends AppCompatActivity {
             workItemBusiness.UpdateWorkItem(handler,works);
         }
     }
-    private WorkItemEntity submitEntity(WorkDetailResult result)
-    {
-        String Name,Assigned2,Belong2, Checker,Description,BID, FID,ID,ClosingTime;
-        int  Status,Category,TheTimeStamp;
+
+    private WorkItemEntity submitEntity(WorkDetailResult result) {
+        String Name,Assigned2,Belong2, Checker,Description,ClosingTime;
+        int  Status;
         double  BusinessValue;
-        ID= CurItemId;
         if(closingtime_edt.getText().toString().trim().equals("")||closingtime_edt.getText().toString().trim().isEmpty())
         {
             Toast.makeText(WorkItemDetail.this, "结束日期要大于今天！", Toast.LENGTH_SHORT).show();
@@ -750,7 +787,7 @@ public class WorkItemDetail extends AppCompatActivity {
         }else{
             ClosingTime=closingtime_edt.getText().toString().trim();
         }
-//        ClosingTime="2017-01-02";
+
         Name= name_edt.getText().toString().trim();
         boolean checkName= ValidaService.isTitleLength(Name);
         if(!checkName)
@@ -763,7 +800,12 @@ public class WorkItemDetail extends AppCompatActivity {
         {
             Assigned2="";
         }else{
-            Assigned2=UserIDlist.get(Userlist.indexOf(assign2_edt.getText().toString().trim()));
+            if(Userlist.indexOf(assign2_edt.getText().toString().trim())!=-1)
+            {
+                Assigned2 = UserIDlist.get(Userlist.indexOf(assign2_edt.getText().toString().trim()));
+            }else{
+                Assigned2="";
+            }
         }
 
         if( Head_edt.getText().toString().trim().equals("空")|| Head_edt.getText().toString().trim().isEmpty())
@@ -776,10 +818,14 @@ public class WorkItemDetail extends AppCompatActivity {
                 return     null;
             }
         }else{
-            Belong2=UserIDlist.get(Userlist.indexOf(Head_edt.getText().toString().trim()));
+            if(Userlist.indexOf(Head_edt.getText().toString().trim())!=-1)
+            {
+                Belong2=UserIDlist.get(Userlist.indexOf(Head_edt.getText().toString().trim()));
+            }else{
+                Belong2="";
+            }
         }
 
-        Checker=checker_edt.getText().toString().trim();
         if(checker_edt.getText().toString().trim().equals("空")||checker_edt.getText().toString().trim().isEmpty())
         {
 
@@ -791,17 +837,8 @@ public class WorkItemDetail extends AppCompatActivity {
         Description=des_edt.getText().toString().trim();
 
 
-        if(CurFID.isEmpty())
-        {
-            FID="";
-        }else{
-            FID=CurFID;
-        }
-
 
         Status=statusList.indexOf(status_edt.getText().toString().trim());
-        BID=CurBID;
-        TheTimeStamp=1;
         BusinessValue=Double.valueOf( value_edt.getText().toString().trim());
       //  难度和分数未完成
         WorkItemEntity workItem=new WorkItemEntity();
@@ -817,18 +854,22 @@ public class WorkItemDetail extends AppCompatActivity {
         workItem.Creater=result.Creater;
         workItem.FID=result.FID;
         workItem.BID=result.BID;
-        workItem.RID="";
+        workItem.RID=result.RID;
         workItem.Description=Description;
-        workItem.ID=ID;
+        workItem.ID=result.ID;
         workItem.Name=Name;
         workItem.Status=Status;
         workItem.Category=result.Category;
-//        workItem.BasicScore=1000;
-//        workItem.CheckedScore=0.00;
-//        workItem.HardScale=0.00;
-        workItem.Remark="remark";
-
-        return  workItem;
+        workItem.BasicScore=result.BasicScore;
+        workItem.CheckedScore=result.CheckedScore;
+        workItem.HardScale=result.HsrdScale;
+        if(Remark.isEmpty())
+        {
+            workItem.Remark=result.Remark;
+        }else{
+            workItem.Remark=Remark;
+        }
+  return  workItem;
     }
 
     protected void showDatePickDlg() {
@@ -877,11 +918,104 @@ public class WorkItemDetail extends AppCompatActivity {
 
     }
 
-/*工作项可修改*/
+    private void estimateValue() {
+        Intent estimate = new Intent(WorkItemDetail.this, EstimateValueActivity.class);
+        Log.e("estimate value", "qqww");
+        startActivityForResult(estimate, 2);
+    }
+    /*基础分值可修改*/
+    private  void BasicValueEdit(){
+//
+        //计算用的是返回的价值，若修改了价值要提交后在计算基础分
+        splitValue(CurDetail.HsrdScale,CurDetail.BusinessValue);
+        basicvalue_edt.setText(String.valueOf(BasicValue));
+        basicvalue_edt.setEnabled(true);
+        basicvalue_edt.setSelection(String.valueOf(BasicValue).length());
+        basicvalue_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if (!basicvalue_edt.getText().toString().trim().isEmpty()) {
+                        try {
+                            double v1 = Double.valueOf(basicvalue_edt.getText().toString().trim());
+                            if (v1 < 0 || v1 > BasicValue) {
+                                Toast.makeText(WorkItemDetail.this, "基础分值在0到" + BasicValue + "之间！", Toast.LENGTH_SHORT).show();
+                                basicvalue_edt.setText(String.valueOf(BasicValue));
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
+
+                }
+            }
+        });
+    }
+    /*检查分值可改*/
+    private  void CheckValueEdit(){
+        splitValue(CurDetail.HsrdScale, CurDetail.BusinessValue);
+        checkvalue_edt.setText(String.valueOf(CheckValue));
+        checkvalue_edt.setEnabled(true);
+        checkvalue_edt.setSelection(String.valueOf(CheckValue).length());
+        checkvalue_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus)
+                {
+                    if(!checkvalue_edt.getText().toString().trim().isEmpty())
+                    {
+                        try{
+                            double v1=Double.valueOf(checkvalue_edt.getText().toString().trim());
+                            if(v1<0||v1>CheckValue)
+                            {
+                                Toast.makeText(WorkItemDetail.this, "检查分值在0到"+CheckValue+"之间！", Toast.LENGTH_SHORT).show();
+                                checkvalue_edt.setText(String.valueOf(CheckValue));
+                            }
+                        }catch (Exception e){}
+                    }
+
+                }
+            }
+        });
+    }
+    /*计算基础分值与检查分值*/
+    private  void splitValue(double scale,double value){
+       //if((0.51==<scale)&&(scale<0.8)){}
+        if(scale!=0&&value!=0)
+        {
+            if((scale==0.5||scale>0.5)&&scale<0.8)
+            {
+                //4:6
+                BasicValue=value*0.4;
+                CheckValue=value*0.6;
+
+            }else if((scale==0.8||scale<0.8)&&(scale==1||scale<1)){
+                //5:5
+                BasicValue=value*0.5;
+                CheckValue=value*0.5;
+            }else if(scale>1&&(scale<1.5||scale==1.5)){
+                //6:4
+                BasicValue=value*0.6;
+                CheckValue=value*0.4;
+            }else{
+                //7:3
+                BasicValue=value*0.7;
+                CheckValue=value*0.3;
+            }
+        }
+    }
+
+    /*工作项可修改*/
     private  void ItemEditable() {
         Log.e("ITEM POP", "aa");
         name_edt.setEnabled(true);
-        value_edt.setEnabled(true);
+        des_edt.setEnabled(true);
+        value_edt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("  value click", "FHZ");
+                estimateValue();
+            }
+        });
         closingtime_edt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -921,6 +1055,7 @@ public class WorkItemDetail extends AppCompatActivity {
                 Status_pop.show();
             }
         });
+
 
     }
     /*状态可修改*/
@@ -1153,6 +1288,21 @@ public class WorkItemDetail extends AppCompatActivity {
                 business.GetChildWorkItem(handler, CurItemId, TKID, 1);
             }
 
+        }else if(requestCode==2)
+        {
+            if (resultCode == 1) {
+                Remark=data.getStringExtra("stepDetail").toString().trim();
+
+                //分值计算接口
+//                   List<Map<String,Object>> valueParam=( List<Map<String,Object>>)data.getSerializableExtra("valueParam");
+                // Log.i("1MAX:" + valueParam.get(0).get("max"),"FHZ");
+                String value=data.getStringExtra("valueParam");
+                value_edt.setText(value);
+            } else {
+                 return;
+            }
+        }else{
+            return;
         }
 
     }

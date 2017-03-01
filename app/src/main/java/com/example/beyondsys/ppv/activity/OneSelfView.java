@@ -325,13 +325,13 @@ private LinearLayout personInfoLayout;
             monthsum_tex.setText(String.valueOf(personInfoEntity.TotalMonth));
             return  true;
         }
-        Log.i("personInfoEntity null","FHZ");
+        Log.i("personInfoEntity null", "FHZ");
         return false;
     }
     private  void setService()
     {
         //缓存中未获取到用户个人信息 从服务加载
-            Log.i("getService","FHZ");
+            Log.i("getService", "FHZ");
             OneSelfBusiness oneSelfBusiness=new OneSelfBusiness();
             oneSelfBusiness.GetOneSelf(handler);
     }
@@ -341,7 +341,8 @@ private LinearLayout personInfoLayout;
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), PersonInfo.class);
-                startActivity(intent);
+                //startActivity(intent);
+                startActivityForResult(intent,1);
             }
         });
         passwordChangeLayout.setOnClickListener(new View.OnClickListener() {
@@ -384,42 +385,37 @@ private LinearLayout personInfoLayout;
                 //   CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
                 TextView teamName = (TextView) view.findViewById(R.id.TeamName_tex);
                 TextView teamLevel = (TextView) view.findViewById(R.id.TeamLevel_tex);
-                TextView teamId=(TextView) view.findViewById(R.id.TeamID_tex);
+                TextView teamId = (TextView) view.findViewById(R.id.TeamID_tex);
                 // checkBox.setChecked(true);
                 teamName_tex.setText(teamName.getText());
                 teamlevel_tex.setText(teamLevel.getText());
 
 
                 //把当前选择的团队置顶 重新存缓存
-                List<TeamEntity> teamList=null;
-                try{
-                    Log.i("label try","FHZ");
-                    if(Reservoir.contains(LocalDataLabel.Label))
-                    {
-                        Log.i("label","FHZ");
+                List<TeamEntity> teamList = null;
+                try {
+                    Log.i("label try", "FHZ");
+                    if (Reservoir.contains(LocalDataLabel.Label)) {
+                        Log.i("label", "FHZ");
 
                         Type resultType = new TypeToken<List<TeamEntity>>() {
                         }.getType();
                         teamList = Reservoir.get(LocalDataLabel.Label, resultType);
-                        Log.i("label","FHZ");
+                        Log.i("label", "FHZ");
                     }
-                }catch (Exception e)
-                {
-                    Log.i("label excep","FHZ");
+                } catch (Exception e) {
+                    Log.i("label excep", "FHZ");
                     e.printStackTrace();
                 }
-                if(teamList!=null)
-                {
-                    TeamEntity curTeam=null;
-                    for (TeamEntity  team:teamList)
-                    {
-                   if( team.TeamID.equals(teamId.getText().toString().trim()))
-                   {
-                       curTeam=team;
-                       teamList.remove(team);
-                   }
+                if (teamList != null) {
+                    TeamEntity curTeam = null;
+                    for (TeamEntity team : teamList) {
+                        if (team.TeamID.equals(teamId.getText().toString().trim())) {
+                            curTeam = team;
+                            teamList.remove(team);
+                        }
                     }
-                    teamList.add(0,curTeam);
+                    teamList.add(0, curTeam);
                 }
                 OtherBusiness other = new OtherBusiness();
                 other.GetAllStaffForTeam(handler, teamList.get(0).TeamID);
@@ -436,7 +432,7 @@ private LinearLayout personInfoLayout;
                     }
                 });
 
-                    child_list.setVisibility(View.GONE);
+                child_list.setVisibility(View.GONE);
                 show_team.setImageResource(R.drawable.arrow_down_float);
             }
         });
@@ -503,6 +499,17 @@ private LinearLayout personInfoLayout;
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1)
+        {
+         //  setCache();
+            setData();
+        }
+    }
+
     // 弹窗
     private void dialog() {
          dialog = new CustomDialog(OneSelfView.this.getActivity());

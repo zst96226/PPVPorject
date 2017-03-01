@@ -78,6 +78,7 @@ public class AddNewWorkItem extends Activity {
     private Context mContext;
     private ListPopupWindowAdapter mListPopupWindowAdapter;
     private String UID;
+    private double SumScale;
     private Handler handler=new Handler()
     {
         public void handleMessage(Message msg) {
@@ -289,6 +290,7 @@ public class AddNewWorkItem extends Activity {
         //获取团队信息失败
         Toast.makeText(AddNewWorkItem.this, "读取团队信息失败！", Toast.LENGTH_SHORT).show();
     }
+
     protected void showDatePickDlg() {
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         Calendar calendar = Calendar.getInstance();
@@ -334,11 +336,11 @@ public class AddNewWorkItem extends Activity {
         datePickerDialog.show();
 
     }
-    private WorkItemEntity submitEntity()
-    {
+
+    private WorkItemEntity submitEntity() {
         String Name,Assigned2,Belong2, Checker,Description,BID, FID,ID,ClosingTime;
         int  Status,Category,TheTimeStamp;
-        double  BusinessValue,HardScale;
+        double  BusinessValue;
         ID= Tools.GetGUID();
         if(input_CloseTime.getText().toString().trim().equals("")||input_CloseTime.getText().toString().trim().isEmpty())
         {
@@ -445,7 +447,6 @@ public class AddNewWorkItem extends Activity {
         } else{
             BusinessValue=0.00;
         }
-        HardScale=1.0;
         WorkItemEntity workItem=new WorkItemEntity();
         workItem.TheTimeStamp=TheTimeStamp;
         workItem.Assigned2=Assigned2;
@@ -459,14 +460,14 @@ public class AddNewWorkItem extends Activity {
         workItem.CreateTime="";
         workItem.Creater=UID;
         workItem.FID=FID;
-        workItem.HardScale=HardScale;
+        workItem.HardScale=SumScale;
         workItem.Description=Description;
         workItem.ID=ID;
         workItem.Name=Name;
         workItem.Status=Status;
+        workItem.Remark=input_score.getText().toString().trim();
         return  workItem;
     }
-
 
     private  void setStatus() {
         input_AssignedTo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -486,6 +487,7 @@ public class AddNewWorkItem extends Activity {
             }
         });
     }
+
     private void Listener() {
 
         ok_layout.setOnClickListener(new View.OnClickListener() {
@@ -943,6 +945,7 @@ public class AddNewWorkItem extends Activity {
             case 1:
                 if (resultCode == 1) {
                     input_score.setText(data.getStringExtra("stepDetail"));
+                    SumScale=Double.valueOf(data.getStringExtra("sumScale"));
                     //分值计算接口
 //                   List<Map<String,Object>> valueParam=( List<Map<String,Object>>)data.getSerializableExtra("valueParam");
                   // Log.i("1MAX:" + valueParam.get(0).get("max"),"FHZ");

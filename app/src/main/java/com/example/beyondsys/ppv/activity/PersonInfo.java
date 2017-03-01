@@ -454,54 +454,58 @@ public class PersonInfo extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 1:
-                //用户点击了取消
-                if (data == null) {
-                    return;
-                } else {
-                    Bundle extras = data.getExtras();
-                    if (extras != null) {
-                        //获得拍的照片
-                        Bitmap bm = extras.getParcelable("data");
-                        //将Bitmap转化为uri
-                        Uri uri = saveBitmap(bm, "temp");
-                        //启动图像裁剪
+        try{
+            switch (requestCode) {
+                case 1:
+                    //用户点击了取消
+                    if (data == null) {
+
+                        return;
+                    } else {
+                        Bundle extras = data.getExtras();
+                        if (extras != null) {
+                            //获得拍的照片
+                            Bitmap bm = extras.getParcelable("data");
+                            //将Bitmap转化为uri
+                            Uri uri = saveBitmap(bm, "temp");
+                            //启动图像裁剪
+                            startImageZoom(uri);
+                        }
+                    }
+                    break;
+                case 2:
+                    if (data == null) {
+                        return;
+                    } else {
+                        //用户从图库选择图片后会返回所选图片的Uri
+                        Uri uri;
+                        //获取到用户所选图片的Uri
+                        uri = data.getData();
+                        //返回的Uri为content类型的Uri,不能进行复制等操作,需要转换为文件Uri
+                        uri = convertUri(uri);
                         startImageZoom(uri);
                     }
-                }
-                break;
-            case 2:
-                if (data == null) {
-                    return;
-                } else {
-                    //用户从图库选择图片后会返回所选图片的Uri
-                    Uri uri;
-                    //获取到用户所选图片的Uri
-                    uri = data.getData();
-                    //返回的Uri为content类型的Uri,不能进行复制等操作,需要转换为文件Uri
-                    uri = convertUri(uri);
-                    startImageZoom(uri);
-                }
-                break;
-            case 3:
-                if (data == null) {
-                    return;
-                } else {
-                    Bundle extras = data.getExtras();
-                    if (extras != null) {
-                        //获取到裁剪后的图像
-                        bitmap = extras.getParcelable("data");
-                        myImg.setImageBitmap(bitmap);
-                       takePhotoPopWin.dismiss();
+                    break;
+                case 3:
+                    if (data == null) {
+                        return;
+                    } else {
+                        Bundle extras = data.getExtras();
+                        if (extras != null) {
+                            //获取到裁剪后的图像
+                            bitmap = extras.getParcelable("data");
+                            myImg.setImageBitmap(bitmap);
+                            takePhotoPopWin.dismiss();
 
+                        }
                     }
-                }
-                break;
-            default:
-                Log.i("default","FHZ");
-                break;
-        }
+                    break;
+                default:
+                    Log.i("default","FHZ");
+                    break;
+            }
+        }catch (Exception e){}
+
     }
 
     /**
