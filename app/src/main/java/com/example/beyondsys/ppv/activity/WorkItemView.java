@@ -77,10 +77,12 @@ public class WorkItemView extends Fragment {
                     String jsonStr = msg.obj.toString();
                     if (!jsonStr.equals("anyType{}")) {
                         WorkItemResultEntity entity = JsonEntity.ParseJsonForWorkItemResult(jsonStr);
+                        System.out.println("获取工作项json:" + jsonStr);
                         switch (entity.AccessResult) {
                             case 0:
                                 Log.i("获取工作项成功", "FHZ");
                                 workItemEntityList.clear();
+
                                 workItemEntityList = entity.WorkItemList;
                                 if (workItemEntityList != null) {
                                     if (reflag == 0 && stflag == 0) {

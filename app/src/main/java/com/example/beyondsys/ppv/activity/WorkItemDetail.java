@@ -1,6 +1,8 @@
 package com.example.beyondsys.ppv.activity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Handler;
@@ -8,6 +10,8 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -96,7 +100,7 @@ public class WorkItemDetail extends AppCompatActivity {
     private RelativeLayout del_layout;
     private Button del_ok, del_cancel;
     private boolean isdel = false;
-    private  int staflag;
+    private  int staflag,hasChildFlag=1;//1代表无子项
     String[] typeList = new String[]{"事项", "任务"};
     private String CurItemId = "",CurFID="",CurBID="", CurItemType = typeList[0];
     private  WorkDetailResult CurDetail;
@@ -118,6 +122,7 @@ public class WorkItemDetail extends AppCompatActivity {
                                     CurFID=Result.FID;
                                     CurBID=Result.BID;
                                     CurDetail=Result;
+                                    Log.i("123","读取:"+Result.HsrdScale);
                                    /*显示工作详细信息*/
                                     ShowWorkContext(Result);
                                     Log.i("判断权限显示", "FHZ");
@@ -151,39 +156,15 @@ public class WorkItemDetail extends AppCompatActivity {
                                     if (chid != null) {
                                         /*显示子项*/
                                         Log.i( "zst_test","工作子项setList");
+                                        if(chid.size()==0)
+                                        {
+                                            hasChildFlag=1;
+                                        }else {
+                                            hasChildFlag=0;
+                                        }
                                         SetList();
                                     }else{
-                                        // 当 该工作项无子项 ，基础分为零 ，用户有权限更改工作项，状态不为空且状态为 确认待测试 ，时可修改基础得分
-                                        /*查询成功 但没有子项*/
-                                        /*基础分为0*/
-                                        if(CurDetail.BasicScore==0)
-                                        {
-                                            /*有权限改*/
-                                          if(CurDetail.AssignerID.equals(UID)||(CurDetail.AssignerID.isEmpty()&&CurDetail.CreaterID.equals(UID)))
-                                          {
-
-                                              status_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                                                  @Override
-                                                  public void onFocusChange(View v, boolean hasFocus) {
-                                                      if(!hasFocus)
-                                                      {   /*状态不为空且为 确认待测试*/
-                                                          if( !status_edt.getText().toString().trim().isEmpty())
-                                                          {
-                                                              if(status_edt.getText().toString().trim().equals(statusList.get(6)))
-                                                              {
-                                                                      BasicValueEdit();
-                                                              }else if(status_edt.getText().toString().trim().equals(statusList.get(9)))
-                                                              {
-                                                                     CheckValueEdit();
-                                                              };
-                                                          }
-
-                                                      }
-                                                  }
-                                              });
-                                          }
-                                        }
-
+                                        hasChildFlag=1;
                                     }
                                     break;
                                 case -1:
@@ -206,7 +187,6 @@ public class WorkItemDetail extends AppCompatActivity {
                 if (msg.obj != null) {
                     Log.i("获得修改信息返回值"+msg.obj,"FHZ");
                     try {
-
                             int flag=Integer.parseInt(msg.obj.toString());
                             switch (flag) {
                                 case 0:
@@ -469,6 +449,27 @@ public class WorkItemDetail extends AppCompatActivity {
 
     /*事件监听相关*/
     private void Listener() {
+        assign2_edt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(assign2_edt.getText().toString().trim().equals("")||assign2_edt.getText().toString().trim().equals("空"))
+                {
+                    status_edt.setText(statusList.get(1));
+                }else{
+                    status_edt.setText(statusList.get(2));
+                }
+            }
+        });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -589,9 +590,9 @@ public class WorkItemDetail extends AppCompatActivity {
                         //跳转添加子项界面
                         Intent intent = new Intent(WorkItemDetail.this, AddNewWorkItem.class);
                         intent.putExtra("FatherID", CurItemId);
-                        intent.putExtra("FatherType", "");
+                        intent.putExtra("FatherType", CurDetail.Category);
                         //startActivity(intent);
-                        startActivityForResult(intent,1);
+                        startActivityForResult(intent, 1);
                     }
                 });
                 popWindow.del_child.setOnClickListener(new View.OnClickListener() {
@@ -653,8 +654,25 @@ public class WorkItemDetail extends AppCompatActivity {
                     public void onClick(View arg0) {
                         // do something you need here
                         // 该项状态置为废除
-                        submitService();
-                        status_edt.setText(statusList.get(0));
+                        final AlertDialog.Builder builder=new AlertDialog.Builder(WorkItemDetail.this);
+                        builder.setTitle("确认废除该工作项？");
+                        builder.setMessage("");
+                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                status_edt.setText(statusList.get(0));
+                                submitService();
+                            }
+                        });
+                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                        builder.show();
+
+                       // submitService();
+
 //                        List<WorkItemEntity> works=new ArrayList<WorkItemEntity>();
 //                        WorkItemEntity  work=submitEntity(CurDetail);
 //                        if(work!=null)
@@ -683,25 +701,31 @@ public class WorkItemDetail extends AppCompatActivity {
                         // 改变状态，进入下一状态
                         String stat= status_edt.getText().toString().trim();
                         int    index=statusList.indexOf(stat);
-                        if(stat==statusList.get(3))
-                        {
-                            stat=statusList.get(4);
-                        }else if(stat==statusList.get(4))
-                        {
-                            stat=statusList.get(5);
-                        }else if(stat==statusList.get(7))
-                        {
-                            stat=statusList.get(4);
-                        }else if(stat==statusList.get(2))
-                        {
-                            stat=statusList.get(3);
-                        }else{
-                            return;
-                        }
+                        stat = statusList.get(index + 1);
+                        status_edt.setText(stat);
                         //提交服务器
-                         submitService();
-                         status_edt.setText(stat);
+                        submitService();
 
+
+//                        else   if(stat==statusList.get(5)||stat==statusList.get(8))
+//                        {
+//                            if(result.Belong2ID.equals(UID)||(result.Belong2ID.equals("")&&result.CreaterID.equals(UID))) {
+//                                popWindow.change_status.setVisibility(View.VISIBLE);
+//                            }else{
+//                                popWindow.change_status.setVisibility(View.GONE);
+//                            }
+//                        }
+//                        if (stat.equals(statusList.get(5)) || stat.equals(statusList.get(8))) {
+//                            editscore();
+//                        } else {
+//
+//                        }
+                    }
+                });
+                popWindow.ok_status.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                            editscore();
                     }
                 });
             }
@@ -764,6 +788,44 @@ public class WorkItemDetail extends AppCompatActivity {
 //        });
     }
 
+private  void   editscore(){
+
+    // 当 该工作项无子项 ，基础分为零 ，用户有权限更改工作项，状态不为空且状态为 确认待测试 ，时可修改基础得分 ,修改后在提交
+    if (status_edt.getText().toString().trim().equals(statusList.get(5))) {
+       // if (!(CurDetail.BasicScore > 0)) {
+            if (hasChildFlag == 1) {
+                status_edt.setText(statusList.get(6));
+                splitValue(CurDetail.HsrdScale, CurDetail.BusinessValue);
+                AlertDialog.Builder builder  = new AlertDialog.Builder(WorkItemDetail.this);
+                builder.setTitle("提示") ;
+                builder.setMessage("确认前请输入基础分值,再提交修改结果！") ;
+                builder.setPositiveButton("知道了", null);
+                builder.show();
+               // Toast.makeText(WorkItemDetail.this, "确认前请输入基础分值,再提交修改结果！", Toast.LENGTH_SHORT).show();
+                 BasicValueEdit();
+                 basicvalue_edt.clearFocus();
+            }else{
+               //   Toast.makeText(WorkItemDetail.this, "有子项未确认！", Toast.LENGTH_SHORT).show();
+                status_edt.setText(statusList.get(6));
+            }
+
+       // }
+    }
+    if (status_edt.getText().toString().trim().equals(statusList.get(8))) {
+     //   if (!(CurDetail.CheckedScore>0)) {
+            if (hasChildFlag == 1 ) {
+                status_edt.setText(statusList.get(9));
+                Toast.makeText(WorkItemDetail.this, "完成前请输入检查分值,再提交修改结果！", Toast.LENGTH_SHORT).show();
+                CheckValueEdit();
+                checkvalue_edt.clearFocus();
+            }else
+            {
+                Toast.makeText(WorkItemDetail.this, "有子项未完成！", Toast.LENGTH_SHORT).show();
+            }
+       // }
+    }
+
+}
 
     private  void   submitService( ) {
         List<WorkItemEntity> works=new ArrayList<WorkItemEntity>();
@@ -775,7 +837,7 @@ public class WorkItemDetail extends AppCompatActivity {
             workItemBusiness.UpdateWorkItem(handler,works);
         }
     }
-
+    /*待提交的修改后 实体类*/
     private WorkItemEntity submitEntity(WorkDetailResult result) {
         String Name,Assigned2,Belong2, Checker,Description,ClosingTime;
         int  Status;
@@ -863,6 +925,7 @@ public class WorkItemDetail extends AppCompatActivity {
         workItem.BasicScore=result.BasicScore;
         workItem.CheckedScore=result.CheckedScore;
         workItem.HardScale=result.HsrdScale;
+        Log.i("123",result.HsrdScale+" "+workItem.HardScale );
         if(Remark.isEmpty())
         {
             workItem.Remark=result.Remark;
@@ -927,7 +990,7 @@ public class WorkItemDetail extends AppCompatActivity {
     private  void BasicValueEdit(){
 //
         //计算用的是返回的价值，若修改了价值要提交后在计算基础分
-        splitValue(CurDetail.HsrdScale,CurDetail.BusinessValue);
+      //  splitValue(CurDetail.HsrdScale, CurDetail.BusinessValue);
         basicvalue_edt.setText(String.valueOf(BasicValue));
         basicvalue_edt.setEnabled(true);
         basicvalue_edt.setSelection(String.valueOf(BasicValue).length());
@@ -965,10 +1028,11 @@ public class WorkItemDetail extends AppCompatActivity {
                     {
                         try{
                             double v1=Double.valueOf(checkvalue_edt.getText().toString().trim());
-                            if(v1<0||v1>CheckValue)
+                            if(v1<0||v1==0||v1>CheckValue)
                             {
                                 Toast.makeText(WorkItemDetail.this, "检查分值在0到"+CheckValue+"之间！", Toast.LENGTH_SHORT).show();
                                 checkvalue_edt.setText(String.valueOf(CheckValue));
+
                             }
                         }catch (Exception e){}
                     }
@@ -980,7 +1044,9 @@ public class WorkItemDetail extends AppCompatActivity {
     /*计算基础分值与检查分值*/
     private  void splitValue(double scale,double value){
        //if((0.51==<scale)&&(scale<0.8)){}
-        if(scale!=0&&value!=0)
+
+        Log.i("qw","scale:"+scale+",value:"+value);
+        if(scale>0&&value>0)
         {
             if((scale==0.5||scale>0.5)&&scale<0.8)
             {
@@ -1001,6 +1067,13 @@ public class WorkItemDetail extends AppCompatActivity {
                 BasicValue=value*0.7;
                 CheckValue=value*0.3;
             }
+            Log.i("qw","bs:"+BasicValue+",cs:"+CheckValue);
+            Toast.makeText(WorkItemDetail.this, "建议基础分值为："+BasicValue+",检查分值为："+CheckValue+"！", Toast.LENGTH_SHORT).show();
+        }else{
+            BasicValue=value*0.5;
+            CheckValue=value*0.5;
+            Log.i("qw","bs:"+BasicValue+",cs:"+CheckValue);
+            Toast.makeText(WorkItemDetail.this, "建议基础分值为："+BasicValue+",检查分值为："+CheckValue+"！", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1046,59 +1119,105 @@ public class WorkItemDetail extends AppCompatActivity {
                 Head_pop.show();
             }
         });
-        status_edt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e("STATUS POP", "aa");
-                //根据当前状态确定状态选项 暂时未做
-                SetPopAdapter();
-                Status_pop.show();
-            }
-        });
+//        status_edt.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.e("STATUS POP", "aa");
+//                //根据当前状态确定状态选项 暂时未做
+//                SetPopAdapter();
+//                Status_pop.show();
+//            }
+//        });
 
 
     }
     /*状态可修改*/
-    private  void StatusEditable(){
+    private  void StatusEditable(WorkDetailResult result){
         String stat= status_edt.getText().toString().trim();
         int    index=statusList.indexOf(stat);
-        if(stat==statusList.get(3)||stat==statusList.get(4)||stat==statusList.get(7)||stat==statusList.get(2))
+        if(stat==statusList.get(3)||stat==statusList.get(4)||stat==statusList.get(2))
         {
-            popWindow.change_status.setVisibility(View.VISIBLE);
+            if(result.AssignerID.equals(UID))
+            {
+                popWindow.change_status.setVisibility(View.VISIBLE);
+            }else{
+                popWindow.change_status.setVisibility(View.GONE);
+            }
+        }else  if(stat==statusList.get(6)||stat==statusList.get(7))
+        {
+            if(result.CheckerID.equals(UID))
+            {
+                popWindow.change_status.setVisibility(View.VISIBLE);
+            }else{
+                popWindow.change_status.setVisibility(View.GONE);
+            }
+        }else{
+            popWindow.change_status.setVisibility(View.GONE);
+        }
+        if(stat==statusList.get(5)||stat==statusList.get(8)) {
+            if (result.Belong2ID.equals(UID) || (result.Belong2ID.equals("") && result.CreaterID.equals(UID))) {
+                popWindow.ok_status.setVisibility(View.VISIBLE);
+            } else {
+                popWindow.ok_status.setVisibility(View.GONE);
+            }
+        }else{
+            popWindow.ok_status.setVisibility(View.GONE);
         }
     }
     /*权限设置*/
     private void SetPermissions(WorkDetailResult result) {
         Log.i("权限设置 diaoyong","FHZ");
+        StatusEditable(result);
         if(result.AssignerID.equals(UID))
         {
             popWindow.add_child.setVisibility(View.VISIBLE);
             Log.i("权限设置 status", "FHZ");
-            StatusEditable();
+           // StatusEditable();
+//            if(stat==statusList.get(3)||stat==statusList.get(4)||stat==statusList.get(2))
+//            {
+//                popWindow.change_status.setVisibility(View.VISIBLE);
+//            }
         }
-        if (result.Belong2ID.equals(""))
+        if(staflag==0||staflag==1)
         {
-            if (result.CreaterID.equals(UID))
+            if (result.Belong2ID.equals(""))
             {
-                //可编辑
-                popWindow.add_child.setVisibility(View.VISIBLE);
-                popWindow.del_father.setVisibility(View.VISIBLE);
-                popWindow.submit.setVisibility(View.VISIBLE);
-                Log.i("权限设置 crea", "FHZ");
-                ItemEditable();
+                if (result.CreaterID.equals(UID))
+                {
+                    //可编辑
+                    popWindow.add_child.setVisibility(View.VISIBLE);
+                    popWindow.del_father.setVisibility(View.VISIBLE);
+                    popWindow.submit.setVisibility(View.VISIBLE);
+                    Log.i("权限设置 crea", "FHZ");
+                    ItemEditable();
+//                if(stat==statusList.get(5)||stat==statusList.get(8))
+//                {
+//                    popWindow.change_status.setVisibility(View.VISIBLE);
+//                }
+                }
+            }else {
+                if (result.Belong2ID.equals(UID))
+                {
+                    popWindow.add_child.setVisibility(View.VISIBLE);
+                    popWindow.del_father.setVisibility(View.VISIBLE);
+                    popWindow.submit.setVisibility(View.VISIBLE);
+                    ItemEditable();
+                    Log.i("权限设置 belo", "FHZ");
+//                if(stat==statusList.get(5)||stat==statusList.get(8))
+//                {
+//                    popWindow.change_status.setVisibility(View.VISIBLE);
+//                }
+                }
+            }
+            if(result.CheckerID.equals(UID))
+            {
+//            if(stat==statusList.get(6)||stat==statusList.get(7))
+//            {
+//                popWindow.change_status.setVisibility(View.VISIBLE);
+//            }
             }
         }
-        else
-        {
-            if (result.Belong2ID.equals(UID))
-            {
-                popWindow.add_child.setVisibility(View.VISIBLE);
-                popWindow.del_father.setVisibility(View.VISIBLE);
-                popWindow.submit.setVisibility(View.VISIBLE);
-                ItemEditable();
-                Log.i("权限设置 belo", "FHZ");
-            }
-        }
+
     }
 
     /*设置子项List样式*/

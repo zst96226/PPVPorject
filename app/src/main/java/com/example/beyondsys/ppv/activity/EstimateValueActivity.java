@@ -130,13 +130,25 @@ public class EstimateValueActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //清除焦点，确保提交的难度系数都满足条件
+                step1_scale.clearFocus();
+                step2_scale.clearFocus();
+                step3_scale.clearFocus();
+                step4_scale.clearFocus();
+                step5_scale.clearFocus();
+                step6_scale.clearFocus();
+                step7_scale.clearFocus();
+                step8_scale.clearFocus();
+                step9_scale.clearFocus();
+                step10_scale.clearFocus();
                 AlertDialog.Builder builder=new AlertDialog.Builder(EstimateValueActivity.this);
                 builder.setTitle("是否保存更改？");
                 builder.setMessage("");
                 builder.setPositiveButton("保存", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        double result=0.00;
+                        step1_scale.clearFocus();
+                        double result=0.00,sumScale=0.00;
                         Log.e("aaaa" + getStepDetail(), "qqww");
                         ArrayList<String> valueParam=param();
                         if(valueParam==null||valueParam.size()==0)
@@ -170,16 +182,25 @@ public class EstimateValueActivity extends AppCompatActivity {
                                     scale=1.00;
                                 }
                                 result += computValue(max,min,scale);
+                                sumScale+=scale*computValue(max,min,scale);
                                 Log.i("max:" + max, "FHZ");
                                 Log.i("min:"+min,"FHZ");
                                 Log.i("scale:"+scale,"FHZ");
                                 Log.i("result:"+result,"FHZ");
                             }
+                            if(result>0)
+                            {
+                                sumScale=sumScale/result;
+                            }else{
+                                sumScale=1;
+                            }
+
                         }
                         Intent rIntent = new Intent();
                         Bundle bundle = new Bundle();
                         bundle.putString("stepCount",String.valueOf(getStepCount()));
                         bundle.putString("stepDetail", getStepDetail());
+                        bundle.putString("sumScale",String.valueOf(sumScale));
                         bundle.putString("valueParam", String.valueOf(result));
                         //bundle.putSerializable("valueParam", (Serializable) getValueParam());
                         rIntent.putExtras(bundle);
@@ -205,6 +226,17 @@ public class EstimateValueActivity extends AppCompatActivity {
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //清除焦点，确保提交的难度系数都满足条件
+                step1_scale.clearFocus();
+                step2_scale.clearFocus();
+                step3_scale.clearFocus();
+                step4_scale.clearFocus();
+                step5_scale.clearFocus();
+                step6_scale.clearFocus();
+                step7_scale.clearFocus();
+                step8_scale.clearFocus();
+                step9_scale.clearFocus();
+                step10_scale.clearFocus();
                 double result=0.00,sumScale=0.00;
                 Log.e("aaaa" + getStepDetail(), "qqww");
                 ArrayList<String> valueParam=param();
@@ -270,6 +302,12 @@ public class EstimateValueActivity extends AppCompatActivity {
     private  double computValue(double max,double min,double scale )
     {
         double  value=0;
+       if(max<min)
+       {
+           double d=max;
+           max=min;
+           min=d;
+       }
         value=((max/scale)+(min*scale))/2;
         String s=String.valueOf(value);
         if(s.contains("."))

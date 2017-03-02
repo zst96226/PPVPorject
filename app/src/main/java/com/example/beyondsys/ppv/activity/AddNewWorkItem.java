@@ -217,12 +217,13 @@ public class AddNewWorkItem extends Activity {
         Bundle bundle = intent.getExtras();
         //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
         String FID=bundle.getString("FatherID").trim();
-        String FType=bundle.getString("FatherType").trim();
-        if(!FID.isEmpty())
+        int FType = bundle.getInt("FatherType");
+        Log.i("FtYPE的值："+FType,"qw");
+        if(FID.isEmpty())
         {
             input_type.setText(typeList.get(0));
         }else {
-            if (FType.equals(typeList.get(1)))
+            if (FType==1)
             {
                 input_type.setText(typeList.get(1));
             }
@@ -532,9 +533,10 @@ public class AddNewWorkItem extends Activity {
                 Bundle bundle = intent.getExtras();
                 //实际上是传递ID过来，根据ID在缓存中取实体类对象，或从服务器取
                 String FID = bundle.getString("FatherID").trim();
-                String FType = bundle.getString("FatherType").trim();
+                int FType = bundle.getInt("FatherType");
+                Log.i("FtYPE的值："+FType,"qw");
                 if (!FID.isEmpty()) {
-                    if (FType != typeList.get(1)) {
+                    if (FType!=1) {
                         setPopWinForType();
                         Type_pop.show();
                     }

@@ -238,6 +238,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="40sp"
                             android:text=""
+                            android:singleLine="true"
                             android:enabled="false"
                             android:textColor="@color/blueBut"
                             android:gravity="center_vertical"/>
@@ -633,8 +634,12 @@
                         android:id="@+id/wid_Description_edt"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:editable="false"
+                        android:scrollbars="vertical"
+                        android:enabled="false"
                         android:maxLines="5"
+                        android:maxLength="200"
+                        android:gravity="top"
+                        android:hint="描述为0~200个字符"
                         android:textColor="@color/blueBut"
                         android:layout_margin="10sp"/>
                 </LinearLayout>

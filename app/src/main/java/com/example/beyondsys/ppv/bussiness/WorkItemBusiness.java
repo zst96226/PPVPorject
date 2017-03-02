@@ -233,10 +233,10 @@ public class WorkItemBusiness {
             e.printStackTrace();
         }
         if (entity != null) {
-           String TicketID = "7ad8876f-5044-48be-b180-ff6b31e5e60a";
-            final JSONObject JsonParams = UpdateWorkItemPerson(workItemEntitys,TicketID);
+          // String TicketID = "7ad8876f-5044-48be-b180-ff6b31e5e60a";
+            final JSONObject JsonParams = UpdateWorkItemPerson(workItemEntitys,entity.TicketID);
             Log.i("更新工作项提交对象：" + JsonParams, "FHZ");
-            System.out.println("jsonObject直接创建json:" + JsonParams);
+            System.out.println("更新工作项json:" + JsonParams);
             new Thread() {
                 public void run() {
                     //////
