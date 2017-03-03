@@ -95,7 +95,7 @@ public class WorkValueView extends Fragment {
             if (msg.what == ThreadAndHandlerLabel.GetWorkValue) {
                 String jsonStr = msg.obj.toString();
                 if (msg.obj != null && !jsonStr.equals("anyType{}")) {
-                    Log.i("价值返回值;" + msg.obj, "FHZ");
+                    Log.i("123","价值返回值;" + msg.obj );
                     try{
                         WorkValueResultEntity entity = JsonEntity.ParseJsonForWorkValueResult(jsonStr);
                         Log.i("价值返回值;" + entity.AccessResult + " " + entity.Score.size(), "FHZ");
@@ -284,7 +284,10 @@ public class WorkValueView extends Fragment {
                 Type resultType = new TypeToken<List<TeamEntity>>() {
                 }.getType();
                 List<TeamEntity> entity = Reservoir.get(LocalDataLabel.Label, resultType);
-                TeamID = entity.get(0).TeamID;
+                if(entity!=null&&entity.size()!=0)
+                {
+                    TeamID = entity.get(0).TeamID;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -341,27 +344,33 @@ public class WorkValueView extends Fragment {
         }
         if (topme_che.isChecked()) {
             /*从List中找到当前用户*/
-            WorkValueResultParams os_entity = new WorkValueResultParams();
+            WorkValueResultParams os_entity = null;
             for (WorkValueResultParams valueEntity : entityList) {
                 if (valueEntity.UserID.equals(UID)) {
                     os_entity = valueEntity;
                 }
             }
-            /*从List中移除自己*/
             List<WorkValueResultParams> listvalue = new ArrayList<>();
-            for (WorkValueResultParams valueEntity : entityList) {
-                if (!valueEntity.UserID.equals(os_entity.UserID)) {
-                    listvalue.add(valueEntity);
+            if (os_entity!=null) {
+            /*从List中移除自己*/
+                for (WorkValueResultParams valueEntity : entityList) {
+                    if (!valueEntity.UserID.equals(os_entity.UserID)) {
+                        listvalue.add(valueEntity);
+                    }
                 }
+            }
+            else
+            {
+                listvalue=entityList;
             }
             /*按照条件赋值显示*/
             if (sortFlag == sortdown) {
                 /*对剩下的数据排序*/
                 listvalue = ListSort.DownSort(listvalue);
                 /*把当前用户加到第一个*/
-                listvalue.add(0, os_entity);
-
-
+                if (os_entity!=null) {
+                     listvalue.add(0, os_entity);
+                }
                 for (WorkValueResultParams valueEntity : listvalue) {
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
@@ -379,8 +388,9 @@ public class WorkValueView extends Fragment {
                 /*对剩下的数据排序*/
                 listvalue = ListSort.UpSort(listvalue);
                 /*把当前用户加到第一个*/
-                listvalue.add(0, os_entity);
-
+                if (os_entity!=null) {
+                    listvalue.add(0, os_entity);
+                }
                 for (WorkValueResultParams valueEntity : listvalue) {
                     Map<String, Object> map = new HashMap<String, Object>();
                     //个人图片 图片用ID命名
@@ -414,7 +424,7 @@ public class WorkValueView extends Fragment {
                     list.add(map);
                 }
             } else {
-                Log.i("升序","VS");
+                Log.i("VS",entityList.size()+"");
                 for (WorkValueResultParams valueEntity : ListSort.UpSort(entityList)) {
                     Log.i("排序完成","VS");
                     Map<String, Object> map = new HashMap<String, Object>();
@@ -429,21 +439,19 @@ public class WorkValueView extends Fragment {
                     map.put("monthSum", valueEntity.Month + "个月");
                     list.add(map);
                 }
-                //存缓存 直接存升序排列
-                Reservoir.putAsync(LocalDataLabel.WorkValueList, entityList, new ReservoirPutCallback() {
-                    @Override
-                    public void onSuccess() {
-
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-
-                    }
-                });
-
             }
         }
+        Reservoir.putAsync(LocalDataLabel.WorkValueList, entityList, new ReservoirPutCallback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
         return list;
     }
 }

@@ -24,7 +24,7 @@ public class WorkDetailResult implements Serializable {
         Description = "";
         WorkName = "";
         AccessResult = -3;
-        BusinessValue = 0;
+        BusinessValue = 0.00;
         TheTimeStamp = 0;
         Category = 0;
         FID="";
@@ -33,9 +33,9 @@ public class WorkDetailResult implements Serializable {
         Remark="";
         BID="";
         ID="";
-        HsrdScale=0;
-        BasicScore=0;
-        CheckedScore=0;
+        HardScale=0.00;
+        BasicScore=0.00;
+        CheckedScore=0.00;
          RID="";
     }
 
@@ -63,7 +63,7 @@ public class WorkDetailResult implements Serializable {
     public String Belong2Name;
     public String Remark;
     public  String ID;
-    public double HsrdScale;
+    public double HardScale;
     public  double BasicScore;
     public  double CheckedScore;
     public  String RID;

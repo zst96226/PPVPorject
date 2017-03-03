@@ -69,6 +69,19 @@
                             android:layout_marginRight="5sp"
                             android:text="项目主管"
                             android:textSize="12sp" />
+                        <TextView
+                            android:id="@+id/teamid_tex"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/infoFont"
+                            android:layout_toRightOf="@+id/personlevel_tex"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            android:background="@drawable/radiusbordel_orange"
+                            android:layout_marginLeft="5sp"
+                            android:layout_marginRight="5sp"
+                            android:text=""
+                            android:textSize="12sp" />
                         <LinearLayout
                             android:layout_width="50sp"
                             android:layout_height="wrap_content"

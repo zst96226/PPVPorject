@@ -17,11 +17,17 @@
             android:layout_height="match_parent"
             android:layout_weight="6"
             android:orientation="horizontal">
-            <ImageView
+            <LinearLayout
                 android:id="@+id/anwi_back"
                 android:layout_width="40sp"
-                android:layout_height="40sp"
-                android:src="@drawable/title_back"/>
+                android:layout_height="match_parent"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="15sp"
+                    android:layout_height="15sp"
+                    android:src="@drawable/title_back"/>
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/title_txt"
                 android:layout_width="match_parent"

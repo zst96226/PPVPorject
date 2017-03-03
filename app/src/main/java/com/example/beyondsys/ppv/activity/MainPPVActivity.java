@@ -114,7 +114,11 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
             e.printStackTrace();
         }
         if (label != null) {
-            String TeamID = label.get(0).TeamID;
+            String TeamID="";
+            if(label.size()>0)
+            {
+                TeamID= label.get(0).TeamID;
+            }
             OtherBusiness other = new OtherBusiness();
             other.GetAllStaffForTeam(handler, TeamID);
         }

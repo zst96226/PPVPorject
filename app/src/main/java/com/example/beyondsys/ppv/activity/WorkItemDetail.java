@@ -61,6 +61,7 @@ import com.google.gson.reflect.TypeToken;
 import org.w3c.dom.Text;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class WorkItemDetail extends AppCompatActivity {
     String TeamID = "";
     String WorkID = "";
     String UID="";
-    String Remark="";
+   // String Remark="";
     double BasicValue,CheckValue;
     List<SubWorkItemParams> chid = new ArrayList<>();
     PopupMenuForWorkItem popWindow = null;
@@ -86,17 +87,18 @@ public class WorkItemDetail extends AppCompatActivity {
     ArrayList<String> UserIDlist = new ArrayList<String>();
     ArrayList<String> statusList = new ArrayList<String>();
     ArrayList<String>  StatusChooses = new ArrayList<String>();
-    ImageView back;
+
     ImageView wid_show_chid;
-    ImageView returen;
+
     ImageView menu;
     ImageView work_img, work_status;
-    LinearLayout main_workitem;
+    LinearLayout main_workitem,back, returen;
     ListView child_list;
 
     private EditText name_edt,des_edt,basicvalue_edt,checkvalue_edt;
      private TextView assign2_edt, checker_edt, status_edt, Head_edt, closingtime_edt,value_edt;
-    private TextView wid_workname, wid_workvalue, starttime_tex, endtime_tex, creater_tex, creatertime_tex, modifier_tex, modifytime_tex;
+    private TextView wid_workname, wid_workvalue, starttime_tex, endtime_tex,
+            creater_tex, creatertime_tex, modifier_tex, modifytime_tex,remark_tex;
     private RelativeLayout del_layout;
     private Button del_ok, del_cancel;
     private boolean isdel = false;
@@ -122,7 +124,7 @@ public class WorkItemDetail extends AppCompatActivity {
                                     CurFID=Result.FID;
                                     CurBID=Result.BID;
                                     CurDetail=Result;
-                                    Log.i("123","读取:"+Result.HsrdScale);
+                                    Log.i("123","读取:"+Result.HardScale);
                                    /*显示工作详细信息*/
                                     ShowWorkContext(Result);
                                     Log.i("判断权限显示", "FHZ");
@@ -244,12 +246,12 @@ public class WorkItemDetail extends AppCompatActivity {
     /*UI绑定*/
     private void initView() {
         popWindow = new PopupMenuForWorkItem(WorkItemDetail.this);
-        back = (ImageView) this.findViewById(R.id.wid_back);
+        back = (LinearLayout) this.findViewById(R.id.wid_back);
         wid_show_chid = (ImageView) findViewById(R.id.wid_show_chid);
         menu = (ImageView) findViewById(R.id.anwi_menu);
         main_workitem = (LinearLayout) findViewById(R.id.main_workitem);
         child_list = (ListView) findViewById(R.id.wid_list);
-        returen = (ImageView) findViewById(R.id.wid_return);
+        returen = (LinearLayout) findViewById(R.id.wid_return);
         work_status = (ImageView) findViewById(R.id.work_state_img);
         work_img = (ImageView) findViewById(R.id.work_img);
         name_edt = (EditText) findViewById(R.id.wid_workname_edt);
@@ -273,6 +275,7 @@ public class WorkItemDetail extends AppCompatActivity {
         del_cancel = (Button) findViewById(R.id.del_cancel);
         basicvalue_edt=(EditText)findViewById(R.id.BisicValue_edt);
         checkvalue_edt=(EditText)findViewById(R.id.CheckValue_edt);
+        remark_tex=(TextView)findViewById(R.id.wid_Remark_edt);
         Userlist.add("空");
         UserIDlist.add("");
         statusList.add("已作废");
@@ -389,6 +392,7 @@ public class WorkItemDetail extends AppCompatActivity {
         des_edt.setText(result.Description);
         basicvalue_edt.setText(String.valueOf(result.BasicScore));
         checkvalue_edt.setText(String.valueOf(result.CheckedScore));
+        remark_tex.setText(result.Remark);
         if (result.Category == 0) {
             work_img.setImageResource(R.drawable.b);
         } else {
@@ -521,7 +525,7 @@ public class WorkItemDetail extends AppCompatActivity {
 
                 if (child_list.getVisibility() == View.GONE) {
                     child_list.setVisibility(View.VISIBLE);
-                   // SetList(CurItemId);
+                    // SetList(CurItemId);
                     wid_show_chid.setImageResource(R.drawable.arrow_up_float);
                 }
                 for (int i = 0; i < child_list.getCount(); i++) {
@@ -689,8 +693,37 @@ public class WorkItemDetail extends AppCompatActivity {
                     @Override
                     public void onClick(View arg0) {
                         // do something you need here
-                        // 提交修改结果
-                      submitService();
+
+                        if(status_edt.getText().toString().trim().equals(statusList.get(6)))
+                        {
+                            try {
+                                double v1 = Double.valueOf(basicvalue_edt.getText().toString().trim());
+                                if (v1 < 0||v1==0 || v1 > BasicValue) {
+                                    Toast.makeText(WorkItemDetail.this, "基础分值在0~" + BasicValue + "之间！", Toast.LENGTH_SHORT).show();
+                                    basicvalue_edt.setText(String.valueOf(BasicValue));
+                                }else{
+                                    // 提交修改结果
+                                    submitService();
+                                }
+                            } catch (Exception e) {
+                            }
+                        }else if(status_edt.getText().toString().trim().equals(statusList.get(9)))
+                        {
+                            try{
+                                double v1=Double.valueOf(checkvalue_edt.getText().toString().trim());
+                                if(v1<0||v1==0||v1>CheckValue)
+                                {
+                                    Toast.makeText(WorkItemDetail.this, "检查分值在0到"+CheckValue+"之间！", Toast.LENGTH_SHORT).show();
+                                    checkvalue_edt.setText(String.valueOf(CheckValue));
+                                }else{
+                                    // 提交修改结果
+                                    submitService();
+                                }
+                            }catch (Exception e){}
+                        }else{
+                            // 提交修改结果
+                            submitService();
+                        }
                     }
                 });
                 popWindow.change_status.setOnClickListener(new View.OnClickListener() {
@@ -726,8 +759,34 @@ public class WorkItemDetail extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                             editscore();
+                        StatusEditable(CurDetail);
                     }
                 });
+            }
+        });
+        status_edt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String stat= status_edt.getText().toString().trim();
+                if(stat.equals(statusList.get(0))||stat.equals(statusList.get(9)))
+                {
+                    popWindow.dismiss();
+                    popWindow.add_child.setVisibility(View.GONE);
+                    popWindow.del_child.setVisibility(View.GONE);
+                    popWindow.del_father.setVisibility(View.GONE);
+                    popWindow.submit.setVisibility(View.GONE);
+                    popWindow.change_status.setVisibility(View.GONE);
+                }
             }
         });
 //        assign2_edt.setOnTouchListener(new View.OnTouchListener() {
@@ -789,21 +848,26 @@ public class WorkItemDetail extends AppCompatActivity {
     }
 
 private  void   editscore(){
-
+    double value=CurDetail.BusinessValue;
+    try{
+        value=Double.valueOf(value_edt.getText().toString().trim());
+    }catch (Exception e){}
+    splitValue(CurDetail.HardScale,value);
     // 当 该工作项无子项 ，基础分为零 ，用户有权限更改工作项，状态不为空且状态为 确认待测试 ，时可修改基础得分 ,修改后在提交
     if (status_edt.getText().toString().trim().equals(statusList.get(5))) {
        // if (!(CurDetail.BasicScore > 0)) {
-            if (hasChildFlag == 1) {
+        if (hasChildFlag == 1) {
                 status_edt.setText(statusList.get(6));
-                splitValue(CurDetail.HsrdScale, CurDetail.BusinessValue);
                 AlertDialog.Builder builder  = new AlertDialog.Builder(WorkItemDetail.this);
                 builder.setTitle("提示") ;
-                builder.setMessage("确认前请输入基础分值,再提交修改结果！") ;
+                builder.setMessage("确认前请输入基础分值,再提交修改结果,建议基础分值为：" + BasicValue) ;
                 builder.setPositiveButton("知道了", null);
                 builder.show();
+               basicvalue_edt.setText(String.valueOf(BasicValue));
+                basicvalue_edt.setEnabled(true);
                // Toast.makeText(WorkItemDetail.this, "确认前请输入基础分值,再提交修改结果！", Toast.LENGTH_SHORT).show();
-                 BasicValueEdit();
-                 basicvalue_edt.clearFocus();
+//                 BasicValueEdit();
+//                 basicvalue_edt.clearFocus();
             }else{
                //   Toast.makeText(WorkItemDetail.this, "有子项未确认！", Toast.LENGTH_SHORT).show();
                 status_edt.setText(statusList.get(6));
@@ -815,12 +879,20 @@ private  void   editscore(){
      //   if (!(CurDetail.CheckedScore>0)) {
             if (hasChildFlag == 1 ) {
                 status_edt.setText(statusList.get(9));
-                Toast.makeText(WorkItemDetail.this, "完成前请输入检查分值,再提交修改结果！", Toast.LENGTH_SHORT).show();
-                CheckValueEdit();
-                checkvalue_edt.clearFocus();
+              //  Toast.makeText(WorkItemDetail.this, "完成前请输入检查分值,再提交修改结果！", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder  = new AlertDialog.Builder(WorkItemDetail.this);
+                builder.setTitle("提示");
+                builder.setMessage("完成前请输入检查分值,再提交修改结果,建议检查分值为：" + CheckValue) ;
+                builder.setPositiveButton("知道了", null);
+                builder.show();
+                checkvalue_edt.setText(String.valueOf(CheckValue));
+                checkvalue_edt.setEnabled(true);
+//                CheckValueEdit();
+//                checkvalue_edt.clearFocus();
             }else
             {
-                Toast.makeText(WorkItemDetail.this, "有子项未完成！", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(WorkItemDetail.this, "有子项未完成！", Toast.LENGTH_SHORT).show();
+                status_edt.setText(statusList.get(9));
             }
        // }
     }
@@ -841,7 +913,7 @@ private  void   editscore(){
     private WorkItemEntity submitEntity(WorkDetailResult result) {
         String Name,Assigned2,Belong2, Checker,Description,ClosingTime;
         int  Status;
-        double  BusinessValue;
+        double  BusinessValue,basicV,checkV;
         if(closingtime_edt.getText().toString().trim().equals("")||closingtime_edt.getText().toString().trim().isEmpty())
         {
             Toast.makeText(WorkItemDetail.this, "结束日期要大于今天！", Toast.LENGTH_SHORT).show();
@@ -901,7 +973,11 @@ private  void   editscore(){
 
 
         Status=statusList.indexOf(status_edt.getText().toString().trim());
-        BusinessValue=Double.valueOf( value_edt.getText().toString().trim());
+        BusinessValue=Double.valueOf(value_edt.getText().toString().trim());
+        BigDecimal bigDecimal  =new BigDecimal(BusinessValue);
+        BusinessValue=bigDecimal.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+        basicV= Double.valueOf(basicvalue_edt.getText().toString().trim());
+        checkV=Double.valueOf(checkvalue_edt.getText().toString().trim());
       //  难度和分数未完成
         WorkItemEntity workItem=new WorkItemEntity();
         workItem.TheTimeStamp=result.TheTimeStamp;
@@ -922,15 +998,15 @@ private  void   editscore(){
         workItem.Name=Name;
         workItem.Status=Status;
         workItem.Category=result.Category;
-        workItem.BasicScore=result.BasicScore;
-        workItem.CheckedScore=result.CheckedScore;
-        workItem.HardScale=result.HsrdScale;
-        Log.i("123",result.HsrdScale+" "+workItem.HardScale );
-        if(Remark.isEmpty())
+        workItem.BasicScore=basicV;
+        workItem.CheckedScore=checkV;
+        workItem.HardScale=result.HardScale;
+        Log.i("123",result.HardScale+" "+workItem.HardScale );
+        if(remark_tex.getText().toString().trim().isEmpty()||remark_tex.getText().toString().trim().equals(""))
         {
             workItem.Remark=result.Remark;
         }else{
-            workItem.Remark=Remark;
+            workItem.Remark=remark_tex.getText().toString().trim();
         }
   return  workItem;
     }
@@ -993,53 +1069,114 @@ private  void   editscore(){
       //  splitValue(CurDetail.HsrdScale, CurDetail.BusinessValue);
         basicvalue_edt.setText(String.valueOf(BasicValue));
         basicvalue_edt.setEnabled(true);
-        basicvalue_edt.setSelection(String.valueOf(BasicValue).length());
-        basicvalue_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    if (!basicvalue_edt.getText().toString().trim().isEmpty()) {
-                        try {
-                            double v1 = Double.valueOf(basicvalue_edt.getText().toString().trim());
-                            if (v1 < 0 || v1 > BasicValue) {
-                                Toast.makeText(WorkItemDetail.this, "基础分值在0到" + BasicValue + "之间！", Toast.LENGTH_SHORT).show();
-                                basicvalue_edt.setText(String.valueOf(BasicValue));
-                            }
-                        } catch (Exception e) {
-                        }
-                    }
-
-                }
-            }
-        });
+        //basicvalue_edt.setSelection(String.valueOf(BasicValue).length());
+//        basicvalue_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (!hasFocus) {
+//                    if (!basicvalue_edt.getText().toString().trim().isEmpty()) {
+//                        try {
+//                            double v1 = Double.valueOf(basicvalue_edt.getText().toString().trim());
+//                            if (v1 < 0||v1==0 || v1 > BasicValue) {
+//                                Toast.makeText(WorkItemDetail.this, "基础分值在0~" + BasicValue + "之间！", Toast.LENGTH_SHORT).show();
+//                                basicvalue_edt.setText(String.valueOf(BasicValue));
+//                            }else{
+//
+//                            }
+//                        } catch (Exception e) {
+//                        }
+//                    }
+//
+//                }
+//            }
+//        });
+//       basicvalue_edt.addTextChangedListener(new TextWatcher() {
+//           @Override
+//           public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//           }
+//
+//           @Override
+//           public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//           }
+//
+//           @Override
+//           public void afterTextChanged(Editable s) {
+//               if(!basicvalue_edt.hasFocus())
+//               {
+//                   if (!basicvalue_edt.getText().toString().trim().isEmpty()&&(!basicvalue_edt.getText().toString().trim().equals("0.00"))) {
+//                       try {
+//                           double v1 = Double.valueOf(basicvalue_edt.getText().toString().trim());
+//                           if (v1 < 0||v1==0 || v1 > BasicValue) {
+//                               Toast.makeText(WorkItemDetail.this, "基础分值在0~" + BasicValue + "之间！", Toast.LENGTH_SHORT).show();
+//                               basicvalue_edt.setText(String.valueOf(BasicValue));
+//                           }else{
+//
+//                           }
+//                       } catch (Exception e) {
+//                       }
+//                   }
+//               }
+//           }
+//       });
     }
     /*检查分值可改*/
     private  void CheckValueEdit(){
-        splitValue(CurDetail.HsrdScale, CurDetail.BusinessValue);
         checkvalue_edt.setText(String.valueOf(CheckValue));
         checkvalue_edt.setEnabled(true);
-        checkvalue_edt.setSelection(String.valueOf(CheckValue).length());
-        checkvalue_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus)
-                {
-                    if(!checkvalue_edt.getText().toString().trim().isEmpty())
-                    {
-                        try{
-                            double v1=Double.valueOf(checkvalue_edt.getText().toString().trim());
-                            if(v1<0||v1==0||v1>CheckValue)
-                            {
-                                Toast.makeText(WorkItemDetail.this, "检查分值在0到"+CheckValue+"之间！", Toast.LENGTH_SHORT).show();
-                                checkvalue_edt.setText(String.valueOf(CheckValue));
-
-                            }
-                        }catch (Exception e){}
-                    }
-
-                }
-            }
-        });
+      //  checkvalue_edt.setSelection(String.valueOf(CheckValue).length());
+//        checkvalue_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if(!hasFocus)
+//                {
+//                    if(!checkvalue_edt.getText().toString().trim().isEmpty())
+//                    {
+//                        try{
+//                            double v1=Double.valueOf(checkvalue_edt.getText().toString().trim());
+//                            if(v1<0||v1==0||v1>CheckValue)
+//                            {
+//                                Toast.makeText(WorkItemDetail.this, "检查分值在0到"+CheckValue+"之间！", Toast.LENGTH_SHORT).show();
+//                                checkvalue_edt.setText(String.valueOf(CheckValue));
+//
+//                            }
+//                        }catch (Exception e){}
+//                    }
+//
+//                }
+//            }
+//        });
+//        checkvalue_edt.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if(!checkvalue_edt.hasFocus())
+//                {
+//                    if(!checkvalue_edt.getText().toString().trim().isEmpty())
+//                    {
+//                        try{
+//                            double v1=Double.valueOf(checkvalue_edt.getText().toString().trim());
+//                            if(v1<0||v1==0||v1>CheckValue)
+//                            {
+//                                Toast.makeText(WorkItemDetail.this, "检查分值在0到"+CheckValue+"之间！", Toast.LENGTH_SHORT).show();
+//                                checkvalue_edt.setText(String.valueOf(CheckValue));
+//
+//                            }
+//                        }catch (Exception e){}
+//                    }
+//                }
+//            }
+//        });
     }
     /*计算基础分值与检查分值*/
     private  void splitValue(double scale,double value){
@@ -1065,15 +1202,15 @@ private  void   editscore(){
             }else{
                 //7:3
                 BasicValue=value*0.7;
-                CheckValue=value*0.3;
+                CheckValue = value * 0.3;
             }
             Log.i("qw","bs:"+BasicValue+",cs:"+CheckValue);
-            Toast.makeText(WorkItemDetail.this, "建议基础分值为："+BasicValue+",检查分值为："+CheckValue+"！", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(WorkItemDetail.this, "建议基础分值为："+BasicValue+",检查分值为："+CheckValue+"！", Toast.LENGTH_SHORT).show();
         }else{
             BasicValue=value*0.5;
-            CheckValue=value*0.5;
+            CheckValue = value * 0.5;
             Log.i("qw","bs:"+BasicValue+",cs:"+CheckValue);
-            Toast.makeText(WorkItemDetail.this, "建议基础分值为："+BasicValue+",检查分值为："+CheckValue+"！", Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(WorkItemDetail.this, "建议基础分值为："+BasicValue+",检查分值为："+CheckValue+"！", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1134,8 +1271,7 @@ private  void   editscore(){
     /*状态可修改*/
     private  void StatusEditable(WorkDetailResult result){
         String stat= status_edt.getText().toString().trim();
-        int    index=statusList.indexOf(stat);
-        if(stat==statusList.get(3)||stat==statusList.get(4)||stat==statusList.get(2))
+        if(stat.equals(statusList.get(3))||stat.equals(statusList.get(4))||stat.equals(statusList.get(2)))
         {
             if(result.AssignerID.equals(UID))
             {
@@ -1143,7 +1279,7 @@ private  void   editscore(){
             }else{
                 popWindow.change_status.setVisibility(View.GONE);
             }
-        }else  if(stat==statusList.get(6)||stat==statusList.get(7))
+        }else  if(stat.equals(statusList.get(6))||stat.equals(statusList.get(7)))
         {
             if(result.CheckerID.equals(UID))
             {
@@ -1154,7 +1290,7 @@ private  void   editscore(){
         }else{
             popWindow.change_status.setVisibility(View.GONE);
         }
-        if(stat==statusList.get(5)||stat==statusList.get(8)) {
+        if(stat.equals(statusList.get(5)) || stat.equals(statusList.get(8))){
             if (result.Belong2ID.equals(UID) || (result.Belong2ID.equals("") && result.CreaterID.equals(UID))) {
                 popWindow.ok_status.setVisibility(View.VISIBLE);
             } else {
@@ -1162,6 +1298,14 @@ private  void   editscore(){
             }
         }else{
             popWindow.ok_status.setVisibility(View.GONE);
+        }
+        if(stat.equals(statusList.get(0))||stat.equals(statusList.get(9)))
+        {
+            popWindow.add_child.setVisibility(View.GONE);
+            popWindow.del_child.setVisibility(View.GONE);
+            popWindow.del_father.setVisibility(View.GONE);
+            popWindow.submit.setVisibility(View.GONE);
+            popWindow.change_status.setVisibility(View.GONE);
         }
     }
     /*权限设置*/
@@ -1410,7 +1554,7 @@ private  void   editscore(){
         }else if(requestCode==2)
         {
             if (resultCode == 1) {
-                Remark=data.getStringExtra("stepDetail").toString().trim();
+              remark_tex.setText(data.getStringExtra("stepDetail").toString().trim());
 
                 //分值计算接口
 //                   List<Map<String,Object>> valueParam=( List<Map<String,Object>>)data.getSerializableExtra("valueParam");

@@ -16,11 +16,17 @@
             android:layout_height="match_parent"
             android:layout_weight="6"
             android:orientation="horizontal">
-            <ImageView
+            <LinearLayout
                 android:id="@+id/dttail_back"
                 android:layout_width="40sp"
-                android:layout_height="40sp"
-                android:src="@drawable/title_back"/>
+                android:layout_height="match_parent"
+                android:gravity="center">
+                <ImageView
+
+                    android:layout_width="15sp"
+                    android:layout_height="15sp"
+                    android:src="@drawable/title_back"/>
+            </LinearLayout>
             <TextView
                 android:id="@+id/title_txt"
                 android:layout_width="match_parent"
@@ -100,7 +106,8 @@
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:text="100"
+                android:text=""
+                android:maxLength="10"
                 android:layout_height="wrap_content"
                 android:textColor="@color/infoFont"
                 android:textSize="12sp" />

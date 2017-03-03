@@ -22,7 +22,7 @@ public class ListSort {
         List<WorkValueResultParams> _list=new ArrayList<>();
         Map<String, Integer> map = new HashMap<String, Integer>();
         for (WorkValueResultParams valueEntity : list) {
-            map.put(valueEntity.UserID,(int)valueEntity.BasicScore+(int)valueEntity.CheckedScore);
+            map.put(valueEntity.UserID,(int)(valueEntity.BasicScore*100.00)+(int)(valueEntity.CheckedScore*100.00));
         }
         List<Map.Entry<String,Integer>> mapList = new ArrayList<Map.Entry<String,Integer>>(map.entrySet());
         Collections.sort(mapList, new Comparator<Map.Entry<String, Integer>>() {
@@ -47,7 +47,7 @@ public class ListSort {
         List<WorkValueResultParams> _list=new ArrayList<>();
         Map<String, Integer> map = new HashMap<String, Integer>();
         for (WorkValueResultParams valueEntity : list) {
-            map.put(valueEntity.UserID,(int)valueEntity.BasicScore+(int)valueEntity.CheckedScore);
+            map.put(valueEntity.UserID,(int)(valueEntity.BasicScore*100.00)+(int)(valueEntity.CheckedScore*100.00));
         }
         List<Map.Entry<String,Integer>> mapList = new ArrayList<Map.Entry<String,Integer>>(map.entrySet());
         Collections.sort(mapList, new Comparator<Map.Entry<String, Integer>>() {

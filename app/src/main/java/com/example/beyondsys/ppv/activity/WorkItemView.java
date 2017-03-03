@@ -187,6 +187,23 @@ public class WorkItemView extends Fragment {
         cancel_tex.setTextColor(getActivity().getResources().getColor(R.color.Gray));
     }
 
+    private  void statusColor(int flag){
+        switch (flag)
+        {
+            case 0:undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
+                break;
+            case 1: proing_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
+                break;
+            case 2: done_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
+                break;
+            case 3: cancel_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
+                break;
+            default:undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
+                break;
+
+        }
+    }
+
     private void Listener() {
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -214,15 +231,17 @@ public class WorkItemView extends Fragment {
                 setdefault();
                 if (assignme == reflag) {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt_2);
-                    undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
+                   // undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
                     reflag = aboutme;
-                    stflag=undo;
+                    statusColor(stflag);
+                  //  stflag=undo;
                     GetDataForService();
                 } else {
                     wi_s_one_txt.setText(R.string.wi_s_one_txt);
-                    undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
+                  //  undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
                     reflag = assignme;
-                    stflag=undo;
+                    statusColor(stflag);
+                   // stflag=undo;
                     GetDataForService();
                 }
             }
@@ -296,7 +315,10 @@ public class WorkItemView extends Fragment {
                 Type resultType = new TypeToken<List<TeamEntity>>() {
                 }.getType();
                 List<TeamEntity> entity = Reservoir.get(LocalDataLabel.Label, resultType);
-                TeamID = entity.get(0).TeamID;
+                if(entity!=null&&entity.size()!=0)
+                {
+                    TeamID = entity.get(0).TeamID;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

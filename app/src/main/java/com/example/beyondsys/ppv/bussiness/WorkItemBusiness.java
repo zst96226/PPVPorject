@@ -201,6 +201,8 @@ public class WorkItemBusiness {
             newItem.put("Belong2", workItem.Belong2);
             newItem.put("BID", workItem.BID);
             newItem.put("BusinessValue", workItem.BusinessValue);
+            newItem.put("BasicScore",workItem.BasicScore);
+            newItem.put("CheckedScore",workItem.CheckedScore);
             newItem.put("Checker", workItem.Checker);
             newItem.put("Category", workItem.Category);
             newItem.put("ClosingTime", workItem.ClosingTime);
@@ -208,10 +210,12 @@ public class WorkItemBusiness {
             newItem.put("Modifier",workItem.Modifier);
             newItem.put("CreateTime", workItem.CreateTime);
             newItem.put("FID", workItem.FID);
+            newItem.put("RID",workItem.RID);
             newItem.put("HardScale", workItem.HardScale);
             newItem.put("Description", workItem.Description);
             newItem.put("ID", workItem.ID);
             newItem.put("Name", workItem.Name);
+            newItem.put("Remark",workItem.Remark);
             newItem.put("Status", workItem.Status);
             jsonObject.put("WorkItem", newItem);
         } catch (JSONException e) {

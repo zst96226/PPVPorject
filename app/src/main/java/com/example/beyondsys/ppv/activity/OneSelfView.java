@@ -70,7 +70,7 @@ private LinearLayout personInfoLayout;
     private RelativeLayout changeTeam_layout;
     private ListView child_list;
     private ImageView show_team,person_img;
-    private TextView teamName_tex,teamlevel_tex,personname_tex,valuesum_tex,monthsum_tex;
+    private TextView teamName_tex,teamlevel_tex,personname_tex,valuesum_tex,monthsum_tex,teamid_tex;
     private UserInfoResultParams personInfoEntity;
     private  String TeamID,UID;
   private ImgBusiness imgBusiness;
@@ -238,6 +238,7 @@ private LinearLayout personInfoLayout;
         valuesum_tex=(TextView)rootView.findViewById(R.id.valuesum_tex);
         monthsum_tex=(TextView)rootView.findViewById(R.id.monthsum_tex);
         person_img=(ImageView)rootView.findViewById(R.id.person_img);
+        teamid_tex=(TextView)rootView.findViewById(R.id.teamid_tex);
         try {
             if (Reservoir.contains(LocalDataLabel.UserID)) {
                 UIDEntity entity = Reservoir.get(LocalDataLabel.UserID, UIDEntity.class);
@@ -269,13 +270,26 @@ private LinearLayout personInfoLayout;
         }
         if(teamList!=null)
         {
-            teamName_tex.setText(teamList.get(0).TeamName);
-            teamlevel_tex.setText(String.valueOf(teamList.get(0).TeamLeave));
-            TeamID=teamList.get(0).TeamID;
+
+            if(teamList.size()>0)
+            {
+                teamName_tex.setText(teamList.get(0).TeamName);
+                teamlevel_tex.setText(String.valueOf(teamList.get(0).TeamLeave));
+                teamid_tex.setText(teamList.get(0).TeamID);
+                TeamID=teamList.get(0).TeamID;
+            }else
+            {
+                teamName_tex.setText("无团队");
+                teamlevel_tex.setText("");
+                teamid_tex.setText("");
+                TeamID="";
+            }
+
         }else
         {
             teamName_tex.setText("无团队");
             teamlevel_tex.setText("");
+            teamid_tex.setText("");
             TeamID="";
         }
     }
@@ -387,9 +401,13 @@ private LinearLayout personInfoLayout;
                 TextView teamLevel = (TextView) view.findViewById(R.id.TeamLevel_tex);
                 TextView teamId = (TextView) view.findViewById(R.id.TeamID_tex);
                 // checkBox.setChecked(true);
+                if(teamId.getText().equals(teamid_tex.getText()))
+                {
+                    return;
+                }
                 teamName_tex.setText(teamName.getText());
                 teamlevel_tex.setText(teamLevel.getText());
-
+                teamid_tex.setText(teamId.getText());
 
                 //把当前选择的团队置顶 重新存缓存
                 List<TeamEntity> teamList = null;
@@ -447,7 +465,6 @@ private LinearLayout personInfoLayout;
     }
     private List<Map<String, Object>> getData() {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        Map<String, Object> map = new HashMap<String, Object>();
         List<TeamEntity> teamList=null;
         try{
             Log.i("label try","FHZ");
@@ -466,10 +483,11 @@ private LinearLayout personInfoLayout;
             Log.i("label excep","FHZ");
             e.printStackTrace();
         }
-        if(teamList!=null)
+        if(teamList!=null&&teamList.size()!=0)
         {
             for (TeamEntity team: teamList)
             {
+                Map<String, Object> map = new HashMap<String, Object>();
                 map.put("teamName", team.TeamName);
                 map.put("teamLevel", team.TeamLeave);
                 map.put("teamId",team.TeamID);

@@ -52,6 +52,7 @@ import com.example.beyondsys.ppv.tools.ValidaService;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,8 +64,8 @@ import java.util.Map;
 
 public class AddNewWorkItem extends Activity {
 
-    ImageView back;
-    private LinearLayout inputScore_layout,ok_layout;
+
+    private LinearLayout inputScore_layout,ok_layout,back;
     private InputScoreDialog dialog;
     private TextView input_score,show_score;
     ArrayList<String> listID =new ArrayList<String>();// new String[]{"空","张三", "李四", "王五", "赵六"};
@@ -177,7 +178,7 @@ public class AddNewWorkItem extends Activity {
 
     private void InitView() {
         mContext=this;
-        back = (ImageView) this.findViewById(R.id.anwi_back);
+        back = (LinearLayout) this.findViewById(R.id.anwi_back);
         inputScore_layout = (LinearLayout) findViewById(R.id.inputScore_layout);
         input_score = (TextView) findViewById(R.id.input_score);
         show_score = (TextView) findViewById(R.id.showScore_tex);
@@ -445,6 +446,8 @@ public class AddNewWorkItem extends Activity {
         if(!show_score.getText().toString().equals("点击估算分值"))
         {
             BusinessValue=Double.valueOf(show_score.getText().toString().trim());
+            BigDecimal bigDecimal  =new BigDecimal(BusinessValue);
+            BusinessValue=bigDecimal.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
         } else{
             BusinessValue=0.00;
         }

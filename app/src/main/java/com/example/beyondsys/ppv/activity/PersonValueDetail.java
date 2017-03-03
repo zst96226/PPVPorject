@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -63,8 +64,9 @@ import java.util.Map;
 
 public class PersonValueDetail extends AppCompatActivity {
     private ListView listView;
+    private LinearLayout back;
     private TextView textView,monthSum,valueSum,personName;
-    private ImageView back,lastone,nextone,lastmonth,nextmonth;
+    private ImageView lastone,nextone,lastmonth,nextmonth;
     private  List<ValueDetailResultParam> valueDetailList;
     private  List<WorkValueResultParams>  personList;
     private WorkValueResultParams  SelectPerson;
@@ -81,7 +83,7 @@ public class PersonValueDetail extends AppCompatActivity {
             if(msg.what== ThreadAndHandlerLabel.GetWorkValueContext)
             {
                 String  jsonStr=msg.obj.toString();
-                Log.i("价值详细 返回值"+jsonStr,"FHZ");
+                Log.i("234","详细价值"+textView.getText().toString()+msg.obj);
                 if(msg.obj!=null&& !jsonStr.equals("anyType{}"))
                 {
                     try{
@@ -94,10 +96,7 @@ public class PersonValueDetail extends AppCompatActivity {
                                 Log.i("SELECTIME=："+SelectTime,"FHZ");
                                 String  time=SelectTime.substring(0,4)+SelectTime.substring(5,7);
                                 Log.i("date=："+time,"FHZ");
-                                if(valueDetailList!=null&&valueDetailList.size()!=0)
-                                {
-                                    setListData(time);
-                                }
+                                setListData(time);
 //                                Reservoir.putAsync(LocalDataLabel.WorkValueDetail+SelectPersonId+SelectTime, valueDetailList, new ReservoirPutCallback() {
 //                                    @Override
 //                                    public void onSuccess() {
@@ -164,7 +163,7 @@ public class PersonValueDetail extends AppCompatActivity {
 
     private void  init() {
         listView = (ListView) findViewById(R.id.MonthDeatil_list);
-        back = (ImageView) this.findViewById(R.id.dttail_back);
+        back = (LinearLayout) this.findViewById(R.id.dttail_back);
         textView = (TextView) findViewById(R.id.selectTime_tex);
         lastone=(ImageView)findViewById(R.id.lastone_img);
         nextone=(ImageView)findViewById(R.id.nextone_img);
@@ -300,6 +299,7 @@ private  boolean  setmCache(String date) {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //跳转 工作项详细信息
+
             }
         });
         textView.setOnTouchListener(new View.OnTouchListener() {
@@ -374,16 +374,21 @@ private  boolean  setmCache(String date) {
                             }
                             if(CurIndex==0)
                         {
-                            LastIndex=personList.indexOf(personList.size()-1);
+                            LastIndex=personList.size()-1;
                         }else{
-                                LastIndex=CurIndex+1;
+                                LastIndex=CurIndex-1;
                         }
-                            SelectPerson=personList.get(LastIndex);
-                            SelectPersonId=SelectPerson.UserID;
-                            setPersonInfo();
-                            String time=nowTime.substring(0,4)+nowTime.substring(5,7);
-                            Log.i("time=：" + time, "FHZ");
-                            setService(time);
+                            Log.i("index","n:"+LastIndex+"c:"+CurIndex);
+                            if(personList.get(LastIndex)!=null)
+                            {
+                                SelectPerson=personList.get(LastIndex);
+                                SelectPersonId=SelectPerson.UserID;
+                                setPersonInfo();
+                                String time=SelectTime.substring(0,4)+SelectTime.substring(5,7);
+                                Log.i("time=：" + time, "FHZ");
+                                setService(time);
+                            }
+
                 }
             }
         });
@@ -433,18 +438,23 @@ private  boolean  setmCache(String date) {
                             break;
                         }
                     }
-                    if(CurIndex==personList.indexOf(personList.size()-1))
+                    if(CurIndex==personList.size()-1)
                     {
                         NextIndex=0;
                     }else{
                         NextIndex=CurIndex+1;
                     }
-                    SelectPerson=personList.get(NextIndex);
-                    SelectPersonId=SelectPerson.UserID;
-                    setPersonInfo();
-                    String time=nowTime.substring(0,4)+nowTime.substring(5,7);
-                    Log.i("time=："+time,"FHZ");
-                    setService(time);
+                   Log.i("index", "n:" + NextIndex + "c:" + CurIndex);
+                    if(personList.get(NextIndex)!=null)
+                    {
+                        SelectPerson=personList.get(NextIndex);
+                        SelectPersonId=SelectPerson.UserID;
+                        setPersonInfo();
+                        String time=SelectTime.substring(0,4)+SelectTime.substring(5,7);
+                        Log.i("time=："+time,"FHZ");
+                        setService(time);
+                    }
+
                 }
             }
         });
@@ -452,6 +462,7 @@ private  boolean  setmCache(String date) {
 
     private List<Map<String, Object>> getData(String date) {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        list.clear();
         List<ValueDetailResultParam> entityList=valueDetailList;
         if(entityList==null||entityList.size()==0)
         {

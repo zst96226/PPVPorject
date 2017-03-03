@@ -249,9 +249,10 @@ public  static SubmitInfoResult ParseJsonForSubmitResult(String result)
     public static WorkDetailResult ParseJsonForWorkDetailResult(String result)
     {
         WorkDetailResult Result=null;
-        Gson gson=new Gson();
-        java.lang.reflect.Type type = new TypeToken< WorkDetailResult>() {}.getType();
-        Result=gson.fromJson(result, type);
+//        Gson gson=new Gson();
+//        java.lang.reflect.Type type = new TypeToken<WorkDetailResult>() {}.getType();
+//        Result=gson.fromJson(result, type);
+        Result=GsonUtil.json2T(result,WorkDetailResult.class);
         if(Result!=null)
         {
             return Result;

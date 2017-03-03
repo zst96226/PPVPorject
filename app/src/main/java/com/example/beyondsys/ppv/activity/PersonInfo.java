@@ -27,32 +27,37 @@ import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.ImgBusiness;
 import com.example.beyondsys.ppv.bussiness.OneSelfBusiness;
+import com.example.beyondsys.ppv.bussiness.OtherBusiness;
 import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.SubmitInfoResult;
+import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
 import com.example.beyondsys.ppv.entities.UIDEntity;
+import com.example.beyondsys.ppv.entities.UserInTeamResult;
 import com.example.beyondsys.ppv.entities.UserInfoResultParams;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.ValidaService;
 import com.example.beyondsys.ppv.tools.TakePhotoPopWin;
 import com.example.beyondsys.ppv.tools.Tools;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class PersonInfo extends AppCompatActivity {
     /*本地缓存操作对象*/
     ACache mCache = null;
     /*裁剪后的图像*/
     private Bitmap bitmap = null;
-    private LinearLayout infoModify;
-    private ImageView back;
+    private LinearLayout infoModify,back;
     private ImageView modifyImg, myImg;
     private RelativeLayout myImgLayout, myNameLayout, myPhoneLayout, myEmailLayout, myIDlayout, myAdressLayout, myDesLayout;
     private EditText myNameEdt, myPhoneEdt, myEmailEdt, myIDEdt, myAdressEdt, myDesEdt;
@@ -95,6 +100,7 @@ public class PersonInfo extends AppCompatActivity {
                               {
                                      Log.i("修改个人信息返回值：成功" , "FHZ");
                                      Toast.makeText(PersonInfo.this, "修改成功", Toast.LENGTH_SHORT).show();
+                                  GetAllUserForTeam();
 //                                     String json= GsonUtil.t2Json2(newInfo);
 //                                     mCache.put(LocalDataLabel.CurPerson,json);
                                   Reservoir.putAsync(LocalDataLabel.CurPerson, newInfo, new ReservoirPutCallback() {
@@ -167,7 +173,35 @@ public class PersonInfo extends AppCompatActivity {
                      Toast.makeText(PersonInfo.this,"服务端验证出错，请联系管理员",Toast.LENGTH_SHORT).show();
                  }
 
-            }else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
+            }else  if (msg.what == ThreadAndHandlerLabel.GetAllStaff) {
+                if (msg.obj != null) {
+                    final String jsonStr = msg.obj.toString();
+                    System.out.print("全部人员："+jsonStr);
+                    /*解析Json*/
+                    try {
+                        UserInTeamResult result = JsonEntity.ParseJsonForUserInTeamResult(jsonStr);
+                        if (result != null) {
+                            if (result.AccessResult == 0) {
+                                Reservoir.putAsync(LocalDataLabel.AllUserInTeam, result.teamUsers, new ReservoirPutCallback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.i("cache",jsonStr);
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+
+                                    }
+                                });
+                            }
+                        }
+                    } catch (Exception e) {
+                    }
+                } else {
+                    Toast.makeText(PersonInfo.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
+                }
+            }
+            else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
                 Toast.makeText(PersonInfo.this, "修改失败，请检查网络连接", Toast.LENGTH_SHORT).show();
             }else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
                 Toast.makeText(PersonInfo.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
@@ -207,7 +241,7 @@ public class PersonInfo extends AppCompatActivity {
     private void init() {
         imgBusiness=new ImgBusiness();
         infoModify = (LinearLayout) findViewById(R.id.infoModify);
-        back = (ImageView) this.findViewById(R.id.dttail_back);
+        back = (LinearLayout) this.findViewById(R.id.dttail_back);
         myImgLayout = (RelativeLayout) findViewById(R.id.myImg_layout);
         myNameLayout = (RelativeLayout) findViewById(R.id.myName_layout);
         myPhoneLayout = (RelativeLayout) findViewById(R.id.myPhone_layout);
@@ -259,6 +293,28 @@ public class PersonInfo extends AppCompatActivity {
         setService();
     }
 }
+
+    public   void GetAllUserForTeam() {
+        List<TeamEntity> label = null;
+        try {
+            if (Reservoir.contains(LocalDataLabel.Label)) {
+                Type resultType = new TypeToken<List<TeamEntity>>() {
+                }.getType();
+                label = Reservoir.get(LocalDataLabel.Label, resultType);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (label != null) {
+            String TeamID="";
+            if(label.size()>0)
+            {
+                TeamID= label.get(0).TeamID;
+            }
+            OtherBusiness other = new OtherBusiness();
+            other.GetAllStaffForTeam(handler, TeamID);
+        }
+    }
 
     private  boolean setCache()
     {

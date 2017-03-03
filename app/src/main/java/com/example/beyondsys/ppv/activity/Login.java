@@ -33,6 +33,7 @@ import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.MD5;
+import com.example.beyondsys.ppv.tools.ValidaService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -302,17 +303,17 @@ public class Login extends Activity implements OnClickListener {
      * 登陆
      */
     private void login() {
-//        boolean nameCheck= ValidaService.isNameLength(et_name.getText().toString());
-//        boolean passCheck=ValidaService.isPasswLength(et_pass.getText().toString())&&ValidaService.isPassword(et_pass.getText().toString());
-//        if(!(nameCheck&&passCheck))
-//        {
-//            Log.e("登陆信息不对", "qqww");
-//            log_tex.setVisibility(View.VISIBLE);
-//            log_tex.setText("用户名或密码不正确");
-//            return;
-//        }
-//        log_tex.setVisibility(View.GONE);
-//        log_tex.setText("");
+        boolean nameCheck= ValidaService.isNameLength(et_name.getText().toString());
+        boolean passCheck=ValidaService.isPasswLength(et_pass.getText().toString())&&ValidaService.isPassword(et_pass.getText().toString());
+        if(!(nameCheck&&passCheck))
+        {
+            Log.e("登陆信息不对", "qqww");
+            log_tex.setVisibility(View.VISIBLE);
+            log_tex.setText("用户名或密码不正确");
+            return;
+        }
+        log_tex.setVisibility(View.GONE);
+        log_tex.setText("");
         UAcc=et_name.getText().toString().trim();
         LoginBusiness loginBusiness = new LoginBusiness();
         uPwd = MD5.getMD5(et_pass.getText().toString().trim());

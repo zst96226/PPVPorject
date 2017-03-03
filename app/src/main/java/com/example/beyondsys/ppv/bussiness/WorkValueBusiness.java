@@ -34,10 +34,7 @@ public class WorkValueBusiness {
         person.PageNum = pageNum;
         person.Status = state;
         final String JsonParams = GsonUtil.getGson().toJson(person);
-        Log.i("价值参数：TicketID："+TicketID,"FHZ");
-        Log.i("价值参数：TeamID："+TeamID,"FHZ");
-        Log.i("价值参数：PageNum："+pageNum,"FHZ");
-        Log.i("价值参数：Status："+state,"FHZ");
+        Log.i("123","工作价值参数"+JsonParams);
         new Thread() {
             public void run() {
                 /*根据命名空间和方法得到SoapObject对象*/
