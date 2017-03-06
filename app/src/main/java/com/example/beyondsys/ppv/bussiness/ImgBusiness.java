@@ -6,9 +6,13 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.ImageView;
 
+import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.entities.APIEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
+import com.example.beyondsys.ppv.entities.UserInTeam;
+import com.example.beyondsys.ppv.tools.AsyncBitmapLoader;
 import com.example.beyondsys.ppv.tools.Tools;
 
 import org.ksoap2.SoapEnvelope;
@@ -22,8 +26,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Created by zhsht on 2017/2/7.上传头像
@@ -63,18 +69,18 @@ public class ImgBusiness
         }.start();
     }
     /*下载头像*/
-    public void downloadImg(final String picurl,final String name) {
+    public void downloadImg(final String picurl,final String name,final File fileDir) {
         new Thread() {
             public void run() {
-                File fileDir;
-                String path = Environment.getExternalStorageDirectory() + "/listviewImg/";// 文件目录
-                /**
-                 * 文件目录如果不存在，则创建
-                 */
-                fileDir = new File(path);
-                if (!fileDir.exists()) {
-                    fileDir.mkdirs();
-                }
+//                File fileDir;
+//              String path = Environment.getExternalStorageDirectory() + "/listviewImg/";// 文件目录
+//                /**
+//                 * 文件目录如果不存在，则创建
+//                 */
+//                fileDir = new File(path);
+//                if (!fileDir.exists()) {
+//                    fileDir.mkdirs();
+//                }
                 FileOutputStream fos = null;
                 InputStream in = null;
 
@@ -129,11 +135,61 @@ public class ImgBusiness
         file = new File(fileDir, ImageName);
         if (!file.exists()) {// 如果本地图片不存在则从网上下载
             ImgBusiness imgBusiness = new ImgBusiness();
-            imgBusiness.downloadImg(picurl, ImageName);
+            imgBusiness.downloadImg(picurl, ImageName,fileDir);
         } else {
             bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             // drawable =new BitmapDrawable(bitmap);
         }
         return bitmap;
+    }
+
+    private AsyncBitmapLoader asyncBitmapLoader;
+    public  void  aa(){
+//
+//          String imageURL="http://s.ata.net.cn/4f98db46908987a21a000003/logo/2012/04/114_80aaf295c083d07a496743699aac3193.png";
+//    Bitmap bitmap=asyncBitmapLoader.loadBitmap(image, imageURL, new AsyncBitmapLoader.ImageCallBack() {
+//
+//        @Override
+//        public void imageLoad(ImageView imageView, Bitmap bitmap) {
+//            // TODO Auto-generated method stub
+//            imageView.setImageBitmap(bitmap);
+//        }
+//    });
+//    if(bitmap == null)
+//    {
+//        image.setImageResource(R.drawable.ic_launcher);
+//    }
+//    else
+//    {
+//        image.setImageBitmap(bitmap);
+//    }
+//
+//    return convertView;
+
+
+}
+    public  void getAllUserImg(List<UserInTeam> teamUsers){
+      if(teamUsers!=null&&teamUsers.size()!=0)
+      {
+          File fileDir;
+          File file;
+          String path = Environment.getExternalStorageDirectory() + "/listviewImg/";// 文件目录
+          fileDir = new File(path);
+          if (!fileDir.exists()) {
+              Log.i("exit", "qq");
+              fileDir.mkdirs();
+          }
+          for (UserInTeam user:teamUsers)
+          {
+              String ImgName=user.UserID+".png";
+              String picurl = APIEntity.ImagePath + ImgName;
+              file = new File(fileDir,ImgName);
+              if (!file.exists()) {// 如果本地图片不存在则从网上下载
+                  ImgBusiness imgBusiness = new ImgBusiness();
+                  imgBusiness.downloadImg(picurl, ImgName,fileDir);
+              }
+          }
+//
+      }
     }
 }

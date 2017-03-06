@@ -106,7 +106,7 @@ public class myListAdapter extends SimpleAdapter {
         File file = new File(fileDir,name);
         if (!file.exists()) {// 如果本地图片不存在则从网上下载
             ImgBusiness imgBusiness=new ImgBusiness();
-            imgBusiness.downloadImg(picurl, name);
+            imgBusiness.downloadImg(picurl, name,fileDir);
            // downloadPic(picNames[position], picUrls[position]);
         } else {// 图片存在则填充到listview上
             Bitmap bitmap = BitmapFactory

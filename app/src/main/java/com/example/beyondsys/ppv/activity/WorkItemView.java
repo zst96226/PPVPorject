@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.GetChars;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,7 +49,7 @@ import java.util.logging.LogRecord;
 /**
  * Created by zhsht on 2017/1/12.工作项页面
  */
-public class WorkItemView extends Fragment {
+public class WorkItemView extends Fragment  implements SwipeRefreshLayout.OnRefreshListener{
 
 
     private ListView listView;
@@ -65,14 +66,17 @@ public class WorkItemView extends Fragment {
     private final static int cancel = 3;
     private int reflag = 0, stflag = 0;
     SimpleAdapter adapter;
-
+    private SwipeRefreshLayout mSwipeLayout;
     private String TKID = "";
     private String TeamID = "";
 
     private Handler threadHander = new Handler() {
         public void handleMessage(Message msg) {
+            // 停止刷新
+            mSwipeLayout.setRefreshing(false);
             if (msg.what == ThreadAndHandlerLabel.GetWorkItem) {
                 if (msg.obj != null) {
+
                     Log.i("返回值：" + msg.obj, "FHZ");
                     String jsonStr = msg.obj.toString();
                     if (!jsonStr.equals("anyType{}")) {
@@ -171,6 +175,14 @@ public class WorkItemView extends Fragment {
         done_tex = (TextView) rootView.findViewById(R.id.done_tex);
         cancel_tex = (TextView) rootView.findViewById(R.id.cancel_tex);
         undo_tex.setTextColor(getActivity().getResources().getColor(R.color.text));
+        mSwipeLayout = (SwipeRefreshLayout)  rootView.findViewById(R.id.swipe_container);
+        mSwipeLayout.setOnRefreshListener(this);
+        // 设置下拉圆圈上的颜色，蓝色、绿色、橙色、红色
+        mSwipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+                android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        mSwipeLayout.setDistanceToTriggerSync(200);// 设置手指在屏幕下拉多少距离会触发下拉刷新
+        mSwipeLayout.setProgressBackgroundColor(R.color.refresh);
+        mSwipeLayout.setSize(SwipeRefreshLayout.LARGE);
     }
 
     private void SetList() {
@@ -402,5 +414,17 @@ public class WorkItemView extends Fragment {
             list.add(map);
         }
         return list;
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                GetDataForService();
+                // 停止刷新
+              //  mSwipeLayout.setRefreshing(false);
+            }
+        },1000); // 5秒后发送消息，停止刷新
     }
 }

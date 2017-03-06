@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.anupcowkur.reservoir.Reservoir;
 import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.example.beyondsys.ppv.R;
+import com.example.beyondsys.ppv.bussiness.ImgBusiness;
 import com.example.beyondsys.ppv.bussiness.OtherBusiness;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.TeamEntity;
@@ -65,6 +66,9 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
                         UserInTeamResult result = JsonEntity.ParseJsonForUserInTeamResult(jsonStr);
                         if (result != null) {
                             if (result.AccessResult == 0) {
+                                List<UserInTeam> alluser=result.teamUsers;
+                                ImgBusiness imgBusiness=new ImgBusiness();
+                                imgBusiness.getAllUserImg(alluser);
                                 Reservoir.putAsync(LocalDataLabel.AllUserInTeam, result.teamUsers, new ReservoirPutCallback() {
                                     @Override
                                     public void onSuccess() {

@@ -159,6 +159,8 @@ private LinearLayout personInfoLayout;
                           {
                               if(logOutResult.LogoutResult==0)
                               {
+                                  //清除缓存
+                                  Reservoir.clear();
                                   Intent intent = new Intent(getActivity(),Login.class);
                                   startActivity(intent);
                               }

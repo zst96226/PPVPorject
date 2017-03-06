@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,7 +71,7 @@ import java.util.Map;
 /**
  * Created by zhsht on 2017/1/13.工作价值
  */
-public class WorkValueView extends Fragment {
+public class WorkValueView extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private String TKID = "";
     private String TeamID = "";
     private String UID = "";
@@ -85,6 +86,8 @@ public class WorkValueView extends Fragment {
     private UserInfoResultParams curPersonEntity = null;
    // File file;
     private ImgBusiness imgBusiness;
+    private SwipeRefreshLayout mSwipeLayout;
+
     private final static int sortup = 1;
     private final static int sortdown = 0;
     private final static int curmonth = 0;
@@ -92,6 +95,8 @@ public class WorkValueView extends Fragment {
     private int sortFlag = 1, staFlag = 0;//默认升序排列，当前月
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
+            // 停止刷新
+            mSwipeLayout.setRefreshing(false);
             if (msg.what == ThreadAndHandlerLabel.GetWorkValue) {
                 String jsonStr = msg.obj.toString();
                 if (msg.obj != null && !jsonStr.equals("anyType{}")) {
@@ -161,6 +166,14 @@ public class WorkValueView extends Fragment {
         sort_img = (ImageView) rootView.findViewById(R.id.sort_img);
         sort_tex = (TextView) rootView.findViewById(R.id.wv_sort_txt);
         filter_tex = (TextView) rootView.findViewById(R.id.wv_filter_txt);
+        mSwipeLayout = (SwipeRefreshLayout)  rootView.findViewById(R.id.swipe_container);
+        mSwipeLayout.setOnRefreshListener(this);
+        // 设置下拉圆圈上的颜色，蓝色、绿色、橙色、红色
+        mSwipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+                android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        mSwipeLayout.setDistanceToTriggerSync(400);// 设置手指在屏幕下拉多少距离会触发下拉刷新
+        mSwipeLayout.setProgressBackgroundColor(R.color.refresh);
+        mSwipeLayout.setSize(SwipeRefreshLayout.LARGE);
     }
 
     private void setListenter() {
@@ -453,5 +466,17 @@ public class WorkValueView extends Fragment {
             }
         });
         return list;
+    }
+
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                GetDataForService();
+
+            }
+        }, 1000); // 5秒后发送消息，停止刷新
     }
 }
