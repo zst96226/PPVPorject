@@ -240,7 +240,13 @@ public class WorkValueView extends Fragment implements SwipeRefreshLayout.OnRefr
             public boolean setViewValue(View view, Object data, String textRepresentation) {
                 if (view instanceof ImageView && data instanceof Bitmap) {
                     ImageView i = (ImageView) view;
-                    i.setImageBitmap((Bitmap) data);
+                    if(data!=null)
+                    {
+                        i.setImageBitmap((Bitmap) data);
+                    }else{
+                        i.setImageResource(R.drawable.unknow);
+                    }
+
                     return true;
                 }
                 return false;
@@ -390,7 +396,13 @@ public class WorkValueView extends Fragment implements SwipeRefreshLayout.OnRefr
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
                     String imgname=valueEntity.UserID+".png";
                     Bitmap bitmap = imgBusiness.setImg(imgname);
-                    map.put("personImg", bitmap);
+                    if(bitmap!=null)
+                    {
+                        map.put("personImg", bitmap);
+                    }else{
+                        map.put("personImg", R.drawable.unknow);
+                    }
+                    // map.put("personImg", bitmap);
                     map.put("personId", valueEntity.UserID);
                     map.put("personName", valueEntity.Name);
                     map.put("valueSum", String.valueOf(valueEntity.BasicScore + valueEntity.CheckedScore));
@@ -410,7 +422,13 @@ public class WorkValueView extends Fragment implements SwipeRefreshLayout.OnRefr
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
                     String imgname=valueEntity.UserID+".png";
                     Bitmap bitmap = imgBusiness.setImg(imgname);
-                    map.put("personImg", bitmap);
+                    if(bitmap!=null)
+                    {
+                        map.put("personImg", bitmap);
+                    }else{
+                        map.put("personImg", R.drawable.unknow);
+                    }
+                   // map.put("personImg", bitmap);
                     map.put("personId", valueEntity.UserID);
                     map.put("personName", valueEntity.Name);
                     map.put("valueSum", String.valueOf(valueEntity.BasicScore + valueEntity.CheckedScore));
@@ -429,7 +447,13 @@ public class WorkValueView extends Fragment implements SwipeRefreshLayout.OnRefr
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
                     String imgname=valueEntity.UserID+".png";
                     Bitmap bitmap = imgBusiness.setImg(imgname);
-                    map.put("personImg", bitmap);
+                    if(bitmap!=null)
+                    {
+                        map.put("personImg", bitmap);
+                    }else{
+                        map.put("personImg", R.drawable.unknow);
+                    }
+                    // map.put("personImg", bitmap);
                     map.put("personId", valueEntity.UserID);
                     map.put("personName", valueEntity.Name);
                     map.put("valueSum", String.valueOf(valueEntity.BasicScore + valueEntity.CheckedScore));
@@ -445,7 +469,13 @@ public class WorkValueView extends Fragment implements SwipeRefreshLayout.OnRefr
 //                  Bitmap bitmap = setImg(valueEntity.IMGTarget);
                     String imgname=valueEntity.UserID+".png";
                     Bitmap bitmap = imgBusiness.setImg(imgname);
-                    map.put("personImg", bitmap);
+                    if(bitmap!=null)
+                    {
+                        map.put("personImg", bitmap);
+                    }else{
+                        map.put("personImg", R.drawable.unknow);
+                    }
+                    // map.put("personImg", bitmap);
                     map.put("personId", valueEntity.UserID);
                     map.put("personName", valueEntity.Name);
                     map.put("valueSum", String.valueOf(valueEntity.BasicScore + valueEntity.CheckedScore));

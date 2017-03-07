@@ -1445,6 +1445,7 @@ private  void   editscore(){
             if(result.AssignerID.equals(UID))
             {
                 popWindow.change_status.setVisibility(View.VISIBLE);
+
             }else{
                 popWindow.change_status.setVisibility(View.GONE);
             }
@@ -1539,6 +1540,7 @@ private  void   editscore(){
         if(result.AssignerID.equals(UID))
         {
             popWindow.add_child.setVisibility(View.VISIBLE);
+            des_edt.setEnabled(true);
             Log.i("权限设置 status", "FHZ");
            // StatusEditable();
 //            if(stat==statusList.get(3)||stat==statusList.get(4)||stat==statusList.get(2))
@@ -1560,7 +1562,7 @@ private  void   editscore(){
                     }
                     popWindow.submit.setVisibility(View.VISIBLE);
 //                    popWindow.ok_status.setVisibility(View.VISIBLE);
-//                    popWindow.set_value.setVisibility(View.VISIBLE);
+                    popWindow.set_value.setVisibility(View.VISIBLE);
                     Log.i("权限设置 crea", "FHZ");
                     ItemEditable();
 //                if(stat==statusList.get(5)||stat==statusList.get(8))
@@ -1578,7 +1580,7 @@ private  void   editscore(){
                     }
                     popWindow.submit.setVisibility(View.VISIBLE);
 //                    popWindow.ok_status.setVisibility(View.VISIBLE);
-//                    popWindow.set_value.setVisibility(View.VISIBLE);
+                    popWindow.set_value.setVisibility(View.VISIBLE);
                     ItemEditable();
                     Log.i("权限设置 belo", "FHZ");
 //                if(stat==statusList.get(5)||stat==statusList.get(8))
@@ -1687,7 +1689,7 @@ private  void   editscore(){
     }
 
     /*获取服务端数据*/
-    private void GetDataForService( String curItemId) {
+    private void GetDataForService(String curItemId) {
         if (curItemId.equals("") || TKID.equals("")) {
             Toast.makeText(WorkItemDetail.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
             /*清除其余活动中Activity以及全部缓存显示登录界面*/

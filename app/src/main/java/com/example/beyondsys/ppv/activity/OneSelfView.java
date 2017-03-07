@@ -163,6 +163,7 @@ private LinearLayout personInfoLayout;
                                   Reservoir.clear();
                                   Intent intent = new Intent(getActivity(),Login.class);
                                   startActivity(intent);
+                                  getActivity().finish();
                               }
                           }
                       }catch (Exception e){}

@@ -105,6 +105,8 @@
                             android:maxLines="30"
                             android:textColor="@color/mainFont"
                             android:text=""
+                            android:maxLength="10"
+                            android:singleLine="true"
                             android:textSize="15sp"
                             android:layout_marginTop="17.5sp"/>
 
@@ -253,6 +255,7 @@
                             android:text=""
                             android:singleLine="true"
                             android:enabled="false"
+                            android:maxLength="50"
                             android:textColor="@color/blueBut"
                             android:gravity="center_vertical"/>
                     </LinearLayout>

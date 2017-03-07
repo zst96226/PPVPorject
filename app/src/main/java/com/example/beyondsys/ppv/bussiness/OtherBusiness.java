@@ -74,7 +74,8 @@ public class OtherBusiness {
             }.start();
         }else {
             Message msg = Message.obtain();
-            msg.what = ThreadAndHandlerLabel.LocalNotdata;
+           msg.what = ThreadAndHandlerLabel.LocalNotdata;
+          //  msg.what = ThreadAndHandlerLabel.CallAPIError;
             handler.sendMessage(msg);
         }
     }

@@ -210,7 +210,12 @@ public class PersonValueDetail extends AppCompatActivity {
         String  imgName=SelectPersonId+".png";
         Bitmap bitmap = imgBusiness.setImg(imgName);
         //Bitmap bitmap = setImg("123.png");
-        person_img.setImageBitmap(bitmap);
+        if(bitmap!=null)
+        {
+            person_img.setImageBitmap(bitmap);
+        }else{
+            person_img.setImageResource(R.drawable.unknow);
+        }
         monthSum.setText(String.valueOf( SelectPerson.Month));
         valueSum.setText(String.valueOf( SelectPerson.BasicScore+ SelectPerson.CheckedScore));
 
@@ -259,7 +264,7 @@ private  boolean  setmCache(String date) {
                 Type resultType = new TypeToken<List<WorkValueResultParams>>() {
                 }.getType();
                 personList=Reservoir.get(LocalDataLabel.WorkValueList,resultType);
-                Log.i("设置personlist ：","FHZ");
+                Log.i("设置personlist ：", "FHZ");
             }
         }catch (Exception e){}
     }
@@ -396,31 +401,28 @@ private  boolean  setmCache(String date) {
             @Override
             public void onClick(View v) {
                 //判断是否为当前月份，否则加一
-                String  oldTime=textView.getText().toString();
-        //    SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
-                Date oldDate=null;
+                String oldTime = textView.getText().toString();
+                //    SimpleDateFormat  sdf=new SimpleDateFormat("yyyy-MM");
+                Date oldDate = null;
                 Date nowDate = null;
-                Log.e("time","qq");
-                String nowTime=sdf.format(new  java.util.Date());
-                Log.e("time2","qq");
+                Log.e("time", "qq");
+                String nowTime = sdf.format(new java.util.Date());
+                Log.e("time2", "qq");
                 try {
-                     oldDate=sdf.parse(oldTime);
-                     nowDate=sdf.parse(nowTime);
+                    oldDate = sdf.parse(oldTime);
+                    nowDate = sdf.parse(nowTime);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 Log.e("time3", "qq");
-                if(oldDate.getTime()>nowDate.getTime()||oldDate.getTime()==nowDate.getTime())
-                {
-                   SelectTime=oldTime;
-                }
-                 else
-                {
-                    SelectTime=dateFormat(oldTime, +1);
+                if (oldDate.getTime() > nowDate.getTime() || oldDate.getTime() == nowDate.getTime()) {
+                    SelectTime = oldTime;
+                } else {
+                    SelectTime = dateFormat(oldTime, +1);
                 }
                 textView.setText(SelectTime);
-              // showData(SelectTime);
-                String  time=SelectTime.substring(0,4)+SelectTime.substring(5,7);
+                // showData(SelectTime);
+                String time = SelectTime.substring(0, 4) + SelectTime.substring(5, 7);
                 setService(time);
             }
         });
@@ -428,30 +430,26 @@ private  boolean  setmCache(String date) {
             @Override
             public void onClick(View v) {
                 //下一个人
-                int CurIndex=0,NextIndex=0;
-                if(personList!=null&&personList.size()!=0)
-                {
-                    for (WorkValueResultParams person:personList) {
-                        if(person.UserID.equals(SelectPersonId))
-                        {
-                            CurIndex=personList.indexOf(person);
+                int CurIndex = 0, NextIndex = 0;
+                if (personList != null && personList.size() != 0) {
+                    for (WorkValueResultParams person : personList) {
+                        if (person.UserID.equals(SelectPersonId)) {
+                            CurIndex = personList.indexOf(person);
                             break;
                         }
                     }
-                    if(CurIndex==personList.size()-1)
-                    {
-                        NextIndex=0;
-                    }else{
-                        NextIndex=CurIndex+1;
+                    if (CurIndex == personList.size() - 1) {
+                        NextIndex = 0;
+                    } else {
+                        NextIndex = CurIndex + 1;
                     }
-                   Log.i("index", "n:" + NextIndex + "c:" + CurIndex);
-                    if(personList.get(NextIndex)!=null)
-                    {
-                        SelectPerson=personList.get(NextIndex);
-                        SelectPersonId=SelectPerson.UserID;
+                    Log.i("index", "n:" + NextIndex + "c:" + CurIndex);
+                    if (personList.get(NextIndex) != null) {
+                        SelectPerson = personList.get(NextIndex);
+                        SelectPersonId = SelectPerson.UserID;
                         setPersonInfo();
-                        String time=SelectTime.substring(0,4)+SelectTime.substring(5,7);
-                        Log.i("time=："+time,"FHZ");
+                        String time = SelectTime.substring(0, 4) + SelectTime.substring(5, 7);
+                        Log.i("time=：" + time, "FHZ");
                         setService(time);
                     }
 
@@ -473,9 +471,19 @@ private  boolean  setmCache(String date) {
             Map<String, Object> map = new HashMap<String, Object>();
             //根据类别不同图片不同
             if (entity.Category == 0) {
-                map.put("itemImg", R.drawable.b);
+                if(entity.Stage==1)
+                {
+                    map.put("itemImg", R.drawable.bl);
+                }else{
+                    map.put("itemImg", R.drawable.br);
+                }
             } else {
-                map.put("itemImg", R.drawable.t);
+                if(entity.Stage==1)
+                {
+                    map.put("itemImg", R.drawable.tl);
+                }else{
+                    map.put("itemImg", R.drawable.tr);
+                }
             }
          //   map.put("itemImg", R.drawable.work_item);
             map.put("itemId",entity.WorkID);

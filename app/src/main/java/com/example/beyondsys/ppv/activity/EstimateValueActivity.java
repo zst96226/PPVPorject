@@ -3,6 +3,7 @@ package com.example.beyondsys.ppv.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,10 +40,19 @@ public class EstimateValueActivity extends AppCompatActivity {
     private Button ok_but,cancel_but;
     private  String stepDetail;
     private int stepCount=1,flag=-1;
-    ImageView back,ok;
+    private LinearLayout back;
+    private ImageView ok;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            //透明状态栏
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            //透明导航栏
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//        }
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         setContentView(R.layout.activity_estimate_value);
         init();
 //        setOkListener();
@@ -105,7 +116,7 @@ public class EstimateValueActivity extends AppCompatActivity {
         step10_max=(EditText)findViewById(R.id.step10_max);
         step10_min=(EditText)findViewById(R.id.step10_min);
         step10_scale=(EditText)findViewById(R.id.step10_scale);
-        back=(ImageView)this.findViewById(R.id.anwi_back);
+        back=(LinearLayout)this.findViewById(R.id.anwi_back);
         ok=(ImageView)this.findViewById(R.id.anwi_ok);
         setPricePoint(step1_scale);
         setPricePoint(step2_scale);

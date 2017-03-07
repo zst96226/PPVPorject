@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +19,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -164,6 +166,12 @@ public class AddNewWorkItem extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            //透明状态栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //透明导航栏
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
         setContentView(R.layout.activity_add_new_work_item);
 
         InitView();
@@ -178,7 +186,7 @@ public class AddNewWorkItem extends Activity {
 
     private void InitView() {
         mContext=this;
-        back = (LinearLayout) this.findViewById(R.id.anwi_back);
+        back =(LinearLayout)findViewById(R.id.anwi_back);
         inputScore_layout = (LinearLayout) findViewById(R.id.inputScore_layout);
         input_score = (TextView) findViewById(R.id.input_score);
         show_score = (TextView) findViewById(R.id.showScore_tex);
@@ -587,11 +595,11 @@ public class AddNewWorkItem extends Activity {
                 Bundle bundle = intent.getExtras();
                 //传递FID过来
                 String FID = bundle.getString("FatherID").trim();
-                String FType = bundle.getString("FatherType").trim();
+                int FType = bundle.getInt("FatherType");
                 if (FID == null) {
                     input_type.setText(typeList.get(0));
                 } else {
-                    if (FType == typeList.get(1)) {
+                    if (FType == 1) {
                         input_type.setText(typeList.get(1));
                     } else {
                         String inputstr = input_type.getText().toString();
