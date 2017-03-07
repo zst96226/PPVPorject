@@ -296,6 +296,8 @@ public class WorkItemDetail extends AppCompatActivity {
         popWindow.del_father.setVisibility(View.GONE);
         popWindow.submit.setVisibility(View.GONE);
         popWindow.change_status.setVisibility(View.GONE);
+        popWindow.ok_status.setVisibility(View.GONE);
+        popWindow.set_value.setVisibility(View.GONE);
     }
 
     private  boolean setCache() {
@@ -693,36 +695,36 @@ public class WorkItemDetail extends AppCompatActivity {
                     public void onClick(View arg0) {
                         // do something you need here
 
-                        if (status_edt.getText().toString().trim().equals(statusList.get(6))) {
-                            try {
-                                double v1 = Double.valueOf(basicvalue_edt.getText().toString().trim());
-                                if (v1 < 0 || v1 == 0 || v1 > BasicValue) {
-                                    Toast.makeText(WorkItemDetail.this, "基础分值在0~" + BasicValue + "之间！", Toast.LENGTH_SHORT).show();
-                                    basicvalue_edt.setText(String.valueOf(BasicValue));
-                                } else {
-                                    // 提交修改结果
-                                    submitService();
-                                }
-                            } catch (Exception e) {
-                            }
-                        } else if (status_edt.getText().toString().trim().equals(statusList.get(9))) {
-                            try {
-                                double v1 = Double.valueOf(checkvalue_edt.getText().toString().trim());
-                                if (v1 < 0 || v1 == 0 || v1 > CheckValue) {
-                                    Toast.makeText(WorkItemDetail.this, "检查分值在0到" + CheckValue + "之间！", Toast.LENGTH_SHORT).show();
-                                    checkvalue_edt.setText(String.valueOf(CheckValue));
-                                } else {
-                                    // 提交修改结果
-                                    submitService();
-                                    checkvalue_edt.setEnabled(false);
-                                    des_edt.setEnabled(false);
-                                }
-                            } catch (Exception e) {
-                            }
-                        } else {
+//                        if (status_edt.getText().toString().trim().equals(statusList.get(6))) {
+//                            try {
+//                                double v1 = Double.valueOf(basicvalue_edt.getText().toString().trim());
+//                                if (v1 < 0 || v1 == 0 || v1 > BasicValue) {
+//                                    Toast.makeText(WorkItemDetail.this, "基础分值在0~" + BasicValue + "之间！", Toast.LENGTH_SHORT).show();
+//                                    basicvalue_edt.setText(String.valueOf(BasicValue));
+//                                } else {
+//                                    // 提交修改结果
+//                                    submitService();
+//                                }
+//                            } catch (Exception e) {
+//                            }
+//                        } else if (status_edt.getText().toString().trim().equals(statusList.get(9))) {
+//                            try {
+//                                double v1 = Double.valueOf(checkvalue_edt.getText().toString().trim());
+//                                if (v1 < 0 || v1 == 0 || v1 > CheckValue) {
+//                                    Toast.makeText(WorkItemDetail.this, "检查分值在0到" + CheckValue + "之间！", Toast.LENGTH_SHORT).show();
+//                                    checkvalue_edt.setText(String.valueOf(CheckValue));
+//                                } else {
+//                                    // 提交修改结果
+//                                    submitService();
+//                                    checkvalue_edt.setEnabled(false);
+//                                    des_edt.setEnabled(false);
+//                                }
+//                            } catch (Exception e) {
+//                            }
+//                        } else {
                             // 提交修改结果
                             submitService();
-                        }
+//                        }
                     }
                 });
                 popWindow.change_status.setOnClickListener(new View.OnClickListener() {
@@ -757,8 +759,46 @@ public class WorkItemDetail extends AppCompatActivity {
                 popWindow.ok_status.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (status_edt.getText().toString().trim().equals(statusList.get(5))) {
+                            try {
+                                double v1 = Double.valueOf(basicvalue_edt.getText().toString().trim());
+                                if (v1 < 0 || v1 == 0 || v1 > BasicValue) {
+                                    Toast.makeText(WorkItemDetail.this, "基础分值在0~" + BasicValue + "之间！", Toast.LENGTH_SHORT).show();
+                                    basicvalue_edt.setText(String.valueOf(BasicValue));
+                                } else {
+                                    status_edt.setText(statusList.get(6));
+//                                    value_edt.setClickable(false);
+                                    // 提交修改结果
+                                    submitService();
+                                    popWindow.ok_status.setVisibility(View.GONE);
+                                    basicvalue_edt.setEnabled(false);
+                                    des_edt.setEnabled(false);
+                                }
+                            } catch (Exception e) {
+                            }
+                        } else if (status_edt.getText().toString().trim().equals(statusList.get(8))) {
+                            try {
+                                double v1 = Double.valueOf(checkvalue_edt.getText().toString().trim());
+                                if (v1 < 0 || v1 == 0 || v1 > CheckValue) {
+                                    Toast.makeText(WorkItemDetail.this, "检查分值在0到" + CheckValue + "之间！", Toast.LENGTH_SHORT).show();
+                                    checkvalue_edt.setText(String.valueOf(CheckValue));
+                                } else {
+                                    // 提交修改结果
+                                    status_edt.setText(statusList.get(9));
+                                    submitService();
+                                    checkvalue_edt.setEnabled(false);
+                                    des_edt.setEnabled(false);
+                                }
+                            } catch (Exception e) {
+                            }
+                        }
+                      //  StatusEditable(CurDetail);
+                    }
+                });
+                popWindow.set_value.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         editscore();
-                        StatusEditable(CurDetail);
                     }
                 });
             }
@@ -830,49 +870,188 @@ private  void   editscore(){
     splitValue(CurDetail.HardScale,value);
     // 当 该工作项无子项 ，基础分为零 ，用户有权限更改工作项，状态不为空且状态为 确认待测试 ，时可修改基础得分 ,修改后在提交
     if (status_edt.getText().toString().trim().equals(statusList.get(5))) {
+
        // if (!(CurDetail.BasicScore > 0)) {
         if (hasChildFlag == 1) {
-                status_edt.setText(statusList.get(6));
+              //  status_edt.setText(statusList.get(6));
                 AlertDialog.Builder builder  = new AlertDialog.Builder(WorkItemDetail.this);
                 builder.setTitle("提示") ;
-                builder.setMessage("确认前请输入基础分值,再提交修改结果,建议基础分值为：" + BasicValue) ;
+                builder.setMessage("确认前请输入基础分值,建议基础分值为：" + BasicValue) ;
                 builder.setPositiveButton("知道了", null);
                 builder.show();
                basicvalue_edt.setText(String.valueOf(BasicValue));
                 basicvalue_edt.setEnabled(true);
+            popWindow.ok_status.setVisibility(View.VISIBLE);
+            popWindow.set_value.setVisibility(View.GONE);
                // Toast.makeText(WorkItemDetail.this, "确认前请输入基础分值,再提交修改结果！", Toast.LENGTH_SHORT).show();
 //                 BasicValueEdit();
 //                 basicvalue_edt.clearFocus();
             }else{
-               //   Toast.makeText(WorkItemDetail.this, "有子项未确认！", Toast.LENGTH_SHORT).show();
-                status_edt.setText(statusList.get(6));
+            //如果子项大于该状态则可进入下一状态
+            boolean before=false;
+            for (SubWorkItemParams sub:chid)
+            {
+                 if(sub.Status!=0&&sub.Status<5)
+                 {
+                     before=true;
+                     break;
+                 }else{
+                     before=false;
+                 }
+            }
+            if(before==true)
+            {
+                Toast.makeText(WorkItemDetail.this, "有子项未确认，不能进入下一状态！", Toast.LENGTH_SHORT).show();
+                status_edt.setText(statusList.get(5));
+                popWindow.ok_status.setVisibility(View.GONE);
+                popWindow.set_value.setVisibility(View.GONE);
+            }else{
+                AlertDialog.Builder builder  = new AlertDialog.Builder(WorkItemDetail.this);
+                builder.setTitle("提示") ;
+                builder.setMessage("确认前请输入基础分值,建议基础分值为：" + BasicValue) ;
+                builder.setPositiveButton("知道了", null);
+                builder.show();
+                basicvalue_edt.setText(String.valueOf(BasicValue));
+                basicvalue_edt.setEnabled(true);
+                popWindow.ok_status.setVisibility(View.VISIBLE);
+                popWindow.set_value.setVisibility(View.GONE);
+            }
+        //            int arr[] = new int[chid.size()];
+//            for (int i=0;i<chid.size()-1;i++)
+//            {
+//                arr[i]=chid.get(i).Status;
+//            }
+//            BubbleSort(arr);
+//            if(arr[0]!=0&&arr[0]<5)
+//            {
+//                Toast.makeText(WorkItemDetail.this, "有子项未确认，不能进入下一状态！", Toast.LENGTH_SHORT).show();
+//                status_edt.setText(statusList.get(5));
+//                popWindow.ok_status.setVisibility(View.GONE);
+//                popWindow.set_value.setVisibility(View.GONE);
+//            }else{
+//                AlertDialog.Builder builder  = new AlertDialog.Builder(WorkItemDetail.this);
+//                builder.setTitle("提示") ;
+//                builder.setMessage("确认前请输入基础分值,建议基础分值为：" + BasicValue) ;
+//                builder.setPositiveButton("知道了", null);
+//                builder.show();
+//                basicvalue_edt.setText(String.valueOf(BasicValue));
+//                basicvalue_edt.setEnabled(true);
+//                popWindow.ok_status.setVisibility(View.VISIBLE);
+//                popWindow.set_value.setVisibility(View.GONE);
+//            }
             }
 
        // }
     }
     if (status_edt.getText().toString().trim().equals(statusList.get(8))) {
-     //   if (!(CurDetail.CheckedScore>0)) {
+        popWindow.add_child.setVisibility(View.GONE);
+        popWindow.del_child.setVisibility(View.GONE);
+        popWindow.del_father.setVisibility(View.GONE);
+      // popWindow.submit.setVisibility(View.GONE);
+        popWindow.change_status.setVisibility(View.GONE);
+//        popWindow.ok_status.setVisibility(View.GONE);
+//        popWindow.set_value.setVisibility(View.GONE);
+        //name_edt.setEnabled(false);
+        //des_edt.setEnabled(false);
+        value_edt.setClickable(false);
+        closingtime_edt.setClickable(false);
+        assign2_edt.setClickable(false);
+        checker_edt.setClickable(false);
+        Head_edt.setClickable(false);
+     // if (!(CurDetail.CheckedScore>0)) {
             if (hasChildFlag == 1 ) {
-                status_edt.setText(statusList.get(9));
+              //  status_edt.setText(statusList.get(9));
               //  Toast.makeText(WorkItemDetail.this, "完成前请输入检查分值,再提交修改结果！", Toast.LENGTH_SHORT).show();
                 AlertDialog.Builder builder  = new AlertDialog.Builder(WorkItemDetail.this);
                 builder.setTitle("提示");
-                builder.setMessage("完成前请输入检查分值,再提交修改结果,建议检查分值为：" + CheckValue) ;
+                builder.setMessage("完成前请输入检查分值,建议检查分值为：" + CheckValue) ;
                 builder.setPositiveButton("知道了", null);
                 builder.show();
                 checkvalue_edt.setText(String.valueOf(CheckValue));
                 checkvalue_edt.setEnabled(true);
+                popWindow.ok_status.setVisibility(View.VISIBLE);
+                popWindow.set_value.setVisibility(View.GONE);
 //                CheckValueEdit();
 //                checkvalue_edt.clearFocus();
             }else
             {
-               // Toast.makeText(WorkItemDetail.this, "有子项未完成！", Toast.LENGTH_SHORT).show();
-                status_edt.setText(statusList.get(9));
+                //如果子项大于该状态则可进入下一状态
+                boolean before=false;
+                for (SubWorkItemParams sub:chid)
+                {
+                    if(sub.Status!=0&&sub.Status!=9&&sub.Status<8)
+                    {
+                        before=true;
+                        break;
+                    }else{
+                        before=false;
+                    }
+                }
+                if(before==true)
+                {
+                    Toast.makeText(WorkItemDetail.this, "有子项未完成,不能进入下一状态！", Toast.LENGTH_SHORT).show();
+                    status_edt.setText(statusList.get(8));
+                    popWindow.ok_status.setVisibility(View.GONE);
+                    popWindow.set_value.setVisibility(View.GONE);
+                }else {
+                    AlertDialog.Builder builder  = new AlertDialog.Builder(WorkItemDetail.this);
+                    builder.setTitle("提示");
+                    builder.setMessage("完成前请输入检查分值,建议检查分值为：" + CheckValue) ;
+                    builder.setPositiveButton("知道了", null);
+                    builder.show();
+                    checkvalue_edt.setText(String.valueOf(CheckValue));
+                    checkvalue_edt.setEnabled(true);
+                    popWindow.ok_status.setVisibility(View.VISIBLE);
+                    popWindow.set_value.setVisibility(View.GONE);
+                }
+//                int arr[] = new int[chid.size()];
+//              for (int i=0;i<chid.size()-1;i++)
+//              {
+//                  arr[i]=chid.get(i).Status;
+//              }
+//                BubbleSort(arr);
+//                if(arr[0]!=0&&arr[0]!=9&&arr[0]<8)
+//                {
+//                    Toast.makeText(WorkItemDetail.this, "有子项未完成,不能进入下一状态！", Toast.LENGTH_SHORT).show();
+//                    status_edt.setText(statusList.get(8));
+//                    popWindow.ok_status.setVisibility(View.GONE);
+//                    popWindow.set_value.setVisibility(View.GONE);
+//                }else {
+//                    AlertDialog.Builder builder  = new AlertDialog.Builder(WorkItemDetail.this);
+//                    builder.setTitle("提示");
+//                    builder.setMessage("完成前请输入检查分值,建议检查分值为：" + CheckValue) ;
+//                    builder.setPositiveButton("知道了", null);
+//                    builder.show();
+//                    checkvalue_edt.setText(String.valueOf(CheckValue));
+//                    checkvalue_edt.setEnabled(true);
+//                    popWindow.ok_status.setVisibility(View.VISIBLE);
+//                    popWindow.set_value.setVisibility(View.GONE);
+//                }
+
             }
        // }
     }
 
 }
+    private static void BubbleSort(int[] arr) {
+        boolean flag = true;
+        while(flag){
+            int temp;//定义一个临时变量
+            for(int i=0;i<arr.length-1;i++){//冒泡趟数，n-1趟
+                for(int j=0;j<arr.length-i-1;j++){
+                    if(arr[j+1]<arr[j]){
+                        temp = arr[j];
+                        arr[j] = arr[j+1];
+                        arr[j+1] = temp;
+                        flag = true;
+                    }
+                }
+                if(!flag){
+                    break;//若果没有发生交换，则退出循环
+                }
+            }
+        }
+    }
 
     private  void   submitService( ) {
         List<WorkItemEntity> works=new ArrayList<WorkItemEntity>();
@@ -1250,6 +1429,16 @@ private  void   editscore(){
         if(index>3)
         {
             assign2_edt.setClickable(false);
+            popWindow.del_father.setVisibility(View.GONE);
+            if(index>5)
+            {
+                assign2_edt.setClickable(false);
+                value_edt.setClickable(false);
+                if(index>6){
+
+                    checker_edt.setClickable(false);
+                }
+            }
         }
         if(stat.equals(statusList.get(3))||stat.equals(statusList.get(4))||stat.equals(statusList.get(2)))
         {
@@ -1261,13 +1450,7 @@ private  void   editscore(){
             }
         }else  if(stat.equals(statusList.get(6))||stat.equals(statusList.get(7)))
         {
-            if(index>5)
-            {
-                assign2_edt.setClickable(false);
-                if(index>6){
-                    checker_edt.setClickable(false);
-                }
-            }
+
             if(result.CheckerID.equals(UID))
             {
                 popWindow.change_status.setVisibility(View.VISIBLE);
@@ -1279,29 +1462,26 @@ private  void   editscore(){
         }
         if(stat.equals(statusList.get(5)) || stat.equals(statusList.get(8))){
             if (result.Belong2ID.equals(UID) || (result.Belong2ID.equals("") && result.CreaterID.equals(UID))) {
-                popWindow.ok_status.setVisibility(View.VISIBLE);
+                popWindow.set_value.setVisibility(View.VISIBLE);
             } else {
-                popWindow.ok_status.setVisibility(View.GONE);
+                popWindow.set_value.setVisibility(View.GONE);
             }
         }else{
-            popWindow.ok_status.setVisibility(View.GONE);
+            popWindow.set_value.setVisibility(View.GONE);
         }
         if(stat.equals(statusList.get(0))||stat.equals(statusList.get(9)))
         {
-            popWindow.add_child.setVisibility(View.GONE);
-            popWindow.del_child.setVisibility(View.GONE);
-            popWindow.del_father.setVisibility(View.GONE);
-           // popWindow.submit.setVisibility(View.GONE);
-            popWindow.change_status.setVisibility(View.GONE);
 
             popWindow.dismiss();
             popWindow.add_child.setVisibility(View.GONE);
             popWindow.del_child.setVisibility(View.GONE);
             popWindow.del_father.setVisibility(View.GONE);
-            //  popWindow.submit.setVisibility(View.GONE);
+            popWindow.submit.setVisibility(View.GONE);
             popWindow.change_status.setVisibility(View.GONE);
+            popWindow.ok_status.setVisibility(View.GONE);
+            popWindow.set_value.setVisibility(View.GONE);
             name_edt.setEnabled(false);
-            // des_edt.setEnabled(false);
+             des_edt.setEnabled(false);
             value_edt.setClickable(false);
             closingtime_edt.setClickable(false);
             assign2_edt.setClickable(false);
@@ -1374,8 +1554,13 @@ private  void   editscore(){
                 {
                     //可编辑
                     popWindow.add_child.setVisibility(View.VISIBLE);
-                    popWindow.del_father.setVisibility(View.VISIBLE);
+                    if(staflag==0)
+                    {
+                        popWindow.del_father.setVisibility(View.VISIBLE);
+                    }
                     popWindow.submit.setVisibility(View.VISIBLE);
+//                    popWindow.ok_status.setVisibility(View.VISIBLE);
+//                    popWindow.set_value.setVisibility(View.VISIBLE);
                     Log.i("权限设置 crea", "FHZ");
                     ItemEditable();
 //                if(stat==statusList.get(5)||stat==statusList.get(8))
@@ -1387,8 +1572,13 @@ private  void   editscore(){
                 if (result.Belong2ID.equals(UID))
                 {
                     popWindow.add_child.setVisibility(View.VISIBLE);
-                    popWindow.del_father.setVisibility(View.VISIBLE);
+                    if(staflag==0)
+                    {
+                        popWindow.del_father.setVisibility(View.VISIBLE);
+                    }
                     popWindow.submit.setVisibility(View.VISIBLE);
+//                    popWindow.ok_status.setVisibility(View.VISIBLE);
+//                    popWindow.set_value.setVisibility(View.VISIBLE);
                     ItemEditable();
                     Log.i("权限设置 belo", "FHZ");
 //                if(stat==statusList.get(5)||stat==statusList.get(8))
@@ -1397,15 +1587,10 @@ private  void   editscore(){
 //                }
                 }
             }
-            if(result.CheckerID.equals(UID))
-            {
-//            if(stat==statusList.get(6)||stat==statusList.get(7))
-//            {
-//                popWindow.change_status.setVisibility(View.VISIBLE);
-//            }
-            }
+            StatusEditable(result);
         }
-        StatusEditable(result);
+
+
     }
 
     /*设置子项List样式*/

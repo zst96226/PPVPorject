@@ -19,7 +19,7 @@ import com.example.beyondsys.ppv.activity.WorkItemDetail;
  */
 public class PopupMenuForWorkItem extends PopupWindow {
     private View conentView;
-    public  View add_child, del_father,del_child,submit,change_status,ok_status;
+    public  View add_child, del_father,del_child,submit,change_status,ok_status,set_value;
 
     public PopupMenuForWorkItem(final Activity context){
         LayoutInflater inflater = (LayoutInflater) context
@@ -30,6 +30,7 @@ public class PopupMenuForWorkItem extends PopupWindow {
         del_child= conentView.findViewById(R.id.popup_menu_del_chid);
         submit=  conentView.findViewById(R.id.popup_confirm_result) ;
         ok_status=conentView.findViewById(R.id.popup_menu_ok);
+        set_value=conentView.findViewById(R.id.popup_menu_setvalue);
         change_status=  conentView.findViewById(R.id.popup_menu_changestatus) ;
         int h = context.getWindowManager().getDefaultDisplay().getHeight();
         int w = context.getWindowManager().getDefaultDisplay().getWidth();
