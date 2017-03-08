@@ -22,7 +22,7 @@ import com.example.beyondsys.ppv.tools.ValidaService;
  * Created by yhp on 2017/1/20.
  */
 public class Register extends Activity {
-    private ImageView back;
+    private LinearLayout back;
     private Button registe,reset;
     private RelativeLayout getCode_layout;
 private EditText username_edt,userid_edt,phone_edt,pass_edt,checkpass_edt,checkcode_edt;
@@ -37,7 +37,7 @@ private EditText username_edt,userid_edt,phone_edt,pass_edt,checkpass_edt,checkc
     }
     private void  init()
     {
-        back = (ImageView) this.findViewById(R.id.dttail_back);
+        back = (LinearLayout) this.findViewById(R.id.dttail_back);
         registe=(Button)this.findViewById(R.id.registe_but);
         reset=(Button)findViewById(R.id.reset_but);
         getCode_layout=(RelativeLayout)findViewById(R.id.getCode_layout);
