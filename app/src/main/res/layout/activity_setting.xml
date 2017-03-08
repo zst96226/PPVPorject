@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mainFont"
+    android:orientation="vertical"
+    tools:context="com.example.beyondsys.ppv.activity.Setting">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40sp"
+        android:background="@color/backcol"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0sp"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/dttail_back"
+                android:layout_width="40sp"
+                android:layout_height="match_parent"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="15sp"
+                    android:layout_height="15sp"
+                    android:src="@drawable/title_back"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/title_txt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="设置"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
+                android:textColor="@color/text"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0sp"
+        android:layout_weight="9"
+        android:weightSum="10"
+        android:orientation="vertical"
+        android:background="@color/backcol">
+
+        <RelativeLayout
+            android:id="@+id/fontsize_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0sp"
+            android:layout_marginTop="5sp"
+            android:background="@color/White"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="字体大小"
+                android:layout_marginLeft="10sp"
+                android:textSize="18sp"
+                android:layout_alignParentLeft="true"/>
+
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/nightmodel_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0sp"
+            android:layout_marginTop="2sp"
+            android:background="@color/White"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="夜间模式"
+                android:layout_marginLeft="10sp"
+                android:textSize="18sp"
+                android:layout_alignParentLeft="true"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/myPhone_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0sp"
+            android:layout_marginTop="2sp"
+            android:background="@color/White"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="版本更新"
+                android:layout_marginLeft="10sp"
+                android:textSize="18sp"
+                android:layout_alignParentLeft="true"/>
+
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/myID_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0sp"
+            android:layout_marginTop="2sp"
+            android:layout_marginBottom="10sp"
+            android:background="@color/White"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="清除缓存"
+                android:layout_marginLeft="10sp"
+                android:textSize="18sp"
+                android:layout_alignParentLeft="true"/>
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</LinearLayout>

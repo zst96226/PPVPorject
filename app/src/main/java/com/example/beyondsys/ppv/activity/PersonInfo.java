@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -226,6 +227,10 @@ public class PersonInfo extends AppCompatActivity {
 //            //透明导航栏
 //            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 //        }
+        //设置statusbar的图标颜色高亮反转
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        //设置statusbar的颜色
+        getWindow().setStatusBarColor(Color.parseColor("#000000"));
         setContentView(R.layout.activity_person_info);
         init();
        // initCache();

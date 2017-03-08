@@ -2,6 +2,7 @@ package com.example.beyondsys.ppv.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -189,6 +190,10 @@ public class Login extends Activity implements OnClickListener {
 //            //透明导航栏
 //            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 //        }
+        //设置statusbar的图标颜色高亮反转
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//设置statusbar的颜色
+        getWindow().setStatusBarColor(Color.parseColor("#000000"));
         setContentView(R.layout.activity_login2);
 
         et_name = (EditText) findViewById(R.id.username);

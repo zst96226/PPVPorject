@@ -65,7 +65,7 @@ import java.util.function.Predicate;
 public class OneSelfView extends Fragment {
 private LinearLayout personInfoLayout;
     ACache mCache=null;
-    private LinearLayout passwordChangeLayout,qiutLayout;
+    private LinearLayout passwordChangeLayout,qiutLayout,settingLayout;
     private CustomDialog dialog;
     private RelativeLayout changeTeam_layout;
     private ListView child_list;
@@ -231,6 +231,7 @@ private LinearLayout personInfoLayout;
         imgBusiness=new ImgBusiness();
         personInfoLayout=(LinearLayout)rootView.findViewById(R.id.personInfo_layout);
         passwordChangeLayout=(LinearLayout)rootView.findViewById(R.id.passwordChange_layout);
+        settingLayout=(LinearLayout)rootView.findViewById(R.id.setting_layout);
         qiutLayout=(LinearLayout)rootView.findViewById( R.id.quit_layout);
         changeTeam_layout=(RelativeLayout)rootView.findViewById(R.id.changeTeam_layout);
         child_list=(ListView)rootView.findViewById(R.id.wid_list_of);
@@ -354,6 +355,13 @@ private LinearLayout personInfoLayout;
     }
     private void setListener()
     {
+        settingLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), Setting.class);
+                startActivity(intent);
+            }
+        });
         personInfoLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -18,19 +18,19 @@
             android:layout_marginTop="20sp"
             android:layout_marginBottom="5sp"
             android:background="@drawable/border"
-            android:src="@drawable/person"/>
-        <TextView
-            android:id="@+id/login_name_tex"
-            android:layout_width="wrap_content"
-            android:layout_height="50sp"
-            android:layout_marginTop="5sp"
-            android:layout_marginBottom="5sp"
-            android:background="@color/forget"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:text="" />
+            android:src="@drawable/logo"/>
+        <!--<TextView-->
+            <!--android:id="@+id/login_name_tex"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="50sp"-->
+            <!--android:layout_marginTop="5sp"-->
+            <!--android:layout_marginBottom="5sp"-->
+            <!--android:background="@color/forget"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:textColor="@android:color/white"-->
+            <!--android:textStyle="bold"-->
+            <!--android:gravity="center"-->
+            <!--android:text="" />-->
     </LinearLayout>
     <RelativeLayout
         android:id="@+id/login_layout"

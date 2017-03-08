@@ -4,20 +4,16 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -34,8 +30,6 @@ import android.widget.Toast;
 import com.anupcowkur.reservoir.Reservoir;
 import com.example.beyondsys.ppv.R;
 import com.example.beyondsys.ppv.bussiness.WorkItemBusiness;
-import com.example.beyondsys.ppv.bussiness.WorkValueBusiness;
-import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.ChildWorkItemEntity;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
 import com.example.beyondsys.ppv.entities.SubWorkItemParams;
@@ -45,20 +39,13 @@ import com.example.beyondsys.ppv.entities.UIDEntity;
 import com.example.beyondsys.ppv.entities.UserInTeam;
 import com.example.beyondsys.ppv.entities.UserLoginResultEntity;
 import com.example.beyondsys.ppv.entities.WorkDetailResult;
-import com.example.beyondsys.ppv.entities.WorkItemChildResultParams;
-import com.example.beyondsys.ppv.entities.WorkItemContextentity;
 import com.example.beyondsys.ppv.entities.WorkItemEntity;
 import com.example.beyondsys.ppv.entities.WorkItemResultParams;
-import com.example.beyondsys.ppv.entities.WorkValueEntity;
-import com.example.beyondsys.ppv.tools.GsonUtil;
 import com.example.beyondsys.ppv.tools.JsonEntity;
 import com.example.beyondsys.ppv.tools.ListPopupWindowAdapter;
 import com.example.beyondsys.ppv.tools.PopupMenuForWorkItem;
-import com.example.beyondsys.ppv.tools.Tools;
 import com.example.beyondsys.ppv.tools.ValidaService;
 import com.google.gson.reflect.TypeToken;
-
-import org.w3c.dom.Text;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -104,7 +91,7 @@ public class WorkItemDetail extends AppCompatActivity {
     private boolean isdel = false;
     private  int staflag,hasChildFlag=1;//1代表无子项
     String[] typeList = new String[]{"事项", "任务"};
-    private String CurItemId = "",CurFID="",CurBID="", CurItemType = typeList[0];
+    private String CurItemId = "",CurFID="",CurBID="", Remark="",CurItemType = typeList[0];
     private  WorkDetailResult CurDetail;
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
@@ -221,6 +208,10 @@ public class WorkItemDetail extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //设置statusbar的图标颜色高亮反转
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        //设置statusbar的颜色
+        getWindow().setStatusBarColor(Color.parseColor("#000000"));
         setContentView(R.layout.activity_work_item_detail);
         try {
             Reservoir.init(this, 4096);
@@ -394,7 +385,10 @@ public class WorkItemDetail extends AppCompatActivity {
         des_edt.setText(result.Description);
         basicvalue_edt.setText(String.valueOf(result.BasicScore));
         checkvalue_edt.setText(String.valueOf(result.CheckedScore));
-        remark_tex.setText(result.Remark);
+        //remark_tex.setText(result.Remark);
+        Remark=result.Remark;
+        String str=annalysRemark(Remark);
+        remark_tex.setText(str);
         if (result.Category == 0) {
             work_img.setImageResource(R.drawable.b);
         } else {
@@ -862,6 +856,45 @@ public class WorkItemDetail extends AppCompatActivity {
 //        });
     }
 
+
+    private  String  annalysRemark(String remark){
+        //String   decodeRemark=remark;
+        String   standard="",str="";
+        String[] steps=null;
+        if(remark.length()<7)
+        {
+            return  remark;
+        }else{
+            standard=remark.substring(0,8);
+            str=remark.substring(8);
+            steps=str.split(",");
+            if(steps.length!=0)
+            {
+                for(int i=0;i<steps.length;i++)
+                {
+                    int fir=0,sec=0,thr=0,fou=0;
+                    fou=steps[i].lastIndexOf(":");
+                    thr=steps[i].substring(0,fou).lastIndexOf(":");
+                    sec=steps[i].substring(0,thr).lastIndexOf(":");
+                    fir=steps[i].substring(0,sec).indexOf(":");
+                    Log.i("remark",i+"fou:"+fou);
+                    Log.i("remark",i+"thr:"+thr);
+                    Log.i("remark",i+"sec:"+sec);
+                    Log.i("remark",i+"fir:"+fir);
+                    Log.i("remark",i+steps[i].substring(fir+1,sec-3));
+                    int step=i+1;
+                    standard+="第"+step+"步："+steps[i].substring(fir+1,sec-3)+"，难度为"+steps[i].substring(fou+1)
+                            +"，预计最长"+steps[i].substring(sec+1,thr-3)
+                            +"小时，预计最短"+steps[i].substring(thr+1,fou-5)
+                            +"小时；";
+
+                }
+                Log.i("remark",standard);
+            }
+            return standard;
+        }
+    }
+
 private  void   editscore(){
     double value=CurDetail.BusinessValue;
     try{
@@ -1156,12 +1189,13 @@ private  void   editscore(){
         workItem.CheckedScore=checkV;
         workItem.HardScale=result.HardScale;
         Log.i("123",result.HardScale+" "+workItem.HardScale );
-        if(remark_tex.getText().toString().trim().isEmpty()||remark_tex.getText().toString().trim().equals(""))
-        {
-            workItem.Remark=result.Remark;
-        }else{
-            workItem.Remark=remark_tex.getText().toString().trim();
-        }
+        workItem.Remark=Remark;
+//        if(remark_tex.getText().toString().trim().isEmpty()||remark_tex.getText().toString().trim().equals(""))
+//        {
+//            workItem.Remark=result.Remark;
+//        }else{
+//            workItem.Remark=remark_tex.getText().toString().trim();
+//        }
   return  workItem;
     }
 
@@ -1785,8 +1819,8 @@ private  void   editscore(){
         }else if(requestCode==2)
         {
             if (resultCode == 1) {
-              remark_tex.setText(data.getStringExtra("stepDetail").toString().trim());
-
+             // remark_tex.setText(data.getStringExtra("stepDetail").toString().trim());
+               Remark=data.getStringExtra("stepDetail").toString().trim();
                 //分值计算接口
 //                   List<Map<String,Object>> valueParam=( List<Map<String,Object>>)data.getSerializableExtra("valueParam");
                 // Log.i("1MAX:" + valueParam.get(0).get("max"),"FHZ");

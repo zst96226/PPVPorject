@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -149,6 +150,10 @@ public class PersonValueDetail extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //设置statusbar的图标颜色高亮反转
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//设置statusbar的颜色
+        getWindow().setStatusBarColor(Color.parseColor("#000000"));
         setContentView(R.layout.activity_person_value_detail);
         init();
         //setListData(nowTime);

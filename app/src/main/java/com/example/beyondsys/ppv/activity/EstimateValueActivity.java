@@ -3,6 +3,7 @@ package com.example.beyondsys.ppv.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -53,6 +54,10 @@ public class EstimateValueActivity extends AppCompatActivity {
 //        }
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        //设置statusbar的图标颜色高亮反转
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//设置statusbar的颜色
+        getWindow().setStatusBarColor(Color.parseColor("#000000"));
         setContentView(R.layout.activity_estimate_value);
         init();
 //        setOkListener();
@@ -651,299 +656,300 @@ public class EstimateValueActivity extends AppCompatActivity {
 //             builder.append("共分为一个步骤：\\n第一步：");
 //             Log.e(builder.toString(), "qwe");
 //             builder.append(step1_name.getText().toString());
-             text="共分为一个步骤："
-                    + "第一步："+step1_name.getText().toString()
+             text="共分为一个步骤:"
+                    + "第一步:"+step1_name.getText().toString()
                      +"max:"+step1_max.getText().toString()
                      +"min:"+step1_min.getText().toString()
                      +"scale:"+step1_scale.getText().toString();
              Log.e("hghhvvjhbj","qwe");
              break;
          case 2:
-             text="共分为二个步骤："
-                     +"第一步："+step1_name.getText().toString()
+             text="共分为二个步骤:"
+                     +"第一步:"+step1_name.getText().toString()
                      +"max:"+step1_max.getText().toString()
                      +"min:"+step1_min.getText().toString()
                      +"scale:"+step1_scale.getText().toString()
-                     +"\n"+
-                   "第二步："+step2_name.getText().toString()
+                     +","+
+                   "第二步:"+step2_name.getText().toString()
                      +"max:"+step2_max.getText().toString()
                      +"min:"+step2_min.getText().toString()
                      +"scale:"+step2_scale.getText().toString();
              break;
          case 3:
-             text="共分为三个步骤："
-                    +"第一步："+step1_name.getText().toString()
+             text="共分为三个步骤:"
+                    +"第一步:"+step1_name.getText().toString()
                      +"max:"+step1_max.getText().toString()
                      +"min:"+step1_min.getText().toString()
                      +"scale:"+step1_scale.getText().toString()
-                    +
-                     "第二步："+step2_name.getText().toString()
+                     +","+
+                     "第二步:"+step2_name.getText().toString()
                      +"max:"+step2_max.getText().toString()
                      +"min:"+step2_min.getText().toString()
                      +"scale:"+step2_scale.getText().toString()
-                    +
-                     "第三步："+step3_name.getText().toString()
-                     +"max:"+step3_max.getText().toString()
-                     +"min:"+step3_min.getText().toString()
-                     +"scale:"+step3_scale.getText().toString();
-             break;
-         case 4:
-             text="共分为四个步骤："
-                    +
-                     "第一步："+step1_name.getText().toString()
-                     +"max:"+step1_max.getText().toString()
-                     +"min:"+step1_min.getText().toString()
-                     +"scale:"+step1_scale.getText().toString()
-                     +
-                     "第二步："+step2_name.getText().toString()
-                     +"max:"+step2_max.getText().toString()
-                     +"min:"+step2_min.getText().toString()
-                     +"scale:"+step2_scale.getText().toString()
-                    +
-                     "第三步："+step3_name.getText().toString()
+                     +","+
+                     "第三步:"+step3_name.getText().toString()
                      +"max:"+step3_max.getText().toString()
                      +"min:"+step3_min.getText().toString()
                      +"scale:"+step3_scale.getText().toString()
+             ;
+             break;
+         case 4:
+             text="共分为四个步骤:"
                     +
-                     "第四步："+step3_name.getText().toString()
+                     "第一步:"+step1_name.getText().toString()
+                     +"max:"+step1_max.getText().toString()
+                     +"min:"+step1_min.getText().toString()
+                     +"scale:"+step1_scale.getText().toString()
+                     +","+
+                     "第二步:"+step2_name.getText().toString()
+                     +"max:"+step2_max.getText().toString()
+                     +"min:"+step2_min.getText().toString()
+                     +"scale:"+step2_scale.getText().toString()
+                     +","+
+                     "第三步:"+step3_name.getText().toString()
+                     +"max:"+step3_max.getText().toString()
+                     +"min:"+step3_min.getText().toString()
+                     +"scale:"+step3_scale.getText().toString()
+                     +","+
+                     "第四步:"+step3_name.getText().toString()
                      +"max:"+step3_max.getText().toString()
                      +"min:"+step3_min.getText().toString()
                      +"scale:"+step3_scale.getText().toString();
             break;
          case 5:
-             text="共分为五个步骤："
+             text="共分为五个步骤:"
                      +
-                     "第一步："+step1_name.getText().toString()
+                     "第一步:"+step1_name.getText().toString()
                      +"max:"+step1_max.getText().toString()
                      +"min:"+step1_min.getText().toString()
                      +"scale:"+step1_scale.getText().toString()
-                    +
-                     "第二步："+step2_name.getText().toString()
+                     +","+
+                     "第二步:"+step2_name.getText().toString()
                      +"max:"+step2_max.getText().toString()
                      +"min:"+step2_min.getText().toString()
                      +"scale:"+step2_scale.getText().toString()
-                   +
-                     "第三步："+step3_name.getText().toString()
+                     +","+
+                     "第三步:"+step3_name.getText().toString()
                      +"max:"+step3_max.getText().toString()
                      +"min:"+step3_min.getText().toString()
                      +"scale:"+step3_scale.getText().toString()
-                    +
-                     "第四步："+step4_name.getText().toString()
+                     +","+
+                     "第四步:"+step4_name.getText().toString()
                      +"max:"+step4_max.getText().toString()
                      +"min:"+step4_min.getText().toString()
                      +"scale:"+step4_scale.getText().toString()
-                    +
-                     "第五步："+step5_name.getText().toString()
+                     +","+
+                     "第五步:"+step5_name.getText().toString()
                      +"max:"+step5_max.getText().toString()
                      +"min:"+step5_min.getText().toString()
                      +"scale:"+step5_scale.getText().toString();
             break;
          case 6:
-             text="共分为六个步骤："
+             text="共分为六个步骤:"
                    +
-                     "第一步："+step1_name.getText().toString()
+                     "第一步:"+step1_name.getText().toString()
                      +"max:"+step1_max.getText().toString()
                      +"min:"+step1_min.getText().toString()
                      +"scale:"+step1_scale.getText().toString()
-                    +
-                     "第二步："+step2_name.getText().toString()
+                     +","+
+                     "第二步:"+step2_name.getText().toString()
                      +"max:"+step2_max.getText().toString()
                      +"min:"+step2_min.getText().toString()
                      +"scale:"+step2_scale.getText().toString()
-                   +
-                     "第三步："+step3_name.getText().toString()
+                     +","+
+                     "第三步:"+step3_name.getText().toString()
                      +"max:"+step3_max.getText().toString()
                      +"min:"+step3_min.getText().toString()
                      +"scale:"+step3_scale.getText().toString()
-                    +
-                     "第四步："+step4_name.getText().toString()
+                     +","+
+                     "第四步:"+step4_name.getText().toString()
                      +"max:"+step4_max.getText().toString()
                      +"min:"+step4_min.getText().toString()
                      +"scale:"+step4_scale.getText().toString()
-                    +
-                     "第五步："+step5_name.getText().toString()
+                     +","+
+                     "第五步:"+step5_name.getText().toString()
                      +"max:"+step5_max.getText().toString()
                      +"min:"+step5_min.getText().toString()
                      +"scale:"+step5_scale.getText().toString()
-                    +
-                     "第六步："+step6_name.getText().toString()
+                     +","+
+                     "第六步:"+step6_name.getText().toString()
                      +"max:"+step6_max.getText().toString()
                      +"min:"+step6_min.getText().toString()
                      +"scale:"+step6_scale.getText().toString();
             break;
          case 7:
-             text="共分为七个步骤："
+             text="共分为七个步骤:"
                    +
-                     "第一步："+step1_name.getText().toString()
+                     "第一步:"+step1_name.getText().toString()
                      +"max:"+step1_max.getText().toString()
                      +"min:"+step1_min.getText().toString()
                      +"scale:"+step1_scale.getText().toString()
-                    +
-                     "第二步："+step2_name.getText().toString()
+                     +","+
+                     "第二步:"+step2_name.getText().toString()
                      +"max:"+step2_max.getText().toString()
                      +"min:"+step2_min.getText().toString()
                      +"scale:"+step2_scale.getText().toString()
-                   +
-                     "第四步："+step4_name.getText().toString()
+                     +","+
+                     "第四步:"+step4_name.getText().toString()
                      +"max:"+step4_max.getText().toString()
                      +"min:"+step4_min.getText().toString()
                      +"scale:"+step4_scale.getText().toString()
-                    +
-                     "第五步："+step5_name.getText().toString()
+                     +","+
+                     "第五步:"+step5_name.getText().toString()
                      +"max:"+step5_max.getText().toString()
                      +"min:"+step5_min.getText().toString()
                      +"scale:"+step5_scale.getText().toString()
-                    +
-                     "第六步："+step6_name.getText().toString()
+                     +","+
+                     "第六步:"+step6_name.getText().toString()
                      +"max:"+step6_max.getText().toString()
                      +"min:"+step6_min.getText().toString()
                      +"scale:"+step6_scale.getText().toString()
-                    +
-                     "第七步："+step7_name.getText().toString()
+                     +","+
+                     "第七步:"+step7_name.getText().toString()
                      +"max:"+step7_max.getText().toString()
                      +"min:"+step7_min.getText().toString()
                      +"scale:"+step7_scale.getText().toString();
              break;
          case 8:
-             text="共分为八个步骤："
+             text="共分为八个步骤:"
                     +
-                     "第一步："+step1_name.getText().toString()
+                     "第一步:"+step1_name.getText().toString()
                      +"max:"+step1_max.getText().toString()
                      +"min:"+step1_min.getText().toString()
                      +"scale:"+step1_scale.getText().toString()
-                    +
-                     "第二步："+step2_name.getText().toString()
+                     +","+
+                     "第二步:"+step2_name.getText().toString()
                      +"max:"+step2_max.getText().toString()
                      +"min:"+step2_min.getText().toString()
                      +"scale:"+step2_scale.getText().toString()
-                    +
-                     "第三步："+step3_name.getText().toString()
+                     +","+
+                     "第三步:"+step3_name.getText().toString()
                      +"max:"+step3_max.getText().toString()
                      +"min:"+step3_min.getText().toString()
                      +"scale:"+step3_scale.getText().toString()
-                    +
-                     "第四步："+step4_name.getText().toString()
+                     +","+
+                     "第四步:"+step4_name.getText().toString()
                      +"max:"+step4_max.getText().toString()
                      +"min:"+step4_min.getText().toString()
                      +"scale:"+step4_scale.getText().toString()
-                    +
-                     "第五步："+step5_name.getText().toString()
+                     +","+
+                     "第五步:"+step5_name.getText().toString()
                      +"max:"+step5_max.getText().toString()
                      +"min:"+step5_min.getText().toString()
                      +"scale:"+step5_scale.getText().toString()
-                    +
-                     "第六步："+step6_name.getText().toString()
+                     +","+
+                     "第六步:"+step6_name.getText().toString()
                      +"max:"+step6_max.getText().toString()
                      +"min:"+step6_min.getText().toString()
                      +"scale:"+step6_scale.getText().toString()
-                    +
-                     "第七步："+step7_name.getText().toString()
+                     +","+
+                     "第七步:"+step7_name.getText().toString()
                      +"max:"+step7_max.getText().toString()
                      +"min:"+step7_min.getText().toString()
                      +"scale:"+step7_scale.getText().toString()
-                   +
-                     "第八步："+step8_name.getText().toString()
+                     +","+
+                     "第八步:"+step8_name.getText().toString()
                      +"max:"+step8_max.getText().toString()
                      +"min:"+step8_min.getText().toString()
                      +"scale:"+step8_scale.getText().toString();
              break;
          case 9:
-             text="共分为九个步骤："
+             text="共分为九个步骤:"
                     +
-                     "第一步："+step1_name.getText().toString()
+                     "第一步:"+step1_name.getText().toString()
                      +"max:"+step1_max.getText().toString()
                      +"min:"+step1_min.getText().toString()
                      +"scale:"+step1_scale.getText().toString()
-                    +
-                     "第二步："+step2_name.getText().toString()
+                     +","+
+                     "第二步:"+step2_name.getText().toString()
                      +"max:"+step2_max.getText().toString()
                      +"min:"+step2_min.getText().toString()
                      +"scale:"+step2_scale.getText().toString()
-                    +
-                     "第三步："+step3_name.getText().toString()
+                     +","+
+                     "第三步:"+step3_name.getText().toString()
                      +"max:"+step3_max.getText().toString()
                      +"min:"+step3_min.getText().toString()
                      +"scale:"+step3_scale.getText().toString()
-                    +
-                     "第四步："+step4_name.getText().toString()
+                     +","+
+                     "第四步:"+step4_name.getText().toString()
                      +"max:"+step4_max.getText().toString()
                      +"min:"+step4_min.getText().toString()
                      +"scale:"+step4_scale.getText().toString()
-                    +
-                     "第五步："+step5_name.getText().toString()
+                     +","+
+                     "第五步:"+step5_name.getText().toString()
                      +"max:"+step5_max.getText().toString()
                      +"min:"+step5_min.getText().toString()
                      +"scale:"+step5_scale.getText().toString()
-                    +
-                     "第六步："+step6_name.getText().toString()
+                     +","+
+                     "第六步:"+step6_name.getText().toString()
                      +"max:"+step6_max.getText().toString()
                      +"min:"+step6_min.getText().toString()
                      +"scale:"+step6_scale.getText().toString()
-                    +
-                     "第七步："+step7_name.getText().toString()
+                     +","+
+                     "第七步:"+step7_name.getText().toString()
                      +"max:"+step7_max.getText().toString()
                      +"min:"+step7_min.getText().toString()
                      +"scale:"+step7_scale.getText().toString()
-                     +
-                     "第八步："+step8_name.getText().toString()
+                     +","+
+                     "第八步:"+step8_name.getText().toString()
                      +"max:"+step8_max.getText().toString()
                      +"min:"+step8_min.getText().toString()
                      +"scale:"+step8_scale.getText().toString()
-                     +
-                     "第九步："+step9_name.getText().toString()
+                     +","+
+                     "第九步:"+step9_name.getText().toString()
                      +"max:"+step9_max.getText().toString()
                      +"min:"+step9_min.getText().toString()
                      +"scale:"+step9_scale.getText().toString();
             break;
          case 10:
-             text="共分为十个步骤："
+             text="共分为十个步骤:"
                      +
-                     "第一步："+step1_name.getText().toString()
+                     "第一步:"+step1_name.getText().toString()
                      +"max:"+step1_max.getText().toString()
                      +"min:"+step1_min.getText().toString()
                      +"scale:"+step1_scale.getText().toString()
-                     +
-                     "第二步："+step2_name.getText().toString()
+                     +","+
+                     "第二步:"+step2_name.getText().toString()
                      +"max:"+step2_max.getText().toString()
                      +"min:"+step2_min.getText().toString()
                      +"scale:"+step2_scale.getText().toString()
-                     +
-                     "第三步："+step3_name.getText().toString()
+                     +","+
+                     "第三步:"+step3_name.getText().toString()
                      +"max:"+step3_max.getText().toString()
                      +"min:"+step3_min.getText().toString()
                      +"scale:"+step3_scale.getText().toString()
-                     +
-                     "第四步："+step4_name.getText().toString()
+                     +","+
+                     "第四步:"+step4_name.getText().toString()
                      +"max:"+step4_max.getText().toString()
                      +"min:"+step4_min.getText().toString()
                      +"scale:"+step4_scale.getText().toString()
-                     +
-                     "第五步："+step5_name.getText().toString()
+                     +","+
+                     "第五步:"+step5_name.getText().toString()
                      +"max:"+step5_max.getText().toString()
                      +"min:"+step5_min.getText().toString()
                      +"scale:"+step5_scale.getText().toString()
-                     +
-                     "第六步："+step6_name.getText().toString()
+                     +","+
+                     "第六步:"+step6_name.getText().toString()
                      +"max:"+step6_max.getText().toString()
                      +"min:"+step6_min.getText().toString()
                      +"scale:"+step6_scale.getText().toString()
-                     +
-                     "第七步："+step7_name.getText().toString()
+                     +","+
+                     "第七步:"+step7_name.getText().toString()
                      +"max:"+step7_max.getText().toString()
                      +"min:"+step7_min.getText().toString()
                      +"scale:"+step7_scale.getText().toString()
-                     +
-                     "第八步："+step8_name.getText().toString()
+                     +","+
+                     "第八步:"+step8_name.getText().toString()
                      +"max:"+step8_max.getText().toString()
                      +"min:"+step8_min.getText().toString()
                      +"scale:"+step8_scale.getText().toString()
-                     +
-                     "第九步："+step9_name.getText().toString()
+                     +","+
+                     "第九步:"+step9_name.getText().toString()
                      +"max:"+step9_max.getText().toString()
                      +"min:"+step9_min.getText().toString()
                      +"scale:"+step9_scale.getText().toString()
-                     +
-                     "第十步："+step10_name.getText().toString()
+                     +","+
+                     "第十步:"+step10_name.getText().toString()
                      +"max:"+step10_max.getText().toString()
                      +"min:"+step10_min.getText().toString()
                      +"scale:"+step10_scale.getText().toString();
