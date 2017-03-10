@@ -457,7 +457,7 @@ public class PersonInfo extends AppCompatActivity {
             myAdressEdt.setEnabled(false);
             myDesEdt.setEnabled(false);
             editFlag = false;
-            modifyImg.setImageResource(R.drawable.img_pro);
+            modifyImg.setImageResource(R.drawable.passwordchange);//  android:src="@drawable/passwordchange"
             //服务器保存操作
             newInfo=new UserInfoResultParams();
            //图片未完成

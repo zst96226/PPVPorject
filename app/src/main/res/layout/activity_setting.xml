@@ -82,7 +82,7 @@
                 android:layout_alignParentLeft="true"/>
         </RelativeLayout>
         <RelativeLayout
-            android:id="@+id/myPhone_layout"
+            android:id="@+id/versionControl_layout"
             android:layout_width="match_parent"
             android:layout_height="0sp"
             android:layout_marginTop="2sp"
@@ -100,7 +100,7 @@
 
         </RelativeLayout>
         <RelativeLayout
-            android:id="@+id/myID_layout"
+            android:id="@+id/clearCache_layout"
             android:layout_width="match_parent"
             android:layout_height="0sp"
             android:layout_marginTop="2sp"
@@ -118,6 +118,10 @@
 
 
         </RelativeLayout>
-
+<ProgressBar
+    android:id="@+id/ProgressBar"
+    android:layout_width="match_parent"
+    android:layout_height="15sp"
+    android:visibility="gone"/>
     </LinearLayout>
 </LinearLayout>

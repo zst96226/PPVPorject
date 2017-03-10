@@ -50,4 +50,6 @@ public class APIEntity {
     public static final int ADDNEWWORKITEM=300;
     /*更新工作项*/
     public static final int UPNEWWORKITEM=310;
+    /*版本更新*/
+    public static final int UPDATEVERSION=320;
 }

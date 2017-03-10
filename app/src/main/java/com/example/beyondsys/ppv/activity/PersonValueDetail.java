@@ -67,7 +67,8 @@ public class PersonValueDetail extends AppCompatActivity {
     private ListView listView;
     private LinearLayout back;
     private TextView textView,monthSum,valueSum,personName;
-    private ImageView lastone,nextone,lastmonth,nextmonth;
+    private ImageView lastone,nextone;
+    private  LinearLayout lastmonth,nextmonth;
     private  List<ValueDetailResultParam> valueDetailList;
     private  List<WorkValueResultParams>  personList;
     private WorkValueResultParams  SelectPerson;
@@ -172,8 +173,8 @@ public class PersonValueDetail extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.selectTime_tex);
         lastone=(ImageView)findViewById(R.id.lastone_img);
         nextone=(ImageView)findViewById(R.id.nextone_img);
-        lastmonth=(ImageView)findViewById(R.id.lastMonth);
-        nextmonth=(ImageView)findViewById(R.id.nextMonth);
+        lastmonth=(LinearLayout)findViewById(R.id.lastMonth);
+        nextmonth=(LinearLayout)findViewById(R.id.nextMonth);
         monthSum=(TextView)findViewById(R.id.monthsum_tex);
         valueSum=(TextView)findViewById(R.id.valuesum_tex);
         personName=(TextView)findViewById(R.id.personname_tex);
