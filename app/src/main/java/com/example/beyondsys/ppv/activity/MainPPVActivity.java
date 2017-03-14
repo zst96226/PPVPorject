@@ -89,6 +89,10 @@ public class MainPPVActivity extends FragmentActivity implements View.OnClickLis
                 } else {
                     Toast.makeText(MainPPVActivity.this, "服务端验证出错，请联系管理员", Toast.LENGTH_SHORT).show();
                 }
+            }else if (msg.what == ThreadAndHandlerLabel.CallAPIError) {
+                Toast.makeText(MainPPVActivity.this, "请求失败，请检查网络连接", Toast.LENGTH_SHORT).show();
+            } else if (msg.what == ThreadAndHandlerLabel.LocalNotdata) {
+                Toast.makeText(MainPPVActivity.this, "读取缓存失败，请检查内存重新登录", Toast.LENGTH_SHORT).show();
             }
         }
     };

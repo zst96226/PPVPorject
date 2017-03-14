@@ -48,7 +48,7 @@ public class VersionControl {
 //                    SoapObject result = (SoapObject) envelop.getResponse();
                     Log.i("zst_test","版本返回值：" + result);
                     Message msg = Message.obtain();
-                    msg.what = ThreadAndHandlerLabel.GetWorkItemContext;
+                    msg.what = ThreadAndHandlerLabel.VersionControl;
                     msg.obj = result;
                     handler.sendMessage(msg);
                 } catch (IOException | XmlPullParserException e) {

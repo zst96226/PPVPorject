@@ -165,12 +165,24 @@ private LinearLayout personInfoLayout;
                                   startActivity(intent);
                                   getActivity().finish();
                               }
+                          }else{
+                              Intent intent = new Intent(getActivity(),Login.class);
+                              startActivity(intent);
+                              getActivity().finish();
                           }
-                      }catch (Exception e){}
+                      }catch (Exception e){
+                          Intent intent = new Intent(getActivity(),Login.class);
+                          startActivity(intent);
+                          getActivity().finish();
+                      }
                   }else{
                       Toast.makeText(OneSelfView.this.getActivity(),"退出异常",Toast.LENGTH_SHORT).show();
+
+                      Intent intent = new Intent(getActivity(),Login.class);
+                      startActivity(intent);
+                      getActivity().finish();
                   }
-            }  if (msg.what == ThreadAndHandlerLabel.GetAllStaff)
+            }else  if (msg.what == ThreadAndHandlerLabel.GetAllStaff)
         {
             if(msg.obj!=null)
             {
@@ -384,9 +396,13 @@ private LinearLayout personInfoLayout;
 //                       "已退出登录！", Toast.LENGTH_LONG);
 //                toast.setGravity(Gravity.CENTER, 0, 0);
 //                toast.show();
-                //注销账户
+//                注销账户
                 LoginBusiness loginBusiness=new LoginBusiness();
                 loginBusiness.LogOut(handler);
+
+//                Intent intent = new Intent(getActivity(),Login.class);
+//                startActivity(intent);
+//                getActivity().finish();
 
             }
         });

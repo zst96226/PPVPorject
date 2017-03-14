@@ -38,4 +38,7 @@ public class ThreadAndHandlerLabel {
     public  static  int AddWorkItem=14;
     /*修改工作项*/
     public  static int  UpdateWorkItem=15;
+    /*版本更新*/
+    public  static int VersionControl=16;
+
 }

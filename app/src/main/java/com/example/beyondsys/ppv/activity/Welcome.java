@@ -102,6 +102,7 @@ public class Welcome extends Activity {
 
                 if(proof==null||user==null||label==null)
                 {
+
                     Intent intent = new Intent(Welcome.this, Login.class);
                     Log.i("login","FHZ");
                     startActivity(intent);

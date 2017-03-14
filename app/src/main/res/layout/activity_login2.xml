@@ -61,8 +61,8 @@
                 android:paddingLeft="55sp" >
             </EditText>
             <ImageView
-                android:layout_width="22sp"
-                android:layout_height="21sp"
+                android:layout_width="23sp"
+                android:layout_height="23sp"
                 android:layout_marginStart="8sp"
                 android:layout_gravity="left|center_vertical"
                 android:background="@drawable/person"
@@ -110,9 +110,9 @@
             android:paddingLeft="55sp" >
         </EditText>
         <ImageView
-            android:layout_width="24sp"
-            android:layout_height="22sp"
-            android:layout_marginStart="7sp"
+            android:layout_width="23sp"
+            android:layout_height="23sp"
+            android:layout_marginStart="8sp"
             android:layout_gravity="left|center_vertical"
             android:background="@drawable/password" />
         <Button

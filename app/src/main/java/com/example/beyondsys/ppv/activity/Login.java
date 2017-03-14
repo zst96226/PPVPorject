@@ -28,6 +28,7 @@ import com.example.beyondsys.ppv.dataaccess.ACache;
 import com.example.beyondsys.ppv.entities.AccAndPwd;
 import com.example.beyondsys.ppv.entities.IdentifyResult;
 import com.example.beyondsys.ppv.entities.LocalDataLabel;
+import com.example.beyondsys.ppv.entities.LogOutResult;
 import com.example.beyondsys.ppv.entities.PersonInfoEntity;
 import com.example.beyondsys.ppv.entities.TeamEntity;
 import com.example.beyondsys.ppv.entities.ThreadAndHandlerLabel;
@@ -60,7 +61,7 @@ public class Login extends Activity implements OnClickListener {
     private TextWatcher username_watcher;
     private TextWatcher password_watcher;
     private TextView log_tex;
-    private String UAcc,uPwd;
+    private String UAcc,uPwd,TicketID;
 
     private Handler threadHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -78,6 +79,7 @@ public class Login extends Activity implements OnClickListener {
                                     Toast.makeText(Login.this, "服务出现问题，请稍后再试", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 0:
+                                    TicketID=entity.TicketID;
                                     /*将凭据保存缓存*/
                                     Reservoir.putAsync(LocalDataLabel.Proof, entity, new ReservoirPutCallback() {
                                         @Override
@@ -85,7 +87,7 @@ public class Login extends Activity implements OnClickListener {
                                             Log.i("凭据保存完成","FHZ");
                                             /*获取运行期间所需的标识*/
                                             LoginBusiness personnelVerify = new LoginBusiness();
-                                            personnelVerify.UserLogo(threadHandler);
+                                            personnelVerify.UserLogo(threadHandler,TicketID);
                                         }
                                         @Override
                                         public void onFailure(Exception e) {

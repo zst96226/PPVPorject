@@ -68,20 +68,20 @@ public class LoginBusiness {
     }
 
     /*获取程序运行期间的标识*/
-    public void UserLogo(final Handler handler) {
+    public void UserLogo(final Handler handler,String TicketID) {
         /*从缓存中获取凭据*/
 //        UserLoginResultEntity entity = JsonEntity.ParsingJsonForUserLoginResult(mCache.getAsString(LocalDataLabel.Proof));
-        UserLoginResultEntity entity = null;
-        try {
-            if (Reservoir.contains(LocalDataLabel.Proof)) {
-                entity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (entity != null && !entity.TicketID.equals("")) {
+//        UserLoginResultEntity entity = null;
+//        try {
+//            if (Reservoir.contains(LocalDataLabel.Proof)) {
+//                entity = Reservoir.get(LocalDataLabel.Proof, UserLoginResultEntity.class);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        if (entity != null && !entity.TicketID.equals("")) {
             UserLogoPerson person=new UserLogoPerson();
-            person.TicketID= entity.TicketID;
+            person.TicketID= TicketID;
             final String JsonParams = GsonUtil.getGson().toJson(person);
             Log.i("提交参数：actionid:"+APIEntity.GETLOGO+ " jsonvalue:"+ JsonParams, "FHZ");
             new Thread() {
@@ -114,12 +114,12 @@ public class LoginBusiness {
                     }
                 }
             }.start();
-        } else {
-            Message msg = Message.obtain();
-            msg.what = ThreadAndHandlerLabel.LocalNotdata;
-          //  msg.what = ThreadAndHandlerLabel.CallAPIError;
-            handler.sendMessage(msg);
-        }
+//        } else {
+//            Message msg = Message.obtain();
+//            msg.what = ThreadAndHandlerLabel.LocalNotdata;
+//          //  msg.what = ThreadAndHandlerLabel.CallAPIError;
+//            handler.sendMessage(msg);
+//        }
     }
 
     /*退出登录*/

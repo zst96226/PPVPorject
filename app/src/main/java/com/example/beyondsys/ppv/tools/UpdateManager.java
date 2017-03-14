@@ -37,7 +37,7 @@ public class UpdateManager {
     private String updateMsg = "有最新的软件包哦，亲快下载吧~";
 
     // 返回你需要安装的安装包url
-    private String apkUrl = "http://softfile.3g.qq.com:8080/msoft/179/24659/43549/qq_hd_mini_1.4.apk";
+    private String apkUrl = "";
     private Dialog noticeDialog;
 
     private Dialog downloadDialog;
